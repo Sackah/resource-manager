@@ -1,0 +1,42 @@
+import { inject } from '@angular/core';
+import { RoleService } from '../../shared/services/role.service';
+import { Router } from '@angular/router';
+
+/**
+ * Simple role guard
+ */
+export const AdminGuard = () => {
+  const roleService = inject(RoleService); /////
+  const router = inject(Router);
+  const role = roleService.get();
+  if (role === 'admin') {
+    return true;
+  } else {
+    router.navigateByUrl('/login');
+    return false;
+  }
+};
+
+export const UserGuard = () => {
+  const roleService = inject(RoleService); /////
+  const router = inject(Router);
+  const role = roleService.get();
+  if (role === 'user') {
+    return true;
+  } else {
+    router.navigateByUrl('/login');
+    return false;
+  }
+};
+
+export const ManagerGuard = () => {
+  const roleService = inject(RoleService); ////
+  const router = inject(Router);
+  const role = roleService.get();
+  if (role === 'manager') {
+    return true;
+  } else {
+    router.navigateByUrl('/login');
+    return false;
+  }
+};

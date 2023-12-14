@@ -1,1 +1,51 @@
-/* You can add global styles to this file, and also import other style files */
+@font-face {
+  font-family: 'LexendBlack';
+  src: url('./assets/fonts/Lexend-Black.ttf'), format('truetype');
+}
+
+@font-face {
+  font-family: 'LexendExtrabold';
+  src: url('./assets/fonts/Lexend-ExtraBold.ttf');
+}
+
+@font-face {
+  font-family: 'LexendBold';
+  src: url('./assets/fonts/Lexend-Bold.ttf'), format('truetype');
+}
+
+@font-face {
+  font-family: 'LexendSemibold';
+  src: url('./assets/fonts/Lexend-SemiBold.ttf'), format('truetype');
+}
+
+@font-face {
+  font-family: 'LexendMedium';
+  src: url('./assets/fonts/Lexend-Medium.ttf'), format('truetype');
+}
+
+@font-face {
+  font-family: 'LexendRegular';
+  src: url('./assets/fonts/Lexend-Regular.ttf'), format('truetype');
+}
+
+:root {
+  --color-primary: #1f26a8;
+  --colors-primary-slate-500: #5e718d;
+  --colors-primary-primary-600: #0f3cd9;
+  --colors-primary-slate-700: #3d4a5c;
+  --outline-input-enabled: #9aa8bc;
+  --colors-primary-slate-500: #5e718d;
+  --bg-primary: #ffff;
+  --bg-color: #f9fafb;
+}
+
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0px;
+}
+
+body {
+  font-family: 'LexendRegular';
+}
