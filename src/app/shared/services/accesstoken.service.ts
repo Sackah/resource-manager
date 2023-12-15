@@ -9,15 +9,15 @@ export class AccesstokenService {
   get(key: string = 'accessToken'): unknown {
     try {
       const item = localStorage.getItem(key);
-      return item;
-      // return item ? JSON.parse(item) : null;
+      // return item;
+      return item ? JSON.parse(item) : null;
     } catch (error) {
       console.error(`Failed to get ${key} from local storage`, error);
       return null;
     }
   }
 
-  set(key: string = 'accessToken', data: unknown) {
+  set(data: unknown, key: string = 'accessToken') {
     try {
       localStorage.setItem(key, JSON.stringify(data));
     } catch (error) {
