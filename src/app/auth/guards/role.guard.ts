@@ -9,7 +9,7 @@ export const AdminGuard = () => {
   const roleService = inject(RoleService); /////
   const router = inject(Router);
   const role = roleService.get();
-  if (role === 'admin') {
+  if (role === 'Administrator') {
     return true;
   } else {
     router.navigateByUrl('/login');
@@ -21,7 +21,7 @@ export const UserGuard = () => {
   const roleService = inject(RoleService); /////
   const router = inject(Router);
   const role = roleService.get();
-  if (role === 'user') {
+  if (role === 'Basic User') {
     return true;
   } else {
     router.navigateByUrl('/login');
@@ -30,13 +30,15 @@ export const UserGuard = () => {
 };
 
 export const ManagerGuard = () => {
-  const roleService = inject(RoleService); ////
-  const router = inject(Router);
-  const role = roleService.get();
-  if (role === 'manager') {
-    return true;
-  } else {
-    router.navigateByUrl('/login');
-    return false;
-  }
+  // const roleService = inject(RoleService); ////
+  // const router = inject(Router);
+  // const role = roleService.get();
+  // if (role === 'manager') {
+  //   return true;
+  // } else {
+  //   router.navigateByUrl('/login');
+  //   return false;
+  // }
+
+  return true;
 };

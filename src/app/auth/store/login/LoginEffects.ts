@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { createEffect, Actions, ofType } from '@ngrx/effects';
 import { loginActions } from './LoginActions';
-import { catchError, map, switchMap, of, tap } from 'rxjs';
+import { catchError, map, switchMap, of, tap, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { LoginService } from '../../services/login.service';
@@ -22,6 +22,14 @@ export const loginEffect = createEffect(
             return loginActions.loginSuccess(response);
           }),
           catchError((error: HttpErrorResponse) => {
+            if (error.status === 0) {
+              return of(
+                loginActions.loginFailure({
+                  message: 'Network error',
+                  access: 'Denied',
+                })
+              );
+            }
             return of(loginActions.loginFailure(error.error));
           })
         );

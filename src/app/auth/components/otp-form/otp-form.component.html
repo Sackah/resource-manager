@@ -1,0 +1,22 @@
+<div>
+  <h2>Password reset</h2>
+  <p>We sent a code to</p>
+  <form [formGroup]="otpForm" (submit)="submitForm($event)">
+    <label for="otp" class="visibly-hidden">otp</label>
+    <input
+      id="otp"
+      type="number"
+      class="global-input-auth {{ getOtpErrors() ? 'error' : '' }}"
+      formControlName="otp" />
+    @if(getOtpErrors()){
+    <div class="validation-error-message">
+      {{ getOtpErrors() }}
+    </div>
+    }
+    <button type="submit" class="global-button-auth">CONTINUE</button>
+  </form>
+
+  <p class="drl">
+    Didn't recieve the link? <span href="">Click to resend</span>
+  </p>
+</div>

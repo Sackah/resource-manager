@@ -12,6 +12,6 @@ export class LoginService {
   post(user: LoginUserDetails) {
     console.log(user);
 
-    return this.http.post<LoginUserResponse>(`${BASE_URL}/user/login`, user);
+    return this.http.post<LoginUserResponse>(`${BASE_URL}/users/login`, user);
   }
 }
