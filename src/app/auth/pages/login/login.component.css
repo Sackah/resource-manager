@@ -66,6 +66,10 @@ input[type='checkbox'] {
   background: #4a72ff;
 }
 
+.validation-error-message.backend {
+  font-size: 1.5rem;
+}
+
 /* SMALLER DESKTOP */
 @media only screen and (max-height: 700px) {
   .password-input img {

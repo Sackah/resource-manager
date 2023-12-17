@@ -5,11 +5,11 @@ import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideStore, provideState } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
-import * as loginEffects from './auth/store/login/LoginEffects';
+import * as authEffects from './auth/store/authorization/AuthEffects';
 import {
-  loginFeatureKey,
-  loginReducer,
-} from './auth/store/login/LoginReducers';
+  authFeatureKey,
+  authReducer,
+} from './auth/store/authorization/AuthReducers';
 import { authInterceptor } from './auth/interceptors/authInterceptors';
 
 export const appConfig: ApplicationConfig = {
@@ -17,8 +17,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideStore(),
-    provideState(loginFeatureKey, loginReducer),
-    provideEffects(loginEffects),
+    provideState(authFeatureKey, authReducer),
+    provideEffects(authEffects),
     provideStoreDevtools({
       maxAge: 25,
       logOnly: !isDevMode(),

@@ -5,6 +5,11 @@
   </div>
   <div class="global-formfield-right">
     <div class="global-forms-auth">
+      @if (storeData.errors) {
+      <div class="validation-error-message backend">
+        {{ storeData.errors.message }}
+      </div>
+      }
       <h2>Login</h2>
       <p>
         Welcome back, Enter your details to open your account. Don't have an
@@ -12,11 +17,6 @@
         <a href="/" (click)="$event.preventDefault()">create account</a>.
       </p>
       <form (submit)="submitForm($event)" [formGroup]="loginForm">
-        @if (storeData.errors) {
-        <div class="validation-error-message">
-          {{ storeData.errors.message }}
-        </div>
-        }
         <label for="email" class="form-label">Email</label>
         <input
           id="email"
@@ -55,7 +55,7 @@
         <button
           type="submit"
           class="global-button-auth"
-          [disabled]="storeData.isLoggingIn">
+          [disabled]="storeData.isSubmitting">
           SUBMIT
         </button>
       </form>

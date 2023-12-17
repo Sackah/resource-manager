@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { LoginSideIllustrationComponent } from '../../components/login-side-illustration/login-side-illustration.component';
 import { CommonModule } from '@angular/common';
 import { EmailFormComponent } from '../../components/email-form/email-form.component';
+import { RouterLink } from '@angular/router';
 import {
   InputFields,
   ResetService,
@@ -18,6 +19,7 @@ import { ResetPasswordFormComponent } from '../../components/reset-password-form
     EmailFormComponent,
     OtpFormComponent,
     ResetPasswordFormComponent,
+    RouterLink,
   ],
   templateUrl: './forgot-password.component.html',
   styleUrls: ['./forgot-password.component.css', '../../styles/styles.css'],

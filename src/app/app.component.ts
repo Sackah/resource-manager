@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 
@@ -8,6 +8,8 @@ import { RouterOutlet } from '@angular/router';
   imports: [CommonModule, RouterOutlet],
   templateUrl: './app.component.html',
 })
-export class AppComponent {
-  title = 'resource-manager';
+export class AppComponent implements OnInit {
+  ngOnInit(): void {
+    //try to relog in a user from here
+  }
 }

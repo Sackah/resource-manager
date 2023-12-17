@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { LoginSideIllustrationComponent } from '../../components/login-side-illustration/login-side-illustration.component';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { loginActions } from '../../store/login/LoginActions';
+import { AuthActions } from '../../store/authorization/AuthActions';
 import { combineLatest } from 'rxjs';
 import {
   ReactiveFormsModule,
@@ -12,9 +12,9 @@ import {
 } from '@angular/forms';
 import {
   selectErrors,
-  selectIsLoggingIn,
-} from '../../store/login/LoginReducers';
-import { LoginUserState } from '../../types/types';
+  selectIsSubmitting,
+} from '../../store/authorization/AuthReducers';
+import { AuthState } from '../../types/types';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -32,9 +32,9 @@ import { RouterLink } from '@angular/router';
 export class LoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
   showPassword: boolean = false;
-  storeData!: Pick<LoginUserState, 'errors' | 'isLoggingIn'>;
+  storeData!: Pick<AuthState, 'errors' | 'isSubmitting'>;
   storeData$ = combineLatest({
-    isLoggingIn: this.store.select(selectIsLoggingIn),
+    isSubmitting: this.store.select(selectIsSubmitting),
     errors: this.store.select(selectErrors),
   });
   storeSubscription = this.storeData$.subscribe({
@@ -90,7 +90,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     const userDetails = this.loginForm.value;
     if (this.loginForm.valid) {
       console.log(userDetails);
-      this.store.dispatch(loginActions.login(userDetails));
+      this.store.dispatch(AuthActions.login(userDetails));
     }
   }
 

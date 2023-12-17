@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import {
   ReactiveFormsModule,
@@ -7,25 +6,34 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { InputFields, ResetService } from '../../services/reset.service';
-import { passwordMatchValidator } from '../../validators/passwordmismatch';
-import { passwordStrength } from '../../validators/passwordstrength';
+import {
+  AccountSetupService,
+  SetupProgress,
+} from '../../services/account-setup.service';
+import { passwordMatchValidator } from '../../../../auth/validators/passwordmismatch';
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'reset-password-form',
+  selector: 'new-password-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
-  templateUrl: './reset-password-form.component.html',
-  styleUrls: ['./reset-password-form.component.css', '../../styles/styles.css'],
+  imports: [CommonModule, ReactiveFormsModule],
+  templateUrl: './new-password-form.component.html',
+  styleUrls: [
+    './new-password-form.component.css',
+    '../../../../auth/styles/styles.css',
+  ],
 })
-export class ResetPasswordFormComponent implements OnInit {
+export class NewPasswordFormComponent implements OnInit {
   resetPasswordForm!: FormGroup;
-  nextFormField!: InputFields;
+  setupProgress!: SetupProgress;
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
   passwordStrength!: 'weak' | 'medium' | 'strong' | '';
 
-  constructor(private resetService: ResetService, private router: Router) {}
+  constructor(
+    private setupService: AccountSetupService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.resetPasswordForm = new FormGroup(
@@ -107,9 +115,9 @@ export class ResetPasswordFormComponent implements OnInit {
     const credentials = this.resetPasswordForm.value;
     if (this.resetPasswordForm.valid) {
       console.log(credentials);
+
       //Make some api call
-      this.router.navigateByUrl('/login');
-      this.resetService.toggle('email');
+      this.setupService.toggle('details');
     }
   }
 }

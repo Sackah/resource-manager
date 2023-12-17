@@ -3,12 +3,13 @@ import { RoleService } from '../../shared/services/role.service';
 import { Router } from '@angular/router';
 
 /**
- * Simple role guard
+ * Validates various roles with role service
  */
 export const AdminGuard = () => {
-  const roleService = inject(RoleService); /////
+  const roleService = inject(RoleService);
   const router = inject(Router);
   const role = roleService.get();
+
   if (role === 'Administrator') {
     return true;
   } else {
@@ -18,9 +19,10 @@ export const AdminGuard = () => {
 };
 
 export const UserGuard = () => {
-  const roleService = inject(RoleService); /////
+  const roleService = inject(RoleService);
   const router = inject(Router);
   const role = roleService.get();
+
   if (role === 'Basic User') {
     return true;
   } else {
@@ -30,7 +32,7 @@ export const UserGuard = () => {
 };
 
 export const ManagerGuard = () => {
-  // const roleService = inject(RoleService); ////
+  // const roleService = inject(RoleService);
   // const router = inject(Router);
   // const role = roleService.get();
   // if (role === 'manager') {

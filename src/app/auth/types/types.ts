@@ -1,5 +1,12 @@
 import { CurrentUser } from '../../shared/types/types';
 
+//Initial state of the Auth slice of state
+export type AuthState = {
+  isSubmitting: boolean;
+  response: LoginUserResponse | UpdateUserDetailsResponse | null | undefined;
+  errors: AuthErrorResponse | null;
+};
+
 export type LoginUserDetails = {
   email: string;
   password: string;
@@ -17,8 +24,14 @@ export type AuthErrorResponse = {
   access: string;
 };
 
-export type LoginUserState = {
-  isLoggingIn: boolean;
-  response: LoginUserResponse | null | undefined;
-  errors: AuthErrorResponse | null;
+export type UpdateUserDetails = {
+  profilePicture?: File;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
 };
+
+export interface UpdateUserDetailsResponse extends LoginUserResponse {
+  status: number;
+}

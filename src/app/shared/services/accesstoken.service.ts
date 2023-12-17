@@ -1,5 +1,12 @@
 import { Injectable } from '@angular/core';
-
+/**
+ * @class AccesstokenService
+ * @description a service for interacting with access token and local storage
+ *
+ * @method set @param key - name to set the access token as, defaults to accessToken
+ * @method get @param key - name of token to get from localstorage, defaults to accessToken
+ * @method clear @param key - name of token to clear from localstorage, defaults to accessToken
+ */
 @Injectable({
   providedIn: 'root',
 })
