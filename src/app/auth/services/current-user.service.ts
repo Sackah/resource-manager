@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BASE_URL } from '../../../environment/config';
-import { LoginUserResponse } from '../types/types';
+import { LoginUserResponse } from '../types/auth-types';
 
 /**
  * @class CurrentUserService
@@ -9,7 +9,7 @@ import { LoginUserResponse } from '../types/types';
  *
  * @method get - the active user using access token in the interceptors
  * @returns observable that resolves to LoginUserResponse,
- * @see [LoginUserResponse](../types/types.ts) for more about type definition
+ * @see [LoginUserResponse](../types/auth-types.ts) for more about type definition
  */
 @Injectable({
   providedIn: 'root',

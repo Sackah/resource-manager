@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
 import { LoginService } from '../../services/login.service';
 import { AccesstokenService } from '../../../shared/services/accesstoken.service';
 import { UpdateUserDetailsService } from '../../services/update-user-details.service';
-import { CurrentUserService } from '../../services/current-user-service.service';
+import { CurrentUserService } from '../../services/current-user.service';
 
 /**
  * Effect for logging in users
@@ -30,7 +30,8 @@ export const loginEffect = createEffect(
             if (error.status === 0) {
               return of(
                 AuthActions.loginFailure({
-                  message: 'Network error',
+                  message:
+                    'Failed to send request to the server, please try again',
                   access: 'Denied',
                 })
               );
@@ -55,13 +56,12 @@ export const redirectAfterLogin = createEffect(
         next: res => {
           switch (res.user.roles) {
             case 'Basic User':
-              if (res.changePassword) {
-                router.navigateByUrl('/user/account-setup');
-              } else {
-                router.navigateByUrl('/user');
-              }
+              router.navigateByUrl('/user');
               break;
             case 'Administrator':
+              if (res.changePassword) {
+                router.navigateByUrl('admin/account-setup');
+              }
               router.navigateByUrl('/admin');
               break;
             default:

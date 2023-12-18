@@ -1,6 +1,6 @@
 import { createFeature, createReducer, on } from '@ngrx/store';
 import { AuthActions } from './AuthActions';
-import { AuthState } from '../../types/types';
+import { AuthState } from '../../types/auth-types';
 
 const initialState: AuthState = {
   isSubmitting: false,

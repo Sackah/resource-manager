@@ -1,4 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { LoginSideIllustrationComponent } from '../../../../auth/components/login-side-illustration/login-side-illustration.component';
+import { passwordMatchValidator } from '../../../../auth/validators/passwordmismatch';
 import {
   ReactiveFormsModule,
   FormGroup,
@@ -6,39 +9,35 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import {
-  AccountSetupService,
-  SetupProgress,
-} from '../../services/account-setup.service';
-import { passwordMatchValidator } from '../../../../auth/validators/passwordmismatch';
-import { CommonModule } from '@angular/common';
+import { Store } from '@ngrx/store';
+import { selectResponse } from '../../../../auth/store/authorization/AuthReducers';
 
 @Component({
-  selector: 'new-password-form',
+  selector: 'admin-account-setup',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './new-password-form.component.html',
+  imports: [CommonModule, ReactiveFormsModule, LoginSideIllustrationComponent],
+  templateUrl: './account-setup.component.html',
   styleUrls: [
-    './new-password-form.component.css',
+    './account-setup.component.css',
     '../../../../auth/styles/styles.css',
   ],
 })
-export class NewPasswordFormComponent implements OnInit {
+export class AccountSetupComponent implements OnInit {
   resetPasswordForm!: FormGroup;
-  setupProgress!: SetupProgress;
-  @Input() userDetails!: {
-    accessToken: string;
-    email: string;
-    userId: string;
-  };
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
   passwordStrength!: 'weak' | 'medium' | 'strong' | '';
+  userEmail!: string;
 
-  constructor(
-    private setupService: AccountSetupService,
-    private router: Router
-  ) {}
+  storeSubscription = this.store.select(selectResponse).subscribe({
+    next: res => {
+      if (res?.user.email) {
+        this.userEmail = res.user.email;
+      }
+    },
+  });
+
+  constructor(private router: Router, private store: Store) {}
 
   ngOnInit(): void {
     this.resetPasswordForm = new FormGroup(
@@ -118,8 +117,7 @@ export class NewPasswordFormComponent implements OnInit {
   submitForm(event: Event) {
     event.preventDefault();
     const credentials = this.resetPasswordForm.value;
-    const { email, userId } = this.userDetails;
-
+    const email = this.userEmail;
     if (this.resetPasswordForm.valid) {
       console.log(credentials);
 
@@ -127,11 +125,8 @@ export class NewPasswordFormComponent implements OnInit {
       const reqBody = {
         ...credentials,
         email,
-        userId,
       };
-
       //Make some api call
-      this.setupService.toggle('details');
     }
   }
 }

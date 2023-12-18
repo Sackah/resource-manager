@@ -1,7 +1,12 @@
 <div>
+  @if (storeData.error) {
+  <div class="validation-error-message backend">
+    {{ storeData.error.message }}
+  </div>
+  }
   <h2>Forgot password?</h2>
   <p>No worries we'll send you reset instructions</p>
-  <form [formGroup]="forgotPasswordForm" (submit)="submitForm($event)">
+  <form [formGroup]="emailForm" (submit)="submitForm($event)">
     <label for="email" class="form-label">Email</label>
     <input
       id="email"
@@ -14,6 +19,11 @@
       {{ getEmailErrors() }}
     </div>
     }
-    <button type="submit" class="global-button-auth">RESET PASSWORD</button>
+    <button
+      type="submit"
+      class="global-button-auth"
+      [disabled]="this.storeData.isSubmitting">
+      RESET PASSWORD
+    </button>
   </form>
 </div>

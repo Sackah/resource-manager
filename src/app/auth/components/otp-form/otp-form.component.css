@@ -29,6 +29,35 @@ h2 {
   font-size: 2.5rem;
 }
 
+.otp-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.otp-input {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #e0edff;
+  margin: 5px;
+}
+
+input {
+  text-align: center;
+  font-family: 'LexendSemibold';
+  width: 100%;
+  height: 100%;
+  font-size: 20px;
+  border: 1px solid #e0edff;
+}
+
+.input:focus {
+  outline: var(--colors-primary-slate-500);
+}
+
 /* SMALLER DESKTOP */
 @media only screen and (max-height: 700px) {
   h2 {

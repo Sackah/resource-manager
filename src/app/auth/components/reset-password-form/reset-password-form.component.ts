@@ -7,9 +7,26 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { InputFields, ResetService } from '../../services/reset.service';
+import {
+  InputFields,
+  ResetToggleService,
+} from '../../services/reset-toggle.service';
 import { passwordMatchValidator } from '../../validators/passwordmismatch';
 import { passwordStrength } from '../../validators/passwordstrength';
+import { Store } from '@ngrx/store';
+import {
+  ResetPasswordResponse,
+  SendOtpResponse,
+} from '../../types/reset-types';
+import {
+  selectError,
+  selectResponse,
+} from '../../store/reset-password/ResetReducers';
+import { ResetActions } from '../../store/reset-password/ResetActions';
+import {
+  ResetPasswordRequest,
+  ResetPasswordError,
+} from '../../types/reset-types';
 
 @Component({
   selector: 'reset-password-form',
@@ -24,8 +41,35 @@ export class ResetPasswordFormComponent implements OnInit {
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
   passwordStrength!: 'weak' | 'medium' | 'strong' | '';
+  resBody!: ResetPasswordResponse | SendOtpResponse | null;
+  successMessage!: string | undefined;
+  errors!: ResetPasswordError;
 
-  constructor(private resetService: ResetService, private router: Router) {}
+  storeSubscription = this.store.select(selectResponse).subscribe({
+    next: res => {
+      console.log(res);
+      if ((res as ResetPasswordResponse).accessToken) {
+        this.successMessage = res?.message;
+      }
+      this.resBody = res;
+    },
+    error: err => {
+      this.errors.message = err;
+      console.log(err);
+    },
+  });
+
+  errors$ = this.store.select(selectError).subscribe({
+    next: res => {
+      this.errors = res as ResetPasswordError;
+    },
+  });
+
+  constructor(
+    private resetToggleService: ResetToggleService,
+    private router: Router,
+    private store: Store
+  ) {}
 
   ngOnInit(): void {
     this.resetPasswordForm = new FormGroup(
@@ -34,12 +78,14 @@ export class ResetPasswordFormComponent implements OnInit {
           Validators.required,
           Validators.minLength(8),
         ]),
-        confirmPassword: new FormControl('', [
+        password_confirmation: new FormControl('', [
           Validators.required,
           Validators.minLength(8),
         ]),
       },
-      { validators: passwordMatchValidator('password', 'confirmPassword') }
+      {
+        validators: passwordMatchValidator('password', 'password_confirmation'),
+      }
     );
   }
 
@@ -72,7 +118,7 @@ export class ResetPasswordFormComponent implements OnInit {
       }
     }
 
-    const confirmPasswordControl = control.get('confirmPassword');
+    const confirmPasswordControl = control.get('password_confirmation');
     if (
       confirmPasswordControl?.invalid &&
       (confirmPasswordControl.dirty || confirmPasswordControl.touched)
@@ -105,11 +151,18 @@ export class ResetPasswordFormComponent implements OnInit {
   submitForm(event: Event) {
     event.preventDefault();
     const credentials = this.resetPasswordForm.value;
+    const otp = (this.resBody as SendOtpResponse).OTP;
+    const email = (this.resBody as SendOtpResponse).user.email;
+
+    const requestBody: ResetPasswordRequest = {
+      ...credentials,
+      otp,
+      email,
+    };
+
+    console.log(requestBody);
     if (this.resetPasswordForm.valid) {
-      console.log(credentials);
-      //Make some api call
-      this.router.navigateByUrl('/login');
-      this.resetService.toggle('email');
+      this.store.dispatch(ResetActions.resetPassword(requestBody));
     }
   }
 }

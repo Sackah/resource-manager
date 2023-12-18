@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   ReactiveFormsModule,
   FormGroup,
@@ -7,7 +7,14 @@ import {
   Validators,
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { InputFields, ResetService } from '../../services/reset.service';
+import { Store } from '@ngrx/store';
+import { ResetActions } from '../../store/reset-password/ResetActions';
+import { combineLatest } from 'rxjs';
+import { ResetState, SendOtpError } from '../../types/reset-types';
+import {
+  selectIsSubmitting,
+  selectError,
+} from '../../store/reset-password/ResetReducers';
 
 @Component({
   selector: 'email-form',
@@ -16,20 +23,35 @@ import { InputFields, ResetService } from '../../services/reset.service';
   templateUrl: './email-form.component.html',
   styleUrls: ['./email-form.component.css', '../../styles/styles.css'],
 })
-export class EmailFormComponent implements OnInit {
-  forgotPasswordForm!: FormGroup;
-  nextFormField!: InputFields;
+export class EmailFormComponent implements OnInit, OnDestroy {
+  emailForm!: FormGroup;
+  storeData!: Pick<ResetState, 'error' | 'isSubmitting'>;
+  storeData$ = combineLatest({
+    isSubmitting: this.store.select(selectIsSubmitting),
+    error: this.store.select(selectError),
+  });
+  storeSubscription = this.storeData$.subscribe({
+    next: res => {
+      if (res.error) {
+        this.storeData.error = res.error;
+      }
+      this.storeData = res;
+    },
+    error: (err: SendOtpError) => {
+      this.storeData.error = err;
+    },
+  });
 
-  constructor(private resetService: ResetService) {}
+  constructor(private store: Store) {}
 
   ngOnInit(): void {
-    this.forgotPasswordForm = new FormGroup({
+    this.emailForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
     });
   }
 
   getEmailErrors(): string {
-    const control = this.forgotPasswordForm.get('email');
+    const control = this.emailForm.get('email');
     if (control?.invalid && (control.dirty || control.touched)) {
       if (control.hasError('required')) {
         return 'This field is required';
@@ -43,9 +65,13 @@ export class EmailFormComponent implements OnInit {
 
   submitForm(event: Event) {
     event.preventDefault();
-    if (this.forgotPasswordForm.valid) {
-      this.nextFormField = 'otp';
-      this.resetService.toggle(this.nextFormField);
+    if (this.emailForm.valid) {
+      const email = this.emailForm.value;
+      this.store.dispatch(ResetActions.sendOtp(email));
     }
+  }
+
+  ngOnDestroy(): void {
+    this.storeSubscription.unsubscribe();
   }
 }

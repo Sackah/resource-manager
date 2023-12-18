@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { LoginUserDetails, LoginUserResponse } from '../types/types';
+import { LoginUserDetails, LoginUserResponse } from '../types/auth-types';
 import { BASE_URL } from '../../../environment/config';
 
 /**
@@ -10,7 +10,7 @@ import { BASE_URL } from '../../../environment/config';
  * @method post - submits user details to the backend
  * @param LoginUserDetails - email and password
  * @returns observable that resolves to LoginUserResponse,
- * @see [LoginUserResponse](../types/types.ts) for more about type definition
+ * @see [LoginUserResponse](../types/auth-types.ts) for more about type definition
  */
 @Injectable({
   providedIn: 'root',

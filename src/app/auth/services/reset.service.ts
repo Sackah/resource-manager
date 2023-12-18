@@ -1,33 +1,40 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-
-export type InputFields = 'email' | 'otp' | 'changePassword';
+import {
+  ResetPasswordRequest,
+  ResetPasswordResponse,
+  SendOtp,
+  SendOtpResponse,
+} from '../types/reset-types';
+import { BASE_URL } from '../../../environment/config';
 
 /**
  * @class ResetService
+ * @description a service for resetting user password
  *
- * @description
- * A service for managing reset operations. Toggles between different states
- * of a reset operation, email, otp and changePassword
+ * @method postEmail - submits user new user details to the backend
+ * @param email - object which contains user email
+ * @returns observable that resolves to SendOtpResponse (message, user and otp),
+ * @see [SendOtpResponse](../types/reset-types.ts) for more about type definition
  *
- * @property dataSource - A BehaviorSubject that holds the
- * current state of the reset operation.
- * @property data - An Observable derived from dataSource.
- * Use this to subscribe to changes in the reset operation state.
- *
- * @method constructor - By default, the state of the reset operation is 'email'.
- * @method toggle - Changes the state of the reset operation. @param InputFields
+ * @method updatePassword - submits new user credeentials to the backend
+ * @param credentials - email, password & confirmation, otp
+ * @returns observable that resolves to ResetPasswordResponse (message, accesstoken and user)
  */
 @Injectable({
   providedIn: 'root',
 })
 export class ResetService {
-  private dataSource = new BehaviorSubject<InputFields>('email');
-  data = this.dataSource.asObservable();
+  constructor(private http: HttpClient) {}
 
-  constructor() {}
+  postEmail(email: SendOtp) {
+    return this.http.post<SendOtpResponse>(`${BASE_URL}/users/send-otp`, email);
+  }
 
-  toggle(data: InputFields) {
-    this.dataSource.next(data);
+  updatePassword(credentials: ResetPasswordRequest) {
+    return this.http.put<ResetPasswordResponse>(
+      `${BASE_URL}/users/update/password`,
+      credentials
+    );
   }
 }

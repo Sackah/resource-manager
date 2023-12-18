@@ -14,7 +14,7 @@ import {
   selectIsSubmitting,
 } from '../../../../auth/store/authorization/AuthReducers';
 import { combineLatest } from 'rxjs';
-import { AuthState } from '../../../../auth/types/types';
+import { AuthState } from '../../../../auth/types/auth-types';
 import { Store } from '@ngrx/store';
 import { AuthActions } from '../../../../auth/store/authorization/AuthActions';
 

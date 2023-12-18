@@ -6,7 +6,7 @@ import {
   LoginUserResponse,
   UpdateUserDetails,
   UpdateUserDetailsResponse,
-} from '../../types/types';
+} from '../../types/auth-types';
 
 export const AuthActions = createActionGroup({
   source: 'auth',

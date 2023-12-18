@@ -1,7 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BASE_URL } from '../../../environment/config';
-import { UpdateUserDetails, UpdateUserDetailsResponse } from '../types/types';
+import {
+  UpdateUserDetails,
+  UpdateUserDetailsResponse,
+} from '../types/auth-types';
 
 /**
  * @class UpdateUserDetails
@@ -10,7 +13,7 @@ import { UpdateUserDetails, UpdateUserDetailsResponse } from '../types/types';
  * @method post - submits updated user details to the backend
  * @param UpdateUserDetails - fields like email, profile picture and phone number
  * @returns observable that resolves to UpdateUserResponse,
- * @see [UpdateUserDetailsResponse](../types/types.ts) for more about type definition
+ * @see [UpdateUserDetailsResponse](../types/auth-types.ts) for more about type definition
  */
 @Injectable({
   providedIn: 'root',

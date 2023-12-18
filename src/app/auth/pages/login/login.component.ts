@@ -14,7 +14,7 @@ import {
   selectErrors,
   selectIsSubmitting,
 } from '../../store/authorization/AuthReducers';
-import { AuthState } from '../../types/types';
+import { AuthState } from '../../types/auth-types';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -39,11 +39,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   });
   storeSubscription = this.storeData$.subscribe({
     next: res => {
-      console.log(res);
       this.storeData = res;
     },
     error: err => {
-      console.log(err);
       this.storeData.errors = err;
     },
   });

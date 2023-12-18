@@ -5,8 +5,8 @@ import { EmailFormComponent } from '../../components/email-form/email-form.compo
 import { RouterLink } from '@angular/router';
 import {
   InputFields,
-  ResetService,
-} from '../../../auth/services/reset.service';
+  ResetToggleService,
+} from '../../../auth/services/reset-toggle.service';
 import { OtpFormComponent } from '../../components/otp-form/otp-form.component';
 import { ResetPasswordFormComponent } from '../../components/reset-password-form/reset-password-form.component';
 
@@ -26,8 +26,8 @@ import { ResetPasswordFormComponent } from '../../components/reset-password-form
 })
 export class ForgotPasswordComponent {
   formField: InputFields = 'email';
-  constructor(private resetService: ResetService) {
-    this.resetService.data.subscribe({
+  constructor(private resetToggleService: ResetToggleService) {
+    this.resetToggleService.data.subscribe({
       next: data => {
         this.formField = data;
       },
