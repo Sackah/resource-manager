@@ -44,17 +44,12 @@ export const sendOtpEffect = createEffect(
  * Effect for updating user credentials in the backend
  */
 export const resetPasswordEffect = createEffect(
-  (
-    actions$ = inject(Actions),
-    resetService = inject(ResetService),
-    tokenService = inject(AccesstokenService)
-  ) => {
+  (actions$ = inject(Actions), resetService = inject(ResetService)) => {
     return actions$.pipe(
       ofType(ResetActions.resetPassword),
       switchMap(userDetails => {
         return resetService.updatePassword(userDetails).pipe(
           map(response => {
-            tokenService.set(response.accessToken);
             return ResetActions.resetPasswordSuccess(response);
           }),
           catchError((error: HttpErrorResponse) => {
@@ -94,26 +89,16 @@ export const changeEmailToOtp = createEffect(
 );
 
 /**
- * Effect for logging in users after password reset
+ * Effect for redirecting to login after password
  */
 export const redirectAfterReset = createEffect(
   (action$ = inject(Actions), router = inject(Router)) => {
     return action$.pipe(
       ofType(ResetActions.resetPasswordSuccess),
       tap({
-        next: res => {
+        next: () => {
           setTimeout(() => {
-            switch (res.user.roles) {
-              case 'Basic User':
-                router.navigateByUrl('/user');
-                break;
-              case 'Administrator':
-                router.navigateByUrl('/admin');
-                break;
-              default:
-                router.navigateByUrl('/login');
-                break;
-            }
+            router.navigateByUrl('/login');
           }, 3000);
         },
       })
