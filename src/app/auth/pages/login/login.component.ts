@@ -11,8 +11,8 @@ import {
   Validators,
 } from '@angular/forms';
 import {
-  selectErrors,
-  selectIsSubmitting,
+  LoginState,
+  selectLogin,
 } from '../../store/authorization/AuthReducers';
 import { AuthState } from '../../types/auth-types';
 import { RouterLink } from '@angular/router';
@@ -32,17 +32,11 @@ import { RouterLink } from '@angular/router';
 export class LoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
   showPassword: boolean = false;
-  storeData!: Pick<AuthState, 'errors' | 'isSubmitting'>;
-  storeData$ = combineLatest({
-    isSubmitting: this.store.select(selectIsSubmitting),
-    errors: this.store.select(selectErrors),
-  });
-  storeSubscription = this.storeData$.subscribe({
+  storeData!: LoginState;
+
+  storeSubscription = this.store.select(selectLogin).subscribe({
     next: res => {
       this.storeData = res;
-    },
-    error: err => {
-      this.storeData.errors = err;
     },
   });
 

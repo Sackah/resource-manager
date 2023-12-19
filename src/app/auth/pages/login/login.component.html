@@ -5,9 +5,9 @@
   </div>
   <div class="global-formfield-right">
     <div class="global-forms-auth">
-      @if (storeData.errors) {
+      @if (storeData.error) {
       <div class="validation-error-message backend">
-        {{ storeData.errors.message }}
+        {{ storeData.error.message }}
       </div>
       }
       <h2>Login</h2>
@@ -55,7 +55,7 @@
         <button
           type="submit"
           class="global-button-auth"
-          [disabled]="storeData.isSubmitting">
+          [disabled]="storeData.pending">
           SUBMIT
         </button>
       </form>

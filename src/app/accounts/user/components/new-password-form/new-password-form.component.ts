@@ -12,6 +12,16 @@ import {
 } from '../../services/account-setup.service';
 import { passwordMatchValidator } from '../../../../auth/validators/passwordmismatch';
 import { CommonModule } from '@angular/common';
+import { Store } from '@ngrx/store';
+import { AuthActions } from '../../../../auth/store/authorization/AuthActions';
+import {
+  UpdateUserPasswordResponse,
+  UpdateUserPasswordError,
+} from '../../../../auth/types/auth-types';
+import {
+  UserPasswordState,
+  selectUpdateUserPassword,
+} from '../../../../auth/store/authorization/AuthReducers';
 
 @Component({
   selector: 'new-password-form',
@@ -34,10 +44,21 @@ export class NewPasswordFormComponent implements OnInit {
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
   passwordStrength!: 'weak' | 'medium' | 'strong' | '';
+  storeData!: UserPasswordState;
+  storeData$ = this.store.select(selectUpdateUserPassword);
+  storeSubscription = this.storeData$.subscribe({
+    next: res => {
+      this.storeData = res;
+    },
+    error: err => {
+      this.storeData.error = err;
+    },
+  });
 
   constructor(
     private setupService: AccountSetupService,
-    private router: Router
+    private router: Router,
+    private store: Store
   ) {}
 
   ngOnInit(): void {
@@ -131,7 +152,8 @@ export class NewPasswordFormComponent implements OnInit {
       };
 
       //Make some api call
-      this.setupService.toggle('details');
+      this.store.dispatch(AuthActions.updateUserPassword(reqBody));
+      // this.setupService.toggle('details');
     }
   }
 }

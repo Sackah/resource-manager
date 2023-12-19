@@ -8,6 +8,7 @@ import {
 } from '../../services/account-setup.service';
 import { NewPasswordFormComponent } from '../../components/new-password-form/new-password-form.component';
 import { ActivatedRoute } from '@angular/router';
+import { AccesstokenService } from '../../../../shared/services/accesstoken.service';
 
 @Component({
   selector: 'app-account-setup',
@@ -34,7 +35,8 @@ export class AccountSetupComponent {
 
   constructor(
     private setupService: AccountSetupService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private tokenService: AccesstokenService
   ) {
     this.setupService.data.subscribe({
       next: data => {
@@ -45,6 +47,7 @@ export class AccountSetupComponent {
     // Retrieve route parameters
     this.route.params.subscribe(params => {
       this.userDetails.accessToken = params['accesstoken'];
+      tokenService.set(params['accesstoken']);
       this.userDetails.email = params['email'];
       this.userDetails.userId = params['userId'];
     });

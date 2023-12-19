@@ -10,8 +10,8 @@ import { Router } from '@angular/router';
 import { LoginSideIllustrationComponent } from '../../../../auth/components/login-side-illustration/login-side-illustration.component';
 import { validPhoneNumber } from '../../../../auth/validators/invalidphonenumber';
 import {
-  selectErrors,
-  selectIsSubmitting,
+  selectLogin,
+  LoginState,
 } from '../../../../auth/store/authorization/AuthReducers';
 import { combineLatest } from 'rxjs';
 import { AuthState } from '../../../../auth/types/auth-types';
@@ -31,19 +31,11 @@ import { AuthActions } from '../../../../auth/store/authorization/AuthActions';
 export class AccountSetupFormComponent implements OnInit, OnDestroy {
   userDetails!: FormGroup;
   imgUrl = '../../../../../assets/images/user/profile-container.svg';
-  storeData!: Pick<AuthState, 'errors' | 'isSubmitting'>;
-  storeData$ = combineLatest({
-    isSubmitting: this.store.select(selectIsSubmitting),
-    errors: this.store.select(selectErrors),
-  });
-  storeSubscription = this.storeData$.subscribe({
+  storeData!: LoginState;
+
+  storeSubscription = this.store.select(selectLogin).subscribe({
     next: res => {
-      console.log(res);
       this.storeData = res;
-    },
-    error: err => {
-      console.log(err);
-      this.storeData.errors = err;
     },
   });
 

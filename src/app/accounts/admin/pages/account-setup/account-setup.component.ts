@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { LoginSideIllustrationComponent } from '../../../../auth/components/login-side-illustration/login-side-illustration.component';
 import { passwordMatchValidator } from '../../../../auth/validators/passwordmismatch';
 import {
@@ -10,7 +10,15 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { selectResponse } from '../../../../auth/store/authorization/AuthReducers';
+import {
+  UserPasswordState,
+  selectLogin,
+} from '../../../../auth/store/authorization/AuthReducers';
+import { AuthActions } from '../../../../auth/store/authorization/AuthActions';
+import { selectUpdateUserPassword } from '../../../../auth/store/authorization/AuthReducers';
+import { Subscription } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { UpdatePasswordService } from '../../../../auth/services/update-password.service';
 
 @Component({
   selector: 'admin-account-setup',
@@ -22,49 +30,68 @@ import { selectResponse } from '../../../../auth/store/authorization/AuthReducer
     '../../../../auth/styles/styles.css',
   ],
 })
-export class AccountSetupComponent implements OnInit {
+export class AccountSetupComponent implements OnInit, OnDestroy {
   resetPasswordForm!: FormGroup;
-  showPassword: boolean = false;
-  showConfirmPassword: boolean = false;
+  showOldPassword: boolean = false;
+  showNewPassword: boolean = false;
   passwordStrength!: 'weak' | 'medium' | 'strong' | '';
-  userEmail!: string;
+  storeData!: UserPasswordState;
+  email!: string;
+  errorMessage!: string;
+  /**
+   * These subscriptions are created to be destroyed on unmount ^performance
+   */
+  storeSubscription!: Subscription;
+  emailSubscription!: Subscription;
 
-  storeSubscription = this.store.select(selectResponse).subscribe({
-    next: res => {
-      if (res?.user.email) {
-        this.userEmail = res.user.email;
-      }
-    },
-  });
-
-  constructor(private router: Router, private store: Store) {}
+  constructor(
+    private router: Router,
+    private store: Store,
+    private updatePassword: UpdatePasswordService
+  ) {}
 
   ngOnInit(): void {
-    this.resetPasswordForm = new FormGroup(
-      {
-        password: new FormControl('', [
-          Validators.required,
-          Validators.minLength(8),
-        ]),
-        confirmPassword: new FormControl('', [
-          Validators.required,
-          Validators.minLength(8),
-        ]),
+    this.resetPasswordForm = new FormGroup({
+      old_password: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8),
+      ]),
+      password: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8),
+      ]),
+    });
+
+    this.storeSubscription = this.store
+      .select(selectUpdateUserPassword)
+      .subscribe({
+        next: res => {
+          this.storeData = res;
+        },
+        error: err => {
+          this.storeData.error = err;
+        },
+      });
+
+    this.emailSubscription = this.store.select(selectLogin).subscribe({
+      next: res => {
+        console.log(res);
+        this.email = res.success?.user.email as string;
+        console.log(this.email);
       },
-      { validators: passwordMatchValidator('password', 'confirmPassword') }
-    );
+    });
   }
 
-  get passwordField() {
-    return this.showPassword ? 'text' : 'password';
+  get oldPasswordField() {
+    return this.showOldPassword ? 'text' : 'password';
   }
 
-  get confirmPasswordField() {
-    return this.showConfirmPassword ? 'text' : 'password';
+  get newPasswordField() {
+    return this.showNewPassword ? 'text' : 'password';
   }
 
-  getPasswordErrors() {
-    const control = this.resetPasswordForm.get('password');
+  getOldPasswordErrors() {
+    const control = this.resetPasswordForm.get('old_password');
     if (control?.invalid && (control.dirty || control.touched)) {
       if (control.hasError('required')) {
         return "Password can't be empty";
@@ -76,21 +103,13 @@ export class AccountSetupComponent implements OnInit {
     return '';
   }
 
-  getConfirmPasswordErrors() {
+  getNewPasswordErrors() {
     const control = this.resetPasswordForm;
     if (control?.invalid && (control.dirty || control.touched)) {
-      if (control.hasError('passwordMismatch')) {
-        return 'Passwords do not match';
-      }
-    }
-
-    const confirmPasswordControl = control.get('confirmPassword');
-    if (
-      confirmPasswordControl?.invalid &&
-      (confirmPasswordControl.dirty || confirmPasswordControl.touched)
-    ) {
-      if (confirmPasswordControl.hasError('required')) {
-        return "Confirm password can't be empty";
+      if (control.hasError('required')) {
+        return "Password can't be empty";
+      } else if (control.hasError('minlength')) {
+        return 'Password must be at least 8 characters';
       }
     }
 
@@ -117,7 +136,7 @@ export class AccountSetupComponent implements OnInit {
   submitForm(event: Event) {
     event.preventDefault();
     const credentials = this.resetPasswordForm.value;
-    const email = this.userEmail;
+    const email = this.email;
     if (this.resetPasswordForm.valid) {
       console.log(credentials);
 
@@ -126,7 +145,23 @@ export class AccountSetupComponent implements OnInit {
         ...credentials,
         email,
       };
+
+      console.log(reqBody);
+
+      this.updatePassword.postAdmin(reqBody).subscribe({
+        next: () => {
+          this.router.navigateByUrl('/admin/dashboard');
+        },
+        error: err => {
+          this.errorMessage = err.message;
+        },
+      });
       //Make some api call
+      // this.store.dispatch(AuthActions.updateUserPassword(reqBody));
     }
+  }
+
+  ngOnDestroy(): void {
+    this.storeSubscription.unsubscribe();
   }
 }

@@ -4,9 +4,26 @@ import { AuthState } from '../../types/auth-types';
 
 const initialState: AuthState = {
   isSubmitting: false,
-  response: undefined,
-  errors: null,
+  login: {
+    success: null,
+    error: null,
+    pending: false,
+  },
+  updateUserDetails: {
+    success: null,
+    pending: false,
+    error: null,
+  },
+  updateUserPassword: {
+    success: null,
+    pending: false,
+    error: null,
+  },
+  currentUser: null,
 };
+
+export type LoginState = typeof initialState.login;
+export type UserPasswordState = typeof initialState.updateUserPassword;
 
 const authFeature = createFeature({
   name: 'auth',
@@ -14,35 +31,54 @@ const authFeature = createFeature({
     initialState,
     on(AuthActions.login, (state, payload) => ({
       ...state,
-      isSubmitting: true,
-      errors: null,
+      login: {
+        ...state.login,
+        pending: true,
+        error: null,
+      },
     })),
     on(AuthActions.loginSuccess, (state, payload) => ({
       ...state,
-      isSubmitting: false,
-      response: payload,
+      login: {
+        ...state.login,
+        pending: false,
+        success: payload,
+      },
+      currentUser: payload.user,
     })),
     on(AuthActions.loginFailure, (state, payload) => ({
       ...state,
-      isSubmitting: false,
-      errors: payload,
+      login: {
+        ...state.login,
+        pending: false,
+        error: payload,
+      },
     })),
     on(AuthActions.updateUserDetails, (state, payload) => ({
       ...state,
-      isSubmitting: true,
-      errors: null,
+      updateUserDetails: {
+        ...state.updateUserDetails,
+        pending: true,
+        error: null,
+      },
     })),
     on(AuthActions.updateUserDetailsSuccess, (state, payload) => ({
       ...state,
-      isSubmitting: false,
-      response: {
-        ...payload,
+      updateUserDetails: {
+        ...state.updateUserDetails,
+        success: payload,
+        pending: false,
+        error: null,
       },
+      currentUser: payload.user,
     })),
     on(AuthActions.updateUserDetailsFailure, (state, payload) => ({
       ...state,
-      isSubmitting: false,
-      errors: payload,
+      updateUserDetails: {
+        ...state.updateUserDetails,
+        pending: false,
+        error: payload,
+      },
     })),
     on(AuthActions.fetchCurrentUser, state => ({
       ...state,
@@ -53,10 +89,11 @@ const authFeature = createFeature({
       ...state,
       isSubmitting: false,
       response: payload,
+      currentUser: payload.user,
     })),
     on(AuthActions.fetchCurrentUserFailure, (state, payload) => ({
       ...state,
-      isLoggingIn: false,
+      isSubmitting: false,
       errors: payload,
     }))
   ),
@@ -66,6 +103,8 @@ export const {
   name: authFeatureKey,
   reducer: authReducer,
   selectIsSubmitting,
-  selectErrors,
-  selectResponse,
+  selectLogin,
+  selectUpdateUserDetails,
+  selectUpdateUserPassword,
+  selectCurrentUser,
 } = authFeature;

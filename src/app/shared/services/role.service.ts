@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { selectResponse } from '../../auth/store/authorization/AuthReducers';
+import { selectLogin } from '../../auth/store/authorization/AuthReducers';
 
 /**
  * @class RoleService
@@ -16,14 +16,14 @@ import { selectResponse } from '../../auth/store/authorization/AuthReducers';
 })
 export class RoleService implements OnDestroy {
   private role!: 'Basic User' | 'Administrator';
-  userDetail$ = this.store.select(selectResponse);
+  userDetail$ = this.store.select(selectLogin);
 
   constructor(private store: Store) {}
 
   userSubscription = this.userDetail$.subscribe({
     next: userDetails => {
-      if (userDetails) {
-        this.role = userDetails.user.roles;
+      if (userDetails.success) {
+        this.role = userDetails.success.user.roles;
       }
     },
   });

@@ -162,6 +162,7 @@ export class ResetPasswordFormComponent implements OnInit {
 
     console.log(requestBody);
     if (this.resetPasswordForm.valid) {
+      console.log(requestBody);
       this.store.dispatch(ResetActions.resetPassword(requestBody));
     }
   }

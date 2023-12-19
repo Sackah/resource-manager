@@ -118,9 +118,10 @@ export class OtpFormComponent implements OnInit, OnDestroy {
     event.preventDefault();
 
     //otp form value has changed to an array of strings, need to patch that
-    const { otp } = this.otpForm.value;
+    // const { otp } = this.otpForm.value;
 
-    console.log(this.otpValues.join(''), otp);
+    // console.log(this.otpValues.join(''), otp);
+    const otp = parseInt(this.otpValues.join(''), 10);
 
     //Compare otp and switch field if it matches
     if (otp === this.resBody.OTP) {

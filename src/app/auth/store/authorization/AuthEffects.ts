@@ -8,6 +8,8 @@ import { LoginService } from '../../services/login.service';
 import { AccesstokenService } from '../../../shared/services/accesstoken.service';
 import { UpdateUserDetailsService } from '../../services/update-user-details.service';
 import { CurrentUserService } from '../../services/current-user.service';
+import { UpdatePasswordService } from '../../services/update-password.service';
+import { AccountSetupService } from '../../../accounts/user/services/account-setup.service';
 
 /**
  * Effect for logging in users
@@ -59,10 +61,12 @@ export const redirectAfterLogin = createEffect(
               router.navigateByUrl('/user');
               break;
             case 'Administrator':
-              if (res.changePassword) {
-                router.navigateByUrl('admin/account-setup');
+              console.log(res.user.changePassword);
+              if (res.user.changePassword) {
+                router.navigateByUrl('/admin/account-setup');
+              } else {
+                router.navigateByUrl('/admin');
               }
-              router.navigateByUrl('/admin');
               break;
             default:
               router.navigateByUrl('/login');
@@ -73,41 +77,6 @@ export const redirectAfterLogin = createEffect(
     );
   },
   { functional: true, dispatch: false }
-);
-
-/**
- * Effect for updating user data
- */
-export const updateUserEffect = createEffect(
-  (
-    action$ = inject(Actions),
-    updateUserService = inject(UpdateUserDetailsService),
-    router = inject(Router)
-  ) => {
-    return action$.pipe(
-      ofType(AuthActions.updateUserDetails),
-      switchMap(userDetails => {
-        return updateUserService.post(userDetails).pipe(
-          map(response => {
-            router.navigateByUrl('/user/dashboard');
-            return AuthActions.updateUserDetailsSuccess(response);
-          }),
-          catchError((error: HttpErrorResponse) => {
-            if (error.status === 0) {
-              return of(
-                AuthActions.loginFailure({
-                  message: 'Network error',
-                  access: 'Denied',
-                })
-              );
-            }
-            return of(AuthActions.updateUserDetailsFailure(error.error));
-          })
-        );
-      })
-    );
-  },
-  { functional: true }
 );
 
 /**
@@ -146,3 +115,131 @@ export const relogInUserEffect = createEffect(
   },
   { functional: true }
 );
+
+/**
+ * Effect for redirecting users after relog in
+ */
+export const redirectAfterReLogin = createEffect(
+  (action$ = inject(Actions), router = inject(Router)) => {
+    return action$.pipe(
+      ofType(AuthActions.fetchCurrentUserSuccess),
+      tap({
+        next: res => {
+          switch (res.user.roles) {
+            case 'Basic User':
+              router.navigateByUrl('/user');
+              break;
+            case 'Administrator':
+              console.log(res.user.changePassword);
+              if (res.user.changePassword) {
+                router.navigateByUrl('/admin/account-setup');
+              } else {
+                router.navigateByUrl('/admin');
+              }
+              break;
+            default:
+              router.navigateByUrl('/login');
+              break;
+          }
+        },
+      })
+    );
+  },
+  { functional: true, dispatch: false }
+);
+
+/**
+ * Effect for updating user password on initial login
+ */
+export const updateUserPassword = createEffect(
+  (
+    action$ = inject(Actions),
+    updatePasswordService = inject(UpdatePasswordService),
+    setupService = inject(AccountSetupService)
+  ) => {
+    return action$.pipe(
+      ofType(AuthActions.updateUserPassword),
+      switchMap(userDetails => {
+        return updatePasswordService.postUser(userDetails).pipe(
+          map(response => {
+            setupService.toggle('details');
+            return AuthActions.updateUserPasswordSuccess(response);
+          }),
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 0) {
+              return of(
+                AuthActions.updateUserPasswordFailure({
+                  message:
+                    'Failed to send request to the server, please try again',
+                })
+              );
+            }
+            return of(AuthActions.updateUserPasswordFailure(error.error));
+          })
+        );
+      })
+    );
+  },
+  { functional: true }
+);
+
+/**
+ * Effect for toggling account setup form field after
+ * update password success
+ */
+
+export const toggleFormOrRedirect = createEffect(
+  (
+    action$ = inject(Actions),
+    accountSetupService = inject(AccountSetupService),
+    router = inject(Router)
+  ) => {
+    return action$.pipe(
+      ofType(AuthActions.updateUserPasswordSuccess),
+      tap(res => {
+        if (res.user.roles === 'Administrator') {
+          return router.navigateByUrl('/admin/dashboard');
+        } else {
+          accountSetupService.toggle('details');
+          return AuthActions.loginSuccess(res);
+        }
+      })
+    );
+  },
+  { functional: true }
+);
+
+// /**
+//  * Effect for updating user details
+//  */
+// export const updateUserDetailsEffect = createEffect(
+//   (
+//     action$ = inject(Actions),
+//     updateUserService = inject(UpdateUserDetailsService),
+//     router = inject(Router)
+//   ) => {
+//     return action$.pipe(
+//       ofType(AuthActions.updateUserDetails),
+//       switchMap(userDetails => {
+//         return updateUserService.post(userDetails).pipe(
+//           map(response => {
+//             router.navigateByUrl('/user/dashboard');
+//             return AuthActions.updateUserDetailsSuccess(response);
+//           }),
+//           catchError((error: HttpErrorResponse) => {
+//             if (error.status === 0) {
+//               return of(
+//                 AuthActions.loginFailure({
+//                   message: 'Network error',
+//                   access: 'Denied',
+//                 })
+//               );
+//             }
+//             return of(AuthActions.updateUserDetailsFailure(error.error));
+//           })
+//         );
+//       })
+//     );
+//   },
+//   { functional: true }
+// );
