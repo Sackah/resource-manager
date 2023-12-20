@@ -1,0 +1,38 @@
+.logo{
+    width: 35px;
+} 
+.logo-text{
+    font-size: 18px;
+    font-family: Lexend;
+}
+.text-size{
+    font-size: 14px;
+}
+.user-info {
+    margin-top: 150px; /* Default margin for small screens */
+  }
+  
+  @media screen and (min-width: 320px) {
+    /* Medium screens (tablets) */
+    .user-info {
+      margin-top: 100px;
+    }
+  }
+  
+  @media screen and (min-width: 1200px) {
+    /* Large screens (desktop) */
+    .user-info {
+      margin-top: 150px;
+    }
+  }
+  
+  @media screen and (min-width: 1600px) {
+    /* Extra-large screens (monitors) */
+    .user-info {
+      margin-top: 280px;
+    }
+  }
+  
+.sidebar {
+overflow: hidden;
+}

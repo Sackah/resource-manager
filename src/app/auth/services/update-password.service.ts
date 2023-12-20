@@ -26,14 +26,14 @@ export class UpdatePasswordService {
 
   postUser(credentials: UpdateUserPasswordDetails) {
     return this.http.put<UpdateUserPasswordResponse>(
-      `${BASE_URL}/users/update/password`,
+      `${BASE_URL}/users/update/new/password`,
       credentials
     );
   }
 
   postAdmin(credentials: UpdateUserPasswordDetails & { email: string }) {
     return this.http.put<{ message: string; status: number }>(
-      `${BASE_URL}/update/initial/password`,
+      `${BASE_URL}/users/update/initial/password`,
       credentials
     );
   }

@@ -68,12 +68,14 @@ export class NewPasswordFormComponent implements OnInit {
           Validators.required,
           Validators.minLength(8),
         ]),
-        confirmPassword: new FormControl('', [
+        password_confirmation: new FormControl('', [
           Validators.required,
           Validators.minLength(8),
         ]),
       },
-      { validators: passwordMatchValidator('password', 'confirmPassword') }
+      {
+        validators: passwordMatchValidator('password', 'password_confirmation'),
+      }
     );
   }
 
@@ -106,7 +108,7 @@ export class NewPasswordFormComponent implements OnInit {
       }
     }
 
-    const confirmPasswordControl = control.get('confirmPassword');
+    const confirmPasswordControl = control.get('password_confirmation');
     if (
       confirmPasswordControl?.invalid &&
       (confirmPasswordControl.dirty || confirmPasswordControl.touched)
@@ -141,8 +143,9 @@ export class NewPasswordFormComponent implements OnInit {
     const credentials = this.resetPasswordForm.value;
     const { email, userId } = this.userDetails;
 
-    if (this.resetPasswordForm.valid) {
+    if (this.resetPasswordForm.valid === true) {
       console.log(credentials);
+      console.log(true);
 
       //send this to the backend
       const reqBody = {
@@ -154,6 +157,8 @@ export class NewPasswordFormComponent implements OnInit {
       //Make some api call
       this.store.dispatch(AuthActions.updateUserPassword(reqBody));
       // this.setupService.toggle('details');
+    } else {
+      console.log(false);
     }
   }
 }

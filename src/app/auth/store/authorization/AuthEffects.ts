@@ -65,7 +65,7 @@ export const redirectAfterLogin = createEffect(
               if (res.user.changePassword) {
                 router.navigateByUrl('/admin/account-setup');
               } else {
-                router.navigateByUrl('/admin');
+                router.navigateByUrl('/admin/dashboard');
               }
               break;
             default:

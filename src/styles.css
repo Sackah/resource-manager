@@ -65,3 +65,7 @@ h6 {
 .visibly-hidden {
   display: none;
 }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

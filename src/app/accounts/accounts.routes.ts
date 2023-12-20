@@ -4,7 +4,7 @@ import { AccountSetupComponent } from './user/pages/account-setup/account-setup.
 
 export const AccountRoutes: Routes = [
   {
-    path: 'account-setup/:userId/:accesstoken/:email',
+    path: 'account-setup/:userId/:accesstoken/:email/:id',
     component: AccountSetupComponent,
   },
   /**

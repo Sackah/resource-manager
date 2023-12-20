@@ -17,6 +17,7 @@ import { combineLatest } from 'rxjs';
 import { AuthState } from '../../../../auth/types/auth-types';
 import { Store } from '@ngrx/store';
 import { AuthActions } from '../../../../auth/store/authorization/AuthActions';
+import { Input } from '@angular/core';
 
 @Component({
   selector: 'account-setup-form',
@@ -32,6 +33,7 @@ export class AccountSetupFormComponent implements OnInit, OnDestroy {
   userDetails!: FormGroup;
   imgUrl = '../../../../../assets/images/user/profile-container.svg';
   storeData!: LoginState;
+  @Input() email!: string;
 
   storeSubscription = this.store.select(selectLogin).subscribe({
     next: res => {

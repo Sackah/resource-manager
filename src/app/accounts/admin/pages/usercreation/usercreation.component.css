@@ -1,0 +1,45 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    overflow: hidden; 
+  }
+  
+  .background-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+  }
+  
+  .background-overlay::before {
+    content: '';
+    background-image: url('../../../../../assets/images/admin/img-overlay.png'); 
+    background-size: cover;
+    background-position: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    filter: blur(10px); 
+    z-index: -1;
+  }
+  
+  .blur-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+  }
+.form-size{
+   width: 400px;
+   height: 100px;
+}
+.messages-container{
+    margin-top: 25px;
+}
+
+  

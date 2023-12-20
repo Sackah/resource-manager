@@ -21,6 +21,7 @@
     type="email"
     class="global-input-auth {{ getEmailErrors() ? 'error' : '' }}"
     placeholder="ella.naizer@amalitech.org"
+    [value]="email"
     formControlName="email" />
   @if(getEmailErrors()){
   <div class="validation-error-message">
