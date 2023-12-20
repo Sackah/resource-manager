@@ -15,10 +15,10 @@ import { Store } from '@ngrx/store';
 export class AppComponent implements OnInit {
   constructor(private tokenService: AccesstokenService, private store: Store) {}
   ngOnInit(): void {
-    //try to relog in a user from here
-    // const token = this.tokenService.get();
-    // if (token) {
-    //   this.store.dispatch(AuthActions.fetchCurrentUser());
-    // }
+    // try to relog in a user from here
+    const token = this.tokenService.get();
+    if (token) {
+      this.store.dispatch(AuthActions.fetchCurrentUser());
+    }
   }
 }

@@ -58,7 +58,7 @@ export const redirectAfterLogin = createEffect(
         next: res => {
           switch (res.user.roles) {
             case 'Basic User':
-              router.navigateByUrl('/user');
+              router.navigateByUrl('/user/dashboard');
               break;
             case 'Administrator':
               console.log(res.user.changePassword);
@@ -107,6 +107,7 @@ export const relogInUserEffect = createEffect(
                 })
               );
             }
+            console.log(error);
             return of(AuthActions.fetchCurrentUserFailure(error.error));
           })
         );
@@ -125,16 +126,17 @@ export const redirectAfterReLogin = createEffect(
       ofType(AuthActions.fetchCurrentUserSuccess),
       tap({
         next: res => {
+          console.log(res);
           switch (res.user.roles) {
             case 'Basic User':
-              router.navigateByUrl('/user');
+              router.navigateByUrl('/user/dashboard');
               break;
             case 'Administrator':
               console.log(res.user.changePassword);
               if (res.user.changePassword) {
                 router.navigateByUrl('/admin/account-setup');
               } else {
-                router.navigateByUrl('/admin');
+                router.navigateByUrl('/admin/dashboard');
               }
               break;
             default:

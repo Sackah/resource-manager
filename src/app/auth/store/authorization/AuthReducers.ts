@@ -113,7 +113,6 @@ const authFeature = createFeature({
     on(AuthActions.fetchCurrentUserSuccess, (state, payload) => ({
       ...state,
       isSubmitting: false,
-      response: payload,
       currentUser: payload.user,
     })),
     on(AuthActions.fetchCurrentUserFailure, (state, payload) => ({
