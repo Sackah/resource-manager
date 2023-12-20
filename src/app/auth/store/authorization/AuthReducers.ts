@@ -54,6 +54,31 @@ const authFeature = createFeature({
         error: payload,
       },
     })),
+    on(AuthActions.updateUserPassword, (state, payload) => ({
+      ...state,
+      updateUserPassword: {
+        ...state.updateUserPassword,
+        pending: true,
+        error: null,
+      },
+    })),
+    on(AuthActions.updateUserDetailsSuccess, (state, payload) => ({
+      ...state,
+      updateUserPassword: {
+        ...state.updateUserPassword,
+        pending: false,
+        error: null,
+      },
+      currentUser: payload.user,
+    })),
+    on(AuthActions.updateUserDetailsFailure, (state, payload) => ({
+      ...state,
+      updateUserPassword: {
+        ...state.updateUserPassword,
+        pending: false,
+        error: payload,
+      },
+    })),
     on(AuthActions.updateUserDetails, (state, payload) => ({
       ...state,
       updateUserDetails: {

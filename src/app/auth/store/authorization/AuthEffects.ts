@@ -198,15 +198,14 @@ export const toggleFormOrRedirect = createEffect(
       ofType(AuthActions.updateUserPasswordSuccess),
       tap(res => {
         if (res.user.roles === 'Administrator') {
-          return router.navigateByUrl('/admin/dashboard');
+          router.navigateByUrl('/admin/dashboard');
         } else {
           accountSetupService.toggle('details');
-          return AuthActions.loginSuccess(res);
         }
       })
     );
   },
-  { functional: true }
+  { functional: true, dispatch: false }
 );
 
 // /**
