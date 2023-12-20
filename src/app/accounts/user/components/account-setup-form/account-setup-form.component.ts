@@ -34,6 +34,7 @@ export class AccountSetupFormComponent implements OnInit, OnDestroy {
   imgUrl = '../../../../../assets/images/user/profile-container.svg';
   storeData!: LoginState;
   @Input() email!: string;
+  @Input() userId!: string;
 
   storeSubscription = this.store.select(selectLogin).subscribe({
     next: res => {
@@ -119,11 +120,17 @@ export class AccountSetupFormComponent implements OnInit, OnDestroy {
   submitForm(event: Event) {
     event.preventDefault();
     const userDetails = this.userDetails.value;
+    const userId = this.userId;
 
     if (this.userDetails.valid) {
       console.log(userDetails);
 
-      this.store.dispatch(AuthActions.updateUserDetails(userDetails));
+      const reqBody = {
+        ...userDetails,
+        userId,
+      };
+
+      this.store.dispatch(AuthActions.updateUserDetails(reqBody));
     }
   }
 

@@ -8,7 +8,9 @@
       @if (setupProgress === 'password') {
       <new-password-form [userDetails]="userDetails"></new-password-form>
       } @else if (setupProgress === 'details') {
-      <account-setup-form [email]="userDetails.email"></account-setup-form>
+      <account-setup-form
+        [email]="userDetails.email"
+        [userId]="userDetails.userId"></account-setup-form>
       }
     </div>
   </div>

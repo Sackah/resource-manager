@@ -9,7 +9,6 @@
       type="file"
       id="image"
       name="image"
-      formControlName="profilePicture"
       (change)="onFileChange($event)"
       accept=".jpg,.jpeg,.png" />
   </div>
@@ -21,7 +20,7 @@
     type="email"
     class="global-input-auth {{ getEmailErrors() ? 'error' : '' }}"
     placeholder="ella.naizer@amalitech.org"
-    [value]="email"
+    [ngModel]="email"
     formControlName="email" />
   @if(getEmailErrors()){
   <div class="validation-error-message">

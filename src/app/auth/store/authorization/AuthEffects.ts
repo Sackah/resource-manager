@@ -208,37 +208,37 @@ export const toggleFormOrRedirect = createEffect(
   { functional: true, dispatch: false }
 );
 
-// /**
-//  * Effect for updating user details
-//  */
-// export const updateUserDetailsEffect = createEffect(
-//   (
-//     action$ = inject(Actions),
-//     updateUserService = inject(UpdateUserDetailsService),
-//     router = inject(Router)
-//   ) => {
-//     return action$.pipe(
-//       ofType(AuthActions.updateUserDetails),
-//       switchMap(userDetails => {
-//         return updateUserService.post(userDetails).pipe(
-//           map(response => {
-//             router.navigateByUrl('/user/dashboard');
-//             return AuthActions.updateUserDetailsSuccess(response);
-//           }),
-//           catchError((error: HttpErrorResponse) => {
-//             if (error.status === 0) {
-//               return of(
-//                 AuthActions.loginFailure({
-//                   message: 'Network error',
-//                   access: 'Denied',
-//                 })
-//               );
-//             }
-//             return of(AuthActions.updateUserDetailsFailure(error.error));
-//           })
-//         );
-//       })
-//     );
-//   },
-//   { functional: true }
-// );
+/**
+ * Effect for updating user details
+ */
+export const updateUserDetailsEffect = createEffect(
+  (
+    action$ = inject(Actions),
+    updateUserService = inject(UpdateUserDetailsService),
+    router = inject(Router)
+  ) => {
+    return action$.pipe(
+      ofType(AuthActions.updateUserDetails),
+      switchMap(userDetails => {
+        return updateUserService.post(userDetails).pipe(
+          map(response => {
+            router.navigateByUrl('/user/dashboard');
+            return AuthActions.updateUserDetailsSuccess(response);
+          }),
+          catchError((error: HttpErrorResponse) => {
+            if (error.status === 0) {
+              return of(
+                AuthActions.loginFailure({
+                  message: 'Network error',
+                  access: 'Denied',
+                })
+              );
+            }
+            return of(AuthActions.updateUserDetailsFailure(error.error));
+          })
+        );
+      })
+    );
+  },
+  { functional: true }
+);

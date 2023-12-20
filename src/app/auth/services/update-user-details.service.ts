@@ -28,7 +28,7 @@ export class UpdateUserDetailsService {
       formData.append(key, (details as any)[key]);
     });
 
-    return this.http.put<UpdateUserDetailsResponse>(
+    return this.http.post<UpdateUserDetailsResponse>(
       `${BASE_URL}/users/update`,
       formData
     );
