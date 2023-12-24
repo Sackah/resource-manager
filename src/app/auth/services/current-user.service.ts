@@ -18,6 +18,15 @@ export class CurrentUserService {
   constructor(private http: HttpClient) {}
 
   get() {
-    return this.http.get<LoginUserResponse>(`${BASE_URL}/users/token/exchange`);
+    console.log('run current user service');
+    return this.http.get<LoginUserResponse>(
+      `${BASE_URL}/users/token/exchange`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'skip-browser-warning',
+        },
+      }
+    );
   }
 }
