@@ -4,10 +4,10 @@ import { SideNavComponent } from '../../../../shared/components/side-nav/side-na
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
 
 @Component({
-  selector: 'app-dashboard',
+  selector: 'setting',
   standalone: true,
   imports: [CommonModule, SideNavComponent, HeaderComponent],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css',
+  templateUrl: './setting.component.html',
+  styleUrl: './setting.component.css',
 })
-export class DashboardComponent {}
+export class SettingComponent {}

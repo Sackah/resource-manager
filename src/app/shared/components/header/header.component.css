@@ -1,0 +1,18 @@
+.header {
+  position: fixed;
+  z-index: 10;
+  background-color: var(--bg-primary);
+  top: 0;
+  right: 0;
+  border-bottom: 1px solid #e9eff6;
+  width: 84%;
+  height: 10vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.profile-container {
+  display: flex;
+  gap: 30px;
+}

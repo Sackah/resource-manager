@@ -1,0 +1,39 @@
+<div class="side-nav">
+  <div class="logo-container">
+    <div class="logo">
+      <img src="assets/images/logo.svg" />
+    </div>
+  </div>
+  <ul class="sidenav-nav">
+    <li class="sidenav-nav-item" *ngFor="let data of navData">
+      <a
+        class="sidenav-nav-link"
+        [routerLink]="[data.routeLink]"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }">
+        <img
+          class="sidenav-link-icon"
+          src="assets/images/{{ data.icon }}"
+          alt="{{ data.label }}" />
+        <span class="sidenav-link-text">{{ data.label }}</span>
+      </a>
+    </li>
+  </ul>
+  <div class="sidenav-bottom">
+    <ul class="sidenav-nav">
+      <li class="sidenav-nav-item" *ngFor="let bottomData of bottomData">
+        <a
+          class="sidenav-nav-link"
+          [routerLink]="[bottomData.routeLink]"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }">
+          <img
+            class="sidenav-link-icon"
+            src="assets/images/{{ bottomData.icon }}"
+            alt="{{ bottomData.label }}" />
+          <span class="sidenav-link-text">{{ bottomData.label }}</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>

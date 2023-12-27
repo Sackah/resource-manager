@@ -1,0 +1,14 @@
+<div class="search">
+  <form>
+    <label for="search" class="visibly-hidden">Search</label>
+    <input
+      type="search"
+      class="search-input"
+      [(ngModel)]="query"
+      [ngModelOptions]="{ standalone: true }"
+      id="search"
+      placeholder="Search anything here" />
+
+    <button aria-label="search" (click)="performSearch()"></button>
+  </form>
+</div>
