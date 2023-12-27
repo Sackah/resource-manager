@@ -17,6 +17,12 @@ export type SetupProgress = 'password' | 'details';
  *
  * @method constructor - By default, the state of the setup progress is 'password'.
  * @method toggle - Changes the state of the setup progress. @param SetupProgress
+ *
+ * @usageNotes
+ * ```
+ * const accountSetupService = inject(AccountSetupService);
+ * accountSetupService.toggle("password"); //switches the field to a password field
+ * ```
  */
 
 @Injectable({

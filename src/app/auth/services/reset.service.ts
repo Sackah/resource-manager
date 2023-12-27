@@ -12,14 +12,15 @@ import { BASE_URL } from '../../../environment/config';
  * @class ResetService
  * @description a service for resetting user password
  *
- * @method postEmail - submits user new user details to the backend
+ * @method postEmail - submits user email to the backend for otp to be sent
  * @param email - object which contains user email
- * @returns observable that resolves to SendOtpResponse (message, user and otp),
- * @see [SendOtpResponse](../types/reset-types.ts) for more about type definition
+ * @returns observable that emits SendOtpResponse (message, user and otp),
+ * @see {@link SendOtpResponse} for more about type definition
  *
- * @method updatePassword - submits new user credeentials to the backend
+ * @method updatePassword - submits user credentials together with updated password to the backend
  * @param credentials - email, password & confirmation, otp
- * @returns observable that resolves to ResetPasswordResponse (message, accesstoken and user)
+ * @returns an observable that emits ResetPasswordResponse (message, accesstoken and user)
+ * @see {@link ResetPasswordResponse} for more about type definition
  */
 @Injectable({
   providedIn: 'root',

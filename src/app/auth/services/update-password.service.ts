@@ -10,10 +10,10 @@ import { BASE_URL } from '../../../environment/config';
  * @class UpdatePasswordService
  * @description a service for updating user initial password
  *
- * @method postUser - submits user new user details to the backend
+ * @method postUser - submits user new user password to the backend
  * @param credentials - password and confirm_password
- * @returns observable that resolves to UpdateUserDetails response same as LoginUserReponse,
- * @see [UpdateUserDetailsResponse](../types/auth-types.ts) for more about type definition
+ * @returns an observable that emits UpdateUserPasswordResponse same as LoginUserReponse,
+ * @see {@link UpdateUserPasswordResponse} for more about type definition
  *
  * @method postAdmin - submits admin updated password to the packend
  * @param credentials - email, old_pasword and password

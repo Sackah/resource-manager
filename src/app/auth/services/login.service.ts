@@ -9,8 +9,8 @@ import { BASE_URL } from '../../../environment/config';
  *
  * @method post - submits user details to the backend
  * @param LoginUserDetails - email and password
- * @returns observable that resolves to LoginUserResponse,
- * @see [LoginUserResponse](../types/auth-types.ts) for more about type definition
+ * @returns an observable that emits LoginUserResponse,
+ * @see {@link LoginUserResponse} for more about type definition
  */
 @Injectable({
   providedIn: 'root',

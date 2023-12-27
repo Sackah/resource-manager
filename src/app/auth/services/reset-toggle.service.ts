@@ -17,6 +17,13 @@ export type InputFields = 'email' | 'otp' | 'changePassword';
  *
  * @method constructor - By default, the state of the reset operation is 'email'.
  * @method toggle - Changes the state of the reset operation. @param InputFields
+ * @see {@link InputFields}
+ *
+ * @usageNotes
+ * ```
+ * const resetToggleService = inject(ResetToggleService);
+ * resetToggleService.toggle('otp'); //to change the field to an otp field
+ * ```
  */
 @Injectable({
   providedIn: 'root',

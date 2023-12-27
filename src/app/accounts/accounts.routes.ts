@@ -7,14 +7,6 @@ export const AccountRoutes: Routes = [
     path: 'account-setup/:userId/:accesstoken/:email/:id',
     component: AccountSetupComponent,
   },
-  /**
-   * defaulting `/` to user, might change later
-   */
-  {
-    path: '',
-    loadChildren: () => import('./user/user.routes').then(m => m.UserRoutes),
-    canActivate: [UserGuard],
-  },
   {
     path: 'user',
     loadChildren: () => import('./user/user.routes').then(m => m.UserRoutes),
