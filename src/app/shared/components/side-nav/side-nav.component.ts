@@ -1,12 +1,23 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { bottomNavData, navbarData } from './nav-data';
-import { RouterModule } from '@angular/router';
+import {
+  RouterModule,
+  RouterOutlet,
+  RouterLink,
+  RouterLinkActive,
+} from '@angular/router';
 
 @Component({
   selector: 'side-nav',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+  ],
   templateUrl: './side-nav.component.html',
   styleUrl: './side-nav.component.css',
 })
