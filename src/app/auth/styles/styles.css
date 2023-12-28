@@ -21,24 +21,6 @@
   grid-column: 1 / 4;
 }
 
-.validation-error-message {
-  color: #dc3545;
-  font-size: 1rem;
-  display: block;
-  margin: 6px 0;
-}
-
-.validation-error-message.backend {
-  font-size: 1.2rem;
-  margin-bottom: 20px;
-}
-
-.validation-success-message.backend {
-  font-size: 1.2rem;
-  margin-bottom: 20px;
-  color: rgb(20, 183, 20);
-}
-
 .form-label {
   display: block;
   font-size: 1.25rem;

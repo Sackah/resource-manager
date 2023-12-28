@@ -17,20 +17,21 @@ import { combineLatest } from 'rxjs';
 import { AuthState } from '../../../../auth/types/auth-types';
 import { Store } from '@ngrx/store';
 import { AuthActions } from '../../../../auth/store/authorization/AuthActions';
-import { Input } from '@angular/core';
 
 @Component({
   selector: 'user-profile',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, LoginSideIllustrationComponent],
   templateUrl: './user-profile.component.html',
-  styleUrl: './user-profile.component.css',
+  styleUrls: [
+    './user-profile.component.css',
+    '../../pages/setting/setting.component.css',
+  ],
 })
-export class UserProfile implements OnInit, OnDestroy {
+export class UserProfileComponent implements OnInit, OnDestroy {
   userDetails!: FormGroup;
-  imgUrl = '../../../../../assets/images/profile-container-2.svg';
+  imgUrl = '../../../../../assets/images/user/profile-container-2.svg';
   storeData!: LoginState;
-  @Input() email!: string;
 
   storeSubscription = this.store.select(selectLogin).subscribe({
     next: res => {
@@ -43,10 +44,14 @@ export class UserProfile implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userDetails = new FormGroup({
       profilePicture: new FormControl(null),
-      email: new FormControl({ value: this.email, disabled: true }, [
-        Validators.required,
-        Validators.email,
-      ]),
+      email: new FormControl(
+        '',
+        // {
+        //   value: (this.storeData.success?.user as CurrentUser).email,
+        //   disabled: false,
+        // },
+        [Validators.required, Validators.email]
+      ),
       firstName: new FormControl('', [
         Validators.required,
         Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
@@ -56,6 +61,7 @@ export class UserProfile implements OnInit, OnDestroy {
         Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
       ]),
       phoneNumber: new FormControl('', [Validators.required, validPhoneNumber]),
+      qualification: new FormControl('', [Validators.required]),
     });
   }
 
@@ -92,6 +98,17 @@ export class UserProfile implements OnInit, OnDestroy {
         return 'This field is required';
       } else if (control.hasError('invalidPhoneNumber')) {
         return 'Number should be exactly 10 digits without country code';
+      }
+    }
+
+    return '';
+  }
+
+  getQualificationErrors(): string {
+    const control = this.userDetails.get('qualification');
+    if (control?.invalid && (control.dirty || control.touched)) {
+      if (control.hasError('required')) {
+        return 'This field is required';
       }
     }
 
