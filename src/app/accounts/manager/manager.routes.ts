@@ -4,5 +4,5 @@ import { SettingsComponent } from './pages/settings/settings.component';
 
 export const ManagerRoutes: Route[] = [
   { path: 'dashboard', component: DashboardComponent, children: [] },
-  { path: 'manager-settings', component: SettingsComponent, children: [] },
+  { path: 'settings', component: SettingsComponent, children: [] },
 ];

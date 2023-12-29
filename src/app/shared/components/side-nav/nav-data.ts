@@ -15,29 +15,29 @@ export const navbarData = [
     label: 'User Group',
   },
   {
-    routeLink: 'user-project',
+    routeLink: 'project',
     icon: 'project-icon.svg',
     label: 'Project',
   },
   {
-    routeLink: 'user-schedule',
+    routeLink: 'schedule',
     icon: 'schedule-icon.svg',
     label: 'Schedule',
   },
 ];
 export const bottomNavData = [
   {
-    routeLink: 'user-message',
+    routeLink: 'message',
     icon: 'messaging-icon.svg',
     label: 'Message',
   },
   {
-    routeLink: 'user-settings',
+    routeLink: 'settings',
     icon: 'settings-icon.svg',
     label: 'Settings',
   },
   {
-    routeLink: 'user-logout',
+    routeLink: 'logout',
     icon: 'logout-icon.svg',
     label: 'Logout',
   },

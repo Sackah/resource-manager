@@ -8,7 +8,7 @@
     <li class="sidenav-nav-item" *ngFor="let data of navData">
       <a
         class="sidenav-nav-link"
-        [routerLink]="['/user', data.routeLink]"
+        [routerLink]="[userRoute, data.routeLink]"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }">
         <img
@@ -24,7 +24,7 @@
       <li class="sidenav-nav-item" *ngFor="let bottomData of bottomData">
         <a
           class="sidenav-nav-link"
-          [routerLink]="['/user', bottomData.routeLink]"
+          [routerLink]="[userRoute, bottomData.routeLink]"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{ exact: true }">
           <img
