@@ -9,15 +9,11 @@ import {
 import { Router } from '@angular/router';
 import { LoginSideIllustrationComponent } from '../../../../auth/components/login-side-illustration/login-side-illustration.component';
 import { validPhoneNumber } from '../../../../auth/validators/invalidphonenumber';
-import {
-  selectLogin,
-  LoginState,
-} from '../../../../auth/store/authorization/AuthReducers';
-import { combineLatest } from 'rxjs';
-import { AuthState } from '../../../../auth/types/auth-types';
+import { selectLogin } from '../../../../auth/store/authorization/AuthReducers';
 import { Store } from '@ngrx/store';
 import { AuthActions } from '../../../../auth/store/authorization/AuthActions';
 import { Input } from '@angular/core';
+import { CurrentUser } from '../../../../shared/types/types';
 
 @Component({
   selector: 'user-profile',
@@ -32,12 +28,13 @@ import { Input } from '@angular/core';
 export class UserProfileComponent implements OnInit, OnDestroy {
   userDetails!: FormGroup;
   imgUrl = '../../../../../assets/images/user/profile-container-2.svg';
-  storeData!: LoginState;
+  user!: CurrentUser;
+  // No need for this input, all data will be gotten from the store
   @Input() email!: string;
 
   storeSubscription = this.store.select(selectLogin).subscribe({
     next: res => {
-      this.storeData = res;
+      this.user = res.success?.user as CurrentUser;
     },
   });
 
@@ -49,20 +46,35 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       email: new FormControl(
         '',
         // {
-        //   value: (this.storeData.success?.user as CurrentUser).email,
+        //   value: this.user.email,
         //   disabled: false,
         // },
         [Validators.required, Validators.email]
       ),
-      firstName: new FormControl('', [
-        Validators.required,
-        Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
-      ]),
-      lastName: new FormControl('', [
-        Validators.required,
-        Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
-      ]),
-      phoneNumber: new FormControl('', [Validators.required, validPhoneNumber]),
+      firstName: new FormControl(
+        '',
+        // {
+        //   value: this.user.firstName,
+        //   disabled: false,
+        // },
+        [Validators.required, Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$')]
+      ),
+      lastName: new FormControl(
+        '',
+        // {
+        //   value: this.user.lastName,
+        //   disabled: false,
+        // },
+        [Validators.required, Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$')]
+      ),
+      phoneNumber: new FormControl(
+        '',
+        // {
+        //   value: this.user.phoneNumber,
+        //   disabled: false,
+        // },
+        [Validators.required, validPhoneNumber]
+      ),
       qualification: new FormControl('', [Validators.required]),
       specialization: new FormControl('', [Validators.required]),
     });
@@ -149,8 +161,10 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     event.preventDefault();
     const userDetails = this.userDetails.value;
 
+    //make a different api call here instead, dispatching the action has
+    //other side effects
     if (this.userDetails.valid) {
-      this.store.dispatch(AuthActions.updateUserDetails(userDetails));
+      // this.store.dispatch(AuthActions.updateUserDetails(userDetails));
     }
   }
 
