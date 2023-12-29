@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { AdminGuard, ManagerGuard, UserGuard } from '../auth/guards/role.guard';
+// import { AccountSetupComponent } from './user/pages/account-setup/account-setup.component';
 import { AccountSetupComponent } from './user/pages/account-setup/account-setup.component';
 
 export const AccountRoutes: Routes = [
@@ -10,17 +11,17 @@ export const AccountRoutes: Routes = [
   {
     path: 'user',
     loadChildren: () => import('./user/user.routes').then(m => m.UserRoutes),
-    canActivate: [UserGuard],
+    // canActivate: [UserGuard],
   },
   {
     path: 'manager',
     loadChildren: () =>
       import('./manager/manager.routes').then(m => m.ManagerRoutes),
-    canActivate: [ManagerGuard],
+    // canActivate: [ManagerGuard],
   },
   {
     path: 'admin',
     loadChildren: () => import('./admin/admin.routes').then(m => m.AdminRoutes),
-    canActivate: [AdminGuard],
+    // canActivate: [AdminGuard],
   },
 ];

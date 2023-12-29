@@ -1,0 +1,41 @@
+.header {
+  position: fixed;
+  z-index: 10;
+  background-color: var(--bg-primary);
+  top: 0;
+  right: 0;
+  border-bottom: 1px solid #e9eff6;
+  width: 84%;
+  height: 10vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.circle-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: absolute;
+  top: 40px;
+  right: 15px;
+  background: #12b569;
+
+  &.pulse {
+    animation: pulse-animation 1.2s infinite;
+  }
+}
+
+@keyframes pulse-animation {
+  0% {
+    box-shadow: 0 0 0 0 rgb(18, 181, 105);
+  }
+  100% {
+    box-shadow: 0 0 0 13px rgb(162, 239, 203);
+  }
+}
+
+.profile-container {
+  display: flex;
+  gap: 30px;
+}

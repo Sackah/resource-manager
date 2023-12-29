@@ -31,15 +31,9 @@ export class UpdateUserDetailsService {
   constructor(private http: HttpClient) {}
 
   post(details: UpdateUserDetails) {
-    const formData = new FormData();
-
-    Object.keys(details).forEach(key => {
-      formData.append(key, (details as any)[key]);
-    });
-
     return this.http.post<UpdateUserDetailsResponse>(
       `${BASE_URL}/users/update`,
-      formData
+      details
     );
   }
 }
