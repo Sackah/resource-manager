@@ -1,7 +1,6 @@
 <h4>Personal Info</h4>
 <p>Update your personal details here</p>
 <form (submit)="submitForm($event)" [formGroup]="userDetails">
-  <!------    Profile picture   ------>
   <div class="profile-picture">
     <img [src]="imgUrl" alt="profile picture" />
     <div class="camera-icon">
@@ -20,9 +19,8 @@
   </div>
 
   <div class="d-grid">
-    <!------    First name field    ------>
     <div>
-      <label for="firsName">First Name</label>
+      <label for="firsName">FIRST NAME</label>
       <input
         id="firsName"
         type="text"
@@ -36,9 +34,8 @@
       }
     </div>
 
-    <!------    Last name field    ------>
     <div>
-      <label for="lastName">Last Name</label>
+      <label for="lastName">LAST NAME</label>
       <input
         id="lastName"
         type="text"
@@ -52,9 +49,8 @@
       }
     </div>
 
-    <!------    Email field    ------>
     <div>
-      <label for="email">Email</label>
+      <label for="email">EMAIL</label>
       <input
         id="email"
         type="email"
@@ -68,9 +64,8 @@
       }
     </div>
 
-    <!------    Phone number field    ------>
     <div>
-      <label for="phoneNumber">Phone number</label>
+      <label for="phoneNumber">PHONE NUMBER</label>
       <input
         id="phoneNumber"
         type="tel"
@@ -86,14 +81,14 @@
       }
     </div>
 
-    <!------    Qualification field    ------>
     <div>
-      <label for="qualification">Qualification</label>
+      <label for="qualification">QUALIFICATION(OPTIONAL)</label>
       <select
         name="qualification"
         class="input-settings {{ getQualificationErrors() ? 'error' : '' }}"
         id="qualification"
         formControlName="qualification">
+        <option value="" disabled selected>Select an option...</option>
         <option value="PHD">PHD</option>
         <option value="Masters">Master's</option>
         <option value="Bachelors" selected>Bachelor's</option>
@@ -106,6 +101,38 @@
       </div>
       }
     </div>
+
+    <div>
+      <label for="specialization">SPECIALIZATION</label>
+      <select
+        name="specialization"
+        class="input-settings {{ getSpecializationErrors() ? 'error' : '' }}"
+        id="specialization"
+        formControlName="specialization">
+        <option value="" disabled selected>Select an option...</option>
+        <option value="ui_ux_designer">UI/UX Designer</option>
+        <option value="frontend_developer">Frontend Developer</option>
+        <option value="backend_developer">Backend Developer</option>
+        <option value="software_tester">Software Tester</option>
+        <option value="devops">DevOps</option>
+        <option value="data_scientist">Data Scientist</option>
+      </select>
+      @if(getSpecializationErrors()) {
+      <div class="validation-error-message">
+        {{ getSpecializationErrors() }}
+      </div>
+      }
+    </div>
+
+    <!-- <div>
+      <label for="addSkill">ADD SKILL</label>
+      <input
+        id="addSkill"
+        type="text"
+        class="input-settings"
+        placeholder="Enter skill"
+        formControlName="addSkill" />
+    </div> -->
   </div>
 
   <div class="buttons">

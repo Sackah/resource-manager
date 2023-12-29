@@ -13,11 +13,22 @@
   width: 100%;
 }
 
+.input-settings:focus {
+  outline: 2px solid #4a72ff;
+}
 .button-settings {
   padding: 12px 16px;
   border-radius: 16px;
   border: 1px solid #9aa8bc;
   width: 200px;
+  cursor: pointer;
+}
+
+.password-button-settings {
+  padding: 12px 16px;
+  border-radius: 16px;
+  border: 1px solid #9aa8bc;
+  width: 100px;
   cursor: pointer;
 }
 

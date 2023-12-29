@@ -17,6 +17,7 @@ import { combineLatest } from 'rxjs';
 import { AuthState } from '../../../../auth/types/auth-types';
 import { Store } from '@ngrx/store';
 import { AuthActions } from '../../../../auth/store/authorization/AuthActions';
+import { Input } from '@angular/core';
 
 @Component({
   selector: 'user-profile',
@@ -32,6 +33,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   userDetails!: FormGroup;
   imgUrl = '../../../../../assets/images/user/profile-container-2.svg';
   storeData!: LoginState;
+  @Input() email!: string;
 
   storeSubscription = this.store.select(selectLogin).subscribe({
     next: res => {
@@ -62,6 +64,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       ]),
       phoneNumber: new FormControl('', [Validators.required, validPhoneNumber]),
       qualification: new FormControl('', [Validators.required]),
+      specialization: new FormControl('', [Validators.required]),
     });
   }
 
@@ -85,6 +88,17 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         return 'This field is required';
       } else if (control.hasError('pattern')) {
         return 'Name can only contain letters and one space per word';
+      }
+    }
+
+    return '';
+  }
+
+  getSpecializationErrors(): string {
+    const control = this.userDetails.get('specialization');
+    if (control?.invalid && (control.dirty || control.touched)) {
+      if (control.hasError('required')) {
+        return 'This field is required';
       }
     }
 
