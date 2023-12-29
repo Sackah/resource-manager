@@ -23,11 +23,22 @@
     <div class="overlay overlay-notification overlay-fall" cdkMenu>
       <ul>
         <li class="notification-head-container">
-          <div class="notification-head">Notification</div>
+          <div class="notification-head">Notifications</div>
           <span class="view-all-link">
             <a>Mark all as read</a>
           </span>
         </li>
+        <div class="info-container">
+          <div class="info">
+            <img
+              src="assets/images/user/info-icon.svg"
+              alt="info icon"
+              class="" />
+            <p>
+              Notifications here will be permanently deleted in the next 30 days
+            </p>
+          </div>
+        </div>
         <li
           class="notification-message-container"
           *ngFor="let notification of notifications"

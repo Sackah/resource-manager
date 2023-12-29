@@ -88,7 +88,7 @@
 
       .view-all-link {
         font-size: 80%;
-        color: #699dfa;
+        color: #1a1f36;
         cursor: pointer;
       }
     }
@@ -116,4 +116,18 @@
       background: #eff2f3;
     }
   }
+}
+
+.info-container {
+  font-size: 12px;
+  background: #e8edff;
+  color: #4a72ff;
+  height: 8vh;
+}
+
+.info {
+  display: flex;
+  margin-left: 20px;
+  padding: 0.625rem;
+  gap: 15px;
 }
