@@ -8,11 +8,41 @@ import { SettingComponent } from './pages/setting/setting.component';
 import { MessageComponent } from './pages/message/message.component';
 
 export const UserRoutes: Route[] = [
-  { path: 'dashboard', component: DashboardComponent, children: [] },
-  { path: 'users', component: UsersComponent, children: [] },
-  { path: 'user-group', component: UserGroupComponent, children: [] },
-  { path: 'user-schedule', component: ScheduleComponent, children: [] },
-  { path: 'user-project', component: ProjectComponent, children: [] },
-  { path: 'user-settings', component: SettingComponent, children: [] },
-  { path: 'user-message', component: MessageComponent, children: [] },
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+    pathMatch: 'full',
+    children: [],
+  },
+  { path: 'users', component: UsersComponent, pathMatch: 'full', children: [] },
+  {
+    path: 'user-group',
+    component: UserGroupComponent,
+    pathMatch: 'full',
+    children: [],
+  },
+  {
+    path: 'user-schedule',
+    component: ScheduleComponent,
+    pathMatch: 'full',
+    children: [],
+  },
+  {
+    path: 'user-project',
+    component: ProjectComponent,
+    pathMatch: 'full',
+    children: [],
+  },
+  {
+    path: 'user-settings',
+    component: SettingComponent,
+    pathMatch: 'full',
+    children: [],
+  },
+  {
+    path: 'user-message',
+    component: MessageComponent,
+    pathMatch: 'full',
+    children: [],
+  },
 ];

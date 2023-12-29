@@ -25,7 +25,7 @@
         id="firsName"
         type="text"
         class="input-settings {{ getNameErrors('firstName') ? 'error' : '' }}"
-        placeholder="Ella"
+        placeholder="Enter first name"
         formControlName="firstName" />
       @if(getNameErrors('firstName')){
       <div class="validation-error-message">
@@ -40,7 +40,7 @@
         id="lastName"
         type="text"
         class="input-settings {{ getNameErrors('lastName') ? 'error' : '' }}"
-        placeholder="Naizer"
+        placeholder="Enter last name"
         formControlName="lastName" />
       @if(getNameErrors('lastName')){
       <div class="validation-error-message">
@@ -55,7 +55,7 @@
         id="email"
         type="email"
         class="input-settings {{ getEmailErrors() ? 'error' : '' }}"
-        placeholder="ella.naizer@amalitech.org"
+        placeholder="something@example.com"
         formControlName="email" />
       @if(getEmailErrors()){
       <div class="validation-error-message">
@@ -72,7 +72,7 @@
         class="input-settings {{ getNumberErrors() ? 'error' : '' }}"
         pattern="[0-9]{10}"
         maxlength="10"
-        placeholder="0512345678"
+        placeholder="Enter phone number"
         formControlName="phoneNumber" />
       @if(getNumberErrors()){
       <div class="validation-error-message">
@@ -129,7 +129,7 @@
       <input
         id="addSkill"
         type="text"
-        class="input-settings"
+        class="input-settings {{ getNameErrors('lastName') ? 'error' : '' }}"
         placeholder="Enter skill"
         formControlName="addSkill" />
     </div> -->

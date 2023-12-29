@@ -56,6 +56,12 @@ li {
   }
 }
 
+.active {
+  background: #f2f5ff;
+  color: #0f3cd9;
+  font-family: 'LexendRegular';
+}
+
 .sidenav-bottom {
   height: 14%;
   margin-top: 100%;
