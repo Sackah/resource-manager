@@ -17,8 +17,8 @@
   height: 8px;
   border-radius: 50%;
   position: absolute;
-  top: 40px;
-  right: 15px;
+  top: 45px;
+  right: 6px;
   background: #12b569;
 
   &.pulse {
@@ -31,8 +31,32 @@
     box-shadow: 0 0 0 0 rgb(18, 181, 105);
   }
   100% {
-    box-shadow: 0 0 0 13px rgb(162, 239, 203);
+    box-shadow: 0 0 0 13px rgb(192, 249, 222);
   }
+}
+
+.head-menu-item {
+  .head-menu-item-btn {
+    font-size: 18px;
+    height: 42px;
+    width: 42px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    margin-left: 5px;
+    outline: 0;
+    color: #495057;
+  }
+}
+
+.head-menu-item:hover,
+.head-menu-item:focus {
+  background: #eff2f3;
+  border-radius: 50%;
+}
+
+.alarm-icon {
+  margin: 0 10px;
 }
 
 .profile-container {
