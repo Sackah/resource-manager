@@ -44,6 +44,8 @@ export type UpdateUserDetails = {
   firstName?: string;
   lastName?: string;
   phoneNumber?: string;
+  qualification?: string;
+  department?: string;
 };
 
 export interface UpdateUserDetailsResponse extends LoginUserResponse {

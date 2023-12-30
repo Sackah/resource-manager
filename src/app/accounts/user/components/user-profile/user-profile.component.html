@@ -139,7 +139,10 @@
     <button type="reset" class="button-settings bg-[#FFFFFF] text-[#022F54]">
       Reset
     </button>
-    <button type="submit" class="button-settings bg-[#022F54] text-white">
+    <button
+      type="submit"
+      [disabled]="!isFormDirty"
+      class="button-settings bg-[#022F54] text-white">
       Update Profile
     </button>
   </div>

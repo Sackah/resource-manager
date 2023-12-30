@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 import {
   ReactiveFormsModule,
   FormGroup,
@@ -29,14 +30,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   userDetails!: FormGroup;
   imgUrl = '../../../../../assets/images/user/profile-container-2.svg';
   user!: CurrentUser;
-  // No need for this input, all data will be gotten from the store
-  @Input() email!: string;
-
-  storeSubscription = this.store.select(selectLogin).subscribe({
-    next: res => {
-      this.user = res.success?.user as CurrentUser;
-    },
-  });
+  isFormDirty: boolean = false;
+  storeSubscription!: Subscription;
 
   constructor(private store: Store, private router: Router) {}
 
@@ -51,6 +46,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         // },
         [Validators.required, Validators.email]
       ),
+
       firstName: new FormControl(
         '',
         // {
@@ -78,6 +74,21 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       qualification: new FormControl('', [Validators.required]),
       specialization: new FormControl('', [Validators.required]),
     });
+
+    this.storeSubscription = this.store.select(selectLogin).subscribe({
+      next: res => {
+        this.user = res.success?.user as CurrentUser;
+      },
+    });
+
+    // Object.keys(this.userDetails.controls).forEach(key => {
+    //   const control = this.userDetails.get(key);
+    //   if (control) {
+    //     control.valueChanges.subscribe(() => {
+    //       this.isFormDirty = true;
+    //     });
+    //   }
+    // });
   }
 
   getEmailErrors(): string {

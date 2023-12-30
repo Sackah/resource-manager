@@ -1,5 +1,12 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import {
+  UpdateUserDetailsResponse,
+  UpdateUserPasswordResponse,
+} from '../../../auth/types/auth-types';
+import { BASE_URL } from '../../../../environment/config';
+import { UpdateUserDetails } from '../../../auth/types/auth-types';
 
 export type SettingsFields = 'profile' | 'password';
 
@@ -8,7 +15,7 @@ export type SettingsFields = 'profile' | 'password';
  *
  * @description
  * A service for managing settings operations. Toggles between different states
- * of a settings operation, password and profile
+ * of a settings operation, password, and profile
  *
  * @property dataSource - A BehaviorSubject that holds the
  * current state of the settings operation.
@@ -22,7 +29,7 @@ export type SettingsFields = 'profile' | 'password';
  * @usageNotes
  * ```
  * const settingsService = inject(SettingsService);
- * settingsService.toggle('password'); //to change the field to an password field
+ * settingsService.toggle('password'); //to change the field to a password field
  * ```
  */
 
@@ -33,9 +40,25 @@ export class SettingsService {
   private dataSource = new BehaviorSubject<SettingsFields>('profile');
   data = this.dataSource.asObservable();
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   toggle(data: SettingsFields) {
     this.dataSource.next(data);
+  }
+
+  updateDetails(
+    newDetails: UpdateUserDetails
+  ): Observable<UpdateUserDetailsResponse> {
+    return this.http.put<UpdateUserDetailsResponse>(
+      `${BASE_URL}/users/update`,
+      newDetails
+    );
+  }
+
+  updatePassword(newPassword: string): Observable<UpdateUserPasswordResponse> {
+    return this.http.put<UpdateUserPasswordResponse>(
+      `${BASE_URL}/users/update`,
+      newPassword
+    );
   }
 }
