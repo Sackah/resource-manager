@@ -1,0 +1,20 @@
+.users.page {
+  min-height: 100vh;
+  padding-left: 16%;
+  padding: calc(10vh + 30px) 50px 50px calc(16% + 50px);
+  display: flex;
+  gap: 600px;
+}
+
+h1 {
+  padding: 14px 24px;
+  font-size: 2rem;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'LexendBold';
+}
+
+.buttons-wrapper {
+  display: flex;
+  gap: 10px;
+}

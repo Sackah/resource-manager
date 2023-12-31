@@ -22,7 +22,8 @@
           id="email"
           type="email"
           class="global-input-auth {{ getEmailErrors() ? 'error' : '' }}"
-          formControlName="email" />
+          formControlName="email"
+          placeholder="something@example.com" />
         @if(getEmailErrors()){
         <div class="validation-error-message">
           {{ getEmailErrors() }}
@@ -34,7 +35,8 @@
             id="password"
             type="{{ passwordField }}"
             class="global-input-auth {{ getPasswordErrors() ? 'error' : '' }}"
-            formControlName="password" />
+            formControlName="password"
+            placeholder="Enter password" />
           @if(getPasswordErrors()){
           <div class="validation-error-message">
             {{ getPasswordErrors() }}
@@ -55,8 +57,9 @@
         <button
           type="submit"
           class="global-button-auth"
-          [disabled]="storeData.pending">
-          SUBMIT
+          [disabled]="storeData.pending"
+          style="font-family: 'LexendMedium'">
+          LOGIN
         </button>
       </form>
     </div>

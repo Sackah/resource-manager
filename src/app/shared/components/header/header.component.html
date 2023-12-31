@@ -12,8 +12,10 @@
           class="alarm-icon" />
       </button>
     </div>
-    <img src="assets/images/user/avatar.svg" alt="Avatar" />
-    <div class="circle-indicator pulse"></div>
+    <img src="assets/images/user/avatar.svg" alt="Avatar" class="avatar" />
+    <div
+      class="circle-indicator"
+      [ngClass]="{ pulse: isOnline, offline: !isOnline }"></div>
   </div>
 </div>
 <ng-template #searchOverlay></ng-template>

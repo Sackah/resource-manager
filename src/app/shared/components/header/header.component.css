@@ -13,17 +13,23 @@
 }
 
 .circle-indicator {
-  width: 8px;
-  height: 8px;
+  width: 13px;
+  height: 13px;
   border-radius: 50%;
   position: absolute;
   top: 45px;
-  right: 6px;
+  right: 32px;
   background: #12b569;
+  border: 2px solid #fff;
 
   &.pulse {
     animation: pulse-animation 1.2s 3;
   }
+}
+
+.circle-indicator.offline {
+  background: #ccc;
+  border: 2px solid #fff;
 }
 
 @keyframes pulse-animation {
@@ -61,7 +67,11 @@
 
 .profile-container {
   display: flex;
-  gap: 30px;
+  gap: 20px;
+}
+
+.avatar {
+  margin-right: 30px;
 }
 
 .overlay-notification {
