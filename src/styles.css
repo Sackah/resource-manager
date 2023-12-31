@@ -87,6 +87,11 @@ h6 {
   color: rgb(20, 183, 20);
 }
 
+.page {
+  min-height: 100vh;
+  padding: 10vh 40px 40px calc(16% + 40px);
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

@@ -1,13 +1,15 @@
-.users.page {
-  min-height: 100vh;
-  padding-left: 16%;
-  padding: calc(10vh + 30px) 50px 50px calc(16% + 50px);
+/*put user page styles here if neccessary*/
+/* .users.page {
+} */
+
+header {
   display: flex;
-  gap: 600px;
+  align-items: center;
+  justify-content: space-between;
 }
 
 h1 {
-  padding: 14px 24px;
+  padding: 14px 24px 14px 0px;
   font-size: 2rem;
   font-weight: 500;
   cursor: pointer;

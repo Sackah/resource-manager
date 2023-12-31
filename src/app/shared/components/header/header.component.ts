@@ -6,7 +6,7 @@ import { Notifications } from './header-dummy-data';
 import { CdkMenuModule } from '@angular/cdk/menu';
 
 @Component({
-  selector: 'header',
+  selector: 'rm-header',
   standalone: true,
   imports: [CommonModule, FormsModule, SearchComponent, CdkMenuModule],
   templateUrl: './header.component.html',
