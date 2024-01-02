@@ -7,13 +7,14 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
+import { SettingsService } from '../../services/settings.service';
+import { UpdateUserDetailsResponse } from '../../../../auth/types/auth-types';
 import { Router } from '@angular/router';
 import { LoginSideIllustrationComponent } from '../../../../auth/components/login-side-illustration/login-side-illustration.component';
 import { validPhoneNumber } from '../../../../auth/validators/invalidphonenumber';
 import { selectLogin } from '../../../../auth/store/authorization/AuthReducers';
 import { Store } from '@ngrx/store';
 import { AuthActions } from '../../../../auth/store/authorization/AuthActions';
-import { Input } from '@angular/core';
 import { CurrentUser } from '../../../../shared/types/types';
 
 @Component({
@@ -32,8 +33,15 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   user!: CurrentUser;
   isFormDirty: boolean = false;
   storeSubscription!: Subscription;
+  isSubmitting: boolean = false;
+  successMessage: string = '';
+  errorMessage: string = '';
 
-  constructor(private store: Store, private router: Router) {}
+  constructor(
+    private store: Store,
+    private router: Router,
+    private settingsService: SettingsService
+  ) {}
 
   ngOnInit(): void {
     this.userDetails = new FormGroup({
@@ -71,7 +79,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         // },
         [Validators.required, validPhoneNumber]
       ),
-      qualification: new FormControl('', [Validators.required]),
+      department: new FormControl('', [Validators.required]),
       specialization: new FormControl('', [Validators.required]),
     });
 
@@ -81,14 +89,14 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       },
     });
 
-    // Object.keys(this.userDetails.controls).forEach(key => {
-    //   const control = this.userDetails.get(key);
-    //   if (control) {
-    //     control.valueChanges.subscribe(() => {
-    //       this.isFormDirty = true;
-    //     });
-    //   }
-    // });
+    Object.keys(this.userDetails.controls).forEach(key => {
+      const control = this.userDetails.get(key);
+      if (control) {
+        control.valueChanges.subscribe(() => {
+          this.isFormDirty = true;
+        });
+      }
+    });
   }
 
   getEmailErrors(): string {
@@ -141,7 +149,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  getQualificationErrors(): string {
+  getDepartmentErrors(): string {
     const control = this.userDetails.get('qualification');
     if (control?.invalid && (control.dirty || control.touched)) {
       if (control.hasError('required')) {
@@ -169,13 +177,40 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   submitForm(event: Event) {
+    console.log('Form submitted!');
     event.preventDefault();
-    const userDetails = this.userDetails.value;
 
-    //make a different api call here instead, dispatching the action has
-    //other side effects
-    if (this.userDetails.valid) {
-      // this.store.dispatch(AuthActions.updateUserDetails(userDetails));
+    if (!this.user) {
+      console.error('User details not available.');
+      return;
+    }
+
+    const userDetails = {
+      ...this.userDetails.value,
+      userId: this.user.userId,
+    };
+
+    if (this.userDetails.valid && !this.isSubmitting) {
+      this.isSubmitting = true;
+
+      this.store.dispatch(AuthActions.updateUserDetails(userDetails));
+      this.isFormDirty = true;
+
+      this.settingsService.updateDetails(userDetails).subscribe({
+        next: (response: UpdateUserDetailsResponse) => {
+          if (response && response.message) {
+            this.successMessage = response.message;
+            this.errorMessage = '';
+          }
+        },
+        error: (error: any) => {
+          this.errorMessage = 'An error occurred while updating the profile.';
+          this.successMessage = '';
+        },
+        complete: () => {
+          this.isSubmitting = false;
+        },
+      });
     }
   }
 

@@ -1,6 +1,15 @@
 <h4>Personal Info</h4>
 <p>Update your personal details here</p>
 <form (submit)="submitForm($event)" [formGroup]="userDetails">
+  <div class="message-container">
+    <div class="success-message" *ngIf="successMessage">
+      {{ successMessage }}
+    </div>
+    <div class="error-message" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+  </div>
+
   <div class="profile-picture">
     <img [src]="imgUrl" alt="profile picture" />
     <div class="camera-icon">
@@ -82,22 +91,19 @@
     </div>
 
     <div>
-      <label for="qualification">QUALIFICATION(OPTIONAL)</label>
+      <label for="department">DEPARTMENT</label>
       <select
-        name="qualification"
-        class="input-settings {{ getQualificationErrors() ? 'error' : '' }}"
-        id="qualification"
-        formControlName="qualification">
-        <option value="" disabled selected>Select an option...</option>
-        <option value="PHD">PHD</option>
-        <option value="Masters">Master's</option>
-        <option value="Bachelors">Bachelor's</option>
-        <option value="HND">Higher National Diploma</option>
-        <option value="SHS">Senior High School</option>
+        name="department"
+        class="input-settings {{ getDepartmentErrors() ? 'error' : '' }}"
+        id="department"
+        formControlName="department">
+        <option value="" selected>Select an option...</option>
+        <option value="Service Center">Service Center</option>
+        <option value="Training Center">Training Center</option>
       </select>
-      @if(getQualificationErrors()){
+      @if(getDepartmentErrors()){
       <div class="validation-error-message">
-        {{ getQualificationErrors() }}
+        {{ getDepartmentErrors() }}
       </div>
       }
     </div>
@@ -110,12 +116,12 @@
         id="specialization"
         formControlName="specialization">
         <option value="" disabled selected>Select an option...</option>
-        <option value="ui_ux_designer">UI/UX Designer</option>
-        <option value="frontend_developer">Frontend Developer</option>
+        <option value="UI/UX Designer">UI/UX Designer</option>
+        <option value="Frontend Developer">Frontend Developer</option>
         <option value="backend_developer">Backend Developer</option>
-        <option value="software_tester">Software Tester</option>
-        <option value="devops">DevOps</option>
-        <option value="data_scientist">Data Scientist</option>
+        <option value="Software Tester">Software Tester</option>
+        <option value="DevOps">DevOps</option>
+        <option value="Data Scientist">Data Scientist</option>
       </select>
       @if(getSpecializationErrors()) {
       <div class="validation-error-message">
@@ -141,7 +147,7 @@
     </button>
     <button
       type="submit"
-      [disabled]="!isFormDirty"
+      [disabled]="!isFormDirty || isSubmitting"
       class="button-settings bg-[#022F54] text-white">
       Update Profile
     </button>

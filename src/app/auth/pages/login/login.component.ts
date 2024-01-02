@@ -81,7 +81,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     event.preventDefault();
     const userDetails = this.loginForm.value;
     if (this.loginForm.valid) {
-      console.log(userDetails);
       this.store.dispatch(AuthActions.login(userDetails));
     }
   }

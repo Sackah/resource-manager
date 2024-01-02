@@ -60,6 +60,9 @@ export const redirectAfterLogin = createEffect(
             case 'Basic User':
               router.navigateByUrl('/user/dashboard');
               break;
+            case 'Manager':
+              router.navigateByUrl('/manager/dashboard');
+              break;
             case 'Administrator':
               console.log(res.user.changePassword);
               if (res.user.changePassword) {

@@ -5,6 +5,6 @@ export type CurrentUser = {
   lastName: string;
   profilePicture: string;
   phoneNumber: string;
-  roles: 'Basic User' | 'Administrator';
+  roles: 'Basic User' | 'Administrator' | 'Manager';
   changePassword: boolean;
 };

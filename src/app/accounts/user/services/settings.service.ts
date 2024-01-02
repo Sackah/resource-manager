@@ -50,14 +50,14 @@ export class SettingsService {
     newDetails: UpdateUserDetails
   ): Observable<UpdateUserDetailsResponse> {
     return this.http.put<UpdateUserDetailsResponse>(
-      `${BASE_URL}/users/update`,
+      `${BASE_URL}/users/settings/update/profile`,
       newDetails
     );
   }
 
   updatePassword(newPassword: string): Observable<UpdateUserPasswordResponse> {
     return this.http.put<UpdateUserPasswordResponse>(
-      `${BASE_URL}/users/update`,
+      `${BASE_URL}/users/settings/update/password`,
       newPassword
     );
   }

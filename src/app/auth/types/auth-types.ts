@@ -48,9 +48,20 @@ export type UpdateUserDetails = {
   department?: string;
 };
 
+export type ProfileState = {
+  isSubmitting: boolean;
+  userProfile: {
+    pending: boolean;
+    error: AuthErrorResponse | null;
+  };
+};
 export interface UpdateUserDetailsResponse extends LoginUserResponse {
   status: number;
 }
+
+// export interface UpdateUserProfileResponse extends LoginUserResponse {
+//   status: number;
+// }
 
 export interface UpdateUserDetailsError {
   errors?: string[];

@@ -15,7 +15,7 @@ import { selectCurrentUser } from '../../auth/store/authorization/AuthReducers';
   providedIn: 'root',
 })
 export class RoleService implements OnDestroy {
-  private role!: 'Basic User' | 'Administrator';
+  private role!: 'Basic User' | 'Administrator' | 'Manager';
   userDetail$ = this.store.select(selectCurrentUser);
 
   constructor(private store: Store) {}
