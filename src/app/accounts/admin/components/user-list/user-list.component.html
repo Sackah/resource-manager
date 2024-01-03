@@ -1,0 +1,36 @@
+<ng-container *ngIf="loading; else userList">
+  <div class="spinner-dots">
+    <div class="custom-spinner">
+      <div class="spinner-dot"></div>
+      <div class="spinner-dot"></div>
+      <div class="spinner-dot"></div>
+      <!-- <p>Loading Users...</p> -->
+    </div>
+  </div>
+</ng-container>
+<ng-template #userList>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Department</th>
+        <!-- <th>Specialization</th> -->
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td style="font-family: 'LexendMedium'; color: #022f54">
+          <input type="checkbox" [checked]="false" style="margin-right: 8px" />
+
+          {{ user.firstName }} {{ user.lastName }}
+        </td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.roles }}</td>
+        <td>{{ user.department }}</td>
+        <!-- <td>{{ user.specializations }}</td> -->
+      </tr>
+    </tbody>
+  </table>
+</ng-template>
