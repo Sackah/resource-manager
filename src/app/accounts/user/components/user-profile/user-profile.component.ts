@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal } from '@angular/core';
 import { Subscription } from 'rxjs';
 import {
   ReactiveFormsModule,
@@ -8,7 +8,10 @@ import {
   Validators,
 } from '@angular/forms';
 import { SettingsService } from '../../services/settings.service';
-import { UpdateUserDetailsResponse } from '../../../../auth/types/auth-types';
+import {
+  UpdateUserDetails,
+  UpdateUserDetailsResponse,
+} from '../../../../auth/types/auth-types';
 import { Router } from '@angular/router';
 import { LoginSideIllustrationComponent } from '../../../../auth/components/login-side-illustration/login-side-illustration.component';
 import { validPhoneNumber } from '../../../../auth/validators/invalidphonenumber';
@@ -16,6 +19,12 @@ import { selectLogin } from '../../../../auth/store/authorization/AuthReducers';
 import { Store } from '@ngrx/store';
 import { AuthActions } from '../../../../auth/store/authorization/AuthActions';
 import { CurrentUser } from '../../../../shared/types/types';
+
+type InitialState = {
+  success: null | UpdateUserDetailsResponse;
+  error: null | Error;
+  pending: boolean;
+};
 
 @Component({
   selector: 'user-profile',
@@ -31,11 +40,12 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   userDetails!: FormGroup;
   imgUrl = '../../../../../assets/images/user/profile-container-2.svg';
   user!: CurrentUser;
-  isFormDirty: boolean = false;
   storeSubscription!: Subscription;
-  isSubmitting: boolean = false;
-  successMessage: string = '';
-  errorMessage: string = '';
+  settingsSig = signal<InitialState>({
+    success: null,
+    error: null,
+    pending: false,
+  });
 
   constructor(
     private store: Store,
@@ -46,56 +56,28 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userDetails = new FormGroup({
       profilePicture: new FormControl(null),
-      email: new FormControl(
-        '',
-        // {
-        //   value: this.user.email,
-        //   disabled: false,
-        // },
-        [Validators.required, Validators.email]
-      ),
+      email: new FormControl('', [Validators.required, Validators.email]),
 
-      firstName: new FormControl(
-        '',
-        // {
-        //   value: this.user.firstName,
-        //   disabled: false,
-        // },
-        [Validators.required, Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$')]
-      ),
-      lastName: new FormControl(
-        '',
-        // {
-        //   value: this.user.lastName,
-        //   disabled: false,
-        // },
-        [Validators.required, Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$')]
-      ),
-      phoneNumber: new FormControl(
-        '',
-        // {
-        //   value: this.user.phoneNumber,
-        //   disabled: false,
-        // },
-        [Validators.required, validPhoneNumber]
-      ),
+      firstName: new FormControl('', [
+        Validators.required,
+        Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
+      ]),
+      lastName: new FormControl('', [
+        Validators.required,
+        Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
+      ]),
+      phoneNumber: new FormControl('', [Validators.required, validPhoneNumber]),
       department: new FormControl('', [Validators.required]),
       specialization: new FormControl('', [Validators.required]),
     });
+
+    // Calls set values to set the values of the form with state data
+    this.setValues();
 
     this.storeSubscription = this.store.select(selectLogin).subscribe({
       next: res => {
         this.user = res.success?.user as CurrentUser;
       },
-    });
-
-    Object.keys(this.userDetails.controls).forEach(key => {
-      const control = this.userDetails.get(key);
-      if (control) {
-        control.valueChanges.subscribe(() => {
-          this.isFormDirty = true;
-        });
-      }
     });
   }
 
@@ -176,39 +158,55 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     }
   }
 
+  setValues() {
+    this.userDetails.patchValue({
+      email: this.user.email,
+      firstName: this.user.firstName,
+      lastName: this.user.lastName,
+      phoneNumber: this.user.phoneNumber,
+    });
+  }
+
+  get signalValues() {
+    const val = this.settingsSig();
+    return val;
+  }
+
   submitForm(event: Event) {
-    console.log('Form submitted!');
     event.preventDefault();
+    this.settingsSig.set({
+      success: null,
+      error: null,
+      pending: true,
+    });
 
     if (!this.user) {
       console.error('User details not available.');
       return;
     }
 
-    const userDetails = {
+    const userDetails: UpdateUserDetails = {
       ...this.userDetails.value,
       userId: this.user.userId,
     };
 
-    if (this.userDetails.valid && !this.isSubmitting) {
-      this.isSubmitting = true;
-
-      this.store.dispatch(AuthActions.updateUserDetails(userDetails));
-      this.isFormDirty = true;
-
+    if (this.userDetails.valid) {
       this.settingsService.updateDetails(userDetails).subscribe({
-        next: (response: UpdateUserDetailsResponse) => {
+        next: response => {
           if (response && response.message) {
-            this.successMessage = response.message;
-            this.errorMessage = '';
+            this.settingsSig.set({
+              success: response,
+              error: null,
+              pending: false,
+            });
           }
         },
-        error: (error: any) => {
-          this.errorMessage = 'An error occurred while updating the profile.';
-          this.successMessage = '';
-        },
-        complete: () => {
-          this.isSubmitting = false;
+        error: error => {
+          this.settingsSig.set({
+            success: null,
+            error: error,
+            pending: false,
+          });
         },
       });
     }
