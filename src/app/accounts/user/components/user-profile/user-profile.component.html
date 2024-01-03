@@ -2,12 +2,15 @@
 <p>Update your personal details here</p>
 <form (submit)="submitForm($event)" [formGroup]="userDetails">
   <div class="message-container">
-    <div class="success-message" *ngIf="successMessage">
-      {{ successMessage }}
+    @if (signalValues.success) {
+    <div class="success-message">
+      {{ signalValues.success.message }}
     </div>
-    <div class="error-message" *ngIf="errorMessage">
-      {{ errorMessage }}
+    } @if (signalValues.error) {
+    <div class="error-message">
+      {{ signalValues.error.message }}
     </div>
+    }
   </div>
 
   <div class="profile-picture">
@@ -145,10 +148,7 @@
     <button type="reset" class="button-settings bg-[#FFFFFF] text-[#022F54]">
       Reset
     </button>
-    <button
-      type="submit"
-      [disabled]="!isFormDirty || isSubmitting"
-      class="button-settings bg-[#022F54] text-white">
+    <button type="submit" class="button-settings bg-[#022F54] text-white">
       Update Profile
     </button>
   </div>
