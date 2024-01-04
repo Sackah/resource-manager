@@ -40,6 +40,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   userDetails!: FormGroup;
   imgUrl = '../../../../../assets/images/user/profile-container-2.svg';
   user!: CurrentUser;
+  disable: boolean = false;
   storeSubscription!: Subscription;
   settingsSig = signal<InitialState>({
     success: null,
@@ -56,7 +57,10 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.userDetails = new FormGroup({
       profilePicture: new FormControl(null),
-      email: new FormControl('', [Validators.required, Validators.email]),
+      email: new FormControl({ value: '', disabled: true }, [
+        Validators.required,
+        Validators.email,
+      ]),
 
       firstName: new FormControl('', [
         Validators.required,
@@ -73,10 +77,16 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
     // Calls set values to set the values of the form with state data
     this.setValues();
-
     this.storeSubscription = this.store.select(selectLogin).subscribe({
       next: res => {
         this.user = res.success?.user as CurrentUser;
+        this.userDetails.patchValue({
+          email: this.user?.email || '',
+          firstName: this.user?.firstName || '',
+          lastName: this.user?.lastName || '',
+          phoneNumber: this.user?.phoneNumber || '',
+          department: this.user?.department || '',
+        });
       },
     });
   }
@@ -159,12 +169,14 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   setValues() {
-    this.userDetails.patchValue({
-      email: this.user.email,
-      firstName: this.user.firstName,
-      lastName: this.user.lastName,
-      phoneNumber: this.user.phoneNumber,
-    });
+    if (this.user) {
+      this.userDetails.patchValue({
+        email: this.user.email,
+        firstName: this.user.firstName,
+        lastName: this.user.lastName,
+        phoneNumber: this.user.phoneNumber,
+      });
+    }
   }
 
   get signalValues() {

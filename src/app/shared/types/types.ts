@@ -7,6 +7,10 @@ export type CurrentUser = {
   phoneNumber: string;
   roles: 'Basic User' | 'Administrator' | 'Manager';
   changePassword: boolean;
+  password?: string;
+  password_confirmation?: string;
+  current_password?: string;
+  department: 'Service Center' | 'Training Center';
 };
 
 export interface User {

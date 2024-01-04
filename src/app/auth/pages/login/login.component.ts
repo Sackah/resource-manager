@@ -3,7 +3,6 @@ import { LoginSideIllustrationComponent } from '../../components/login-side-illu
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { AuthActions } from '../../store/authorization/AuthActions';
-import { combineLatest } from 'rxjs';
 import {
   ReactiveFormsModule,
   FormGroup,
@@ -14,7 +13,6 @@ import {
   LoginState,
   selectLogin,
 } from '../../store/authorization/AuthReducers';
-import { AuthState } from '../../types/auth-types';
 import { RouterLink } from '@angular/router';
 
 @Component({

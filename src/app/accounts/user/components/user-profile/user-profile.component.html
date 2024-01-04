@@ -68,7 +68,8 @@
         type="email"
         class="input-settings {{ getEmailErrors() ? 'error' : '' }}"
         placeholder="something@example.com"
-        formControlName="email" />
+        formControlName="email"
+        [disabled]="true" />
       @if(getEmailErrors()){
       <div class="validation-error-message">
         {{ getEmailErrors() }}

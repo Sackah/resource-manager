@@ -1,11 +1,16 @@
 import { Route } from '@angular/router';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { UsercreationComponent } from './pages/usercreation/usercreation.component';
-import { AccountSetupComponent } from './pages/account-setup/account-setup.component';
+import { DashboardComponent } from '../admin/pages/dashboard/dashboard.component';
+import { AccountSetupComponent } from '../admin/pages/account-setup/account-setup.component';
+import { UsercreationComponent } from '../admin/pages/usercreation/usercreation.component';
 import { UsersComponent } from '../admin/pages/users/users.component';
-import { MainComponent } from '../user/main.component';
+import { MainComponent } from '../admin/main.component';
+import { SettingsComponent } from '../admin/pages/settings/settings.component';
 
 export const AdminRoutes: Route[] = [
+  {
+    path: 'account-setup',
+    component: AccountSetupComponent,
+  },
   {
     path: '',
     component: MainComponent,
@@ -14,10 +19,7 @@ export const AdminRoutes: Route[] = [
         path: 'dashboard',
         component: DashboardComponent,
       },
-      {
-        path: 'account-setup',
-        component: AccountSetupComponent,
-      },
+
       {
         path: 'create-user',
         component: UsercreationComponent,
@@ -26,10 +28,10 @@ export const AdminRoutes: Route[] = [
         path: 'users',
         component: UsersComponent,
       },
+      {
+        path: 'settings',
+        component: SettingsComponent,
+      },
     ],
   },
-  // { path: 'dashboard', component: DashboardComponent, children: [] },
-  // { path: 'account-setup', component: AccountSetupComponent },
-  // { path: 'create-user', component: UsercreationComponent },
-  // { path: 'users', component: UsersComponent },
 ];
