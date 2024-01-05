@@ -174,8 +174,8 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   createUser(): void {
-    this.userCreationService.createUser(this.newUser).subscribe(
-      createdUser => {
+    this.userCreationService.createUser(this.newUser).subscribe({
+      next: createdUser => {
         this.users.push(createdUser);
         this.newUser = {
           firstName: '',
@@ -187,10 +187,9 @@ export class UserListComponent implements OnInit, OnDestroy {
           department: 'Service Center',
         };
       },
-
-      error => {
+      error: error => {
         console.error('Error creating user:', error);
-      }
-    );
+      },
+    });
   }
 }
