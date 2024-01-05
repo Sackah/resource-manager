@@ -45,8 +45,7 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   openEditModal(user: User): void {
     this.selectedUser = user;
-    // You may want to open your edit modal here or perform other actions.
-    // For now, let's just log the selected user.
+
     console.log('Selected User:', this.selectedUser);
   }
 
@@ -56,17 +55,11 @@ export class UserListComponent implements OnInit, OnDestroy {
     delete?: string;
   }): void {
     if (option.edit && this.selectedUser) {
-      // Set a flag to indicate that the edit modal should be displayed
       this.showEditModal = true;
-      // Additional logic if needed, e.g., pass the selected user to the edit modal
-      // this.selectedUserForEdit = this.selectedUser;
     } else if (option.view) {
-      // Handle the view option here.
     } else if (option.delete && this.selectedUser) {
-      // Handle the delete option here.
     }
 
-    // Clear the selected user after handling the option.
     this.selectedUser = null;
   }
 
@@ -77,100 +70,100 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   fetchUsers(): void {
-    // this.loading = true;
+    this.loading = true;
 
-    // this.usersService.getUsers().subscribe(
-    //   (response: any) => {
-    //     const users = response.users || response.data;
-    //     console.log(response.users);
-    //     if (Array.isArray(users)) {
-    //       this.users = users as User[];
-    //     } else {
-    //       console.error('Invalid response format for users:', users);
-    //     }
-    //   },
-    //   error => {
-    //     console.error('Error fetching users:', error);
-    //   },
-    //   () => {
-    //     this.loading = false;
-    //   }
-    // );
+    this.usersService.getUsers().subscribe(
+      (response: any) => {
+        const users = response.users || response.data;
+        if (Array.isArray(users)) {
+          this.users = users as User[];
+        } else {
+          console.error('Invalid response format for users:', users);
+        }
+      },
+      error => {
+        console.error('Error fetching users:', error);
+      },
+      () => {
+        this.loading = false;
+      }
+    );
 
-    this.users = [
-      {
-        profilePicture: '',
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john@example.com',
-        roles: 'Basic User',
-        department: 'Service Center',
-        specializations: [],
-      },
-      {
-        profilePicture: '',
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john@example.com',
-        roles: 'Basic User',
-        department: 'Service Center',
-        specializations: [],
-      },
-      {
-        profilePicture: '',
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john@example.com',
-        roles: 'Basic User',
-        department: 'Service Center',
-        specializations: [],
-      },
-      {
-        profilePicture: '',
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john@example.com',
-        roles: 'Basic User',
-        department: 'Service Center',
-        specializations: [],
-      },
-      {
-        profilePicture: '',
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john@example.com',
-        roles: 'Basic User',
-        department: 'Service Center',
-        specializations: [],
-      },
-      {
-        profilePicture: '',
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john@example.com',
-        roles: 'Basic User',
-        department: 'Service Center',
-        specializations: [],
-      },
-      {
-        profilePicture: '',
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john@example.com',
-        roles: 'Basic User',
-        department: 'Service Center',
-        specializations: [],
-      },
-      {
-        profilePicture: '',
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john@example.com',
-        roles: 'Basic User',
-        department: 'Service Center',
-        specializations: [],
-      },
-    ];
+    // fetchSpecializations();
+    // this.users = [
+    //   {
+    //     profilePicture: '',
+    //     firstName: 'John',
+    //     lastName: 'Doe',
+    //     email: 'john@example.com',
+    //     roles: 'Basic User',
+    //     department: 'Service Center',
+    //     specializations: [],
+    //   },
+    //   {
+    //     profilePicture: '',
+    //     firstName: 'John',
+    //     lastName: 'Doe',
+    //     email: 'john@example.com',
+    //     roles: 'Basic User',
+    //     department: 'Service Center',
+    //     specializations: [],
+    //   },
+    //   {
+    //     profilePicture: '',
+    //     firstName: 'John',
+    //     lastName: 'Doe',
+    //     email: 'john@example.com',
+    //     roles: 'Basic User',
+    //     department: 'Service Center',
+    //     specializations: [],
+    //   },
+    //   {
+    //     profilePicture: '',
+    //     firstName: 'John',
+    //     lastName: 'Doe',
+    //     email: 'john@example.com',
+    //     roles: 'Basic User',
+    //     department: 'Service Center',
+    //     specializations: [],
+    //   },
+    //   {
+    //     profilePicture: '',
+    //     firstName: 'John',
+    //     lastName: 'Doe',
+    //     email: 'john@example.com',
+    //     roles: 'Basic User',
+    //     department: 'Service Center',
+    //     specializations: [],
+    //   },
+    //   {
+    //     profilePicture: '',
+    //     firstName: 'John',
+    //     lastName: 'Doe',
+    //     email: 'john@example.com',
+    //     roles: 'Basic User',
+    //     department: 'Service Center',
+    //     specializations: [],
+    //   },
+    //   {
+    //     profilePicture: '',
+    //     firstName: 'John',
+    //     lastName: 'Doe',
+    //     email: 'john@example.com',
+    //     roles: 'Basic User',
+    //     department: 'Service Center',
+    //     specializations: [],
+    //   },
+    //   {
+    //     profilePicture: '',
+    //     firstName: 'John',
+    //     lastName: 'Doe',
+    //     email: 'john@example.com',
+    //     roles: 'Basic User',
+    //     department: 'Service Center',
+    //     specializations: [],
+    //   },
+    // ];
   }
 
   createUser(): void {

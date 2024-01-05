@@ -4,8 +4,9 @@
   <div class="message-container">
     @if (signalValues.success) {
     <div class="success-message">
-      {{ signalValues.success.message }}
+      SUCCESS: {{ signalValues.success.message }}
     </div>
+    <span class="close-btn"> </span>
     } @if (signalValues.error) {
     <div class="error-message">
       {{ signalValues.error.message }}
@@ -101,9 +102,14 @@
         class="input-settings {{ getDepartmentErrors() ? 'error' : '' }}"
         id="department"
         formControlName="department">
-        <option value="" selected>Select an option...</option>
+        <!-- <option value="" selected>Select an option...</option>
         <option value="Service Center">Service Center</option>
-        <option value="Training Center">Training Center</option>
+        <option value="Training Center">Training Center</option> -->
+        <option
+          *ngFor="let departmentItem of department"
+          [value]="departmentItem.name">
+          {{ departmentItem.name }}
+        </option>
       </select>
       @if(getDepartmentErrors()){
       <div class="validation-error-message">
@@ -119,13 +125,14 @@
         class="input-settings {{ getSpecializationErrors() ? 'error' : '' }}"
         id="specialization"
         formControlName="specialization">
-        <option value="" disabled selected>Select an option...</option>
-        <option value="UI/UX Designer">UI/UX Designer</option>
-        <option value="Frontend Developer">Frontend Developer</option>
-        <option value="backend_developer">Backend Developer</option>
-        <option value="Software Tester">Software Tester</option>
-        <option value="DevOps">DevOps</option>
-        <option value="Data Scientist">Data Scientist</option>
+        <!-- <option selected>{{ this.user.specializations }}</option> -->
+        <!-- <option value="" selected>Update Specialization...</option> -->
+
+        <option
+          *ngFor="let specializationItem of specializations"
+          [value]="specializationItem.name">
+          {{ specializationItem.name }}
+        </option>
       </select>
       @if(getSpecializationErrors()) {
       <div class="validation-error-message">

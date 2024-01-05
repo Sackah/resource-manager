@@ -9,6 +9,7 @@ import { BASE_URL } from '../../../../environment/config';
 import { UpdateUserDetails } from '../../../auth/types/auth-types';
 import { HttpErrorResponse } from '@angular/common/http';
 import { throwError } from 'rxjs';
+import { SpecializationsResponse, User } from '../../../shared/types/types';
 
 export type SettingsFields = 'profile' | 'password';
 
@@ -84,5 +85,25 @@ export class SettingsService {
       console.error(error.error);
       return throwError(() => new Error(`${error.error.message}`));
     }
+  }
+  getSpecialization(): Observable<SpecializationsResponse> {
+    return this.http.get<SpecializationsResponse>(
+      `${BASE_URL}/specialization/fetch`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'skip-browser-warning',
+        },
+      }
+    );
+  }
+
+  getDepartment(): Observable<any> {
+    return this.http.get<any>(`${BASE_URL}/department/fetch`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'skip-browser-warning',
+      },
+    });
   }
 }

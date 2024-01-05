@@ -27,7 +27,7 @@
         <li class="notification-head-container">
           <div class="notification-head">Notifications</div>
           <span class="view-all-link">
-            <a>Mark all as read</a>
+            <a (click)="markAllAsRead()">Mark all as read</a>
           </span>
         </li>
         <div class="info-container">
@@ -46,14 +46,20 @@
           *ngFor="let notification of notifications"
           cdkMenuItem>
           <img
-            class="notification-icon"
-            src="assets/images/user/{{ notification.icon }}" />
+            src="assets/images/user/avatar-3.svg"
+            alt="avatar"
+            class="src alt" />
           <div>
-            <div class="notification-subject">
-              {{ notification.from }}
+            <div class="notif-msg">
+              <div class="notification-subject">
+                {{ notification.created_by }}
+              </div>
+              <p class="notification-time">
+                {{ notification.time }}
+              </p>
             </div>
             <p class="notification-desc">
-              {{ notification.description }}
+              {{ notification.message }}
             </p>
           </div>
         </li>

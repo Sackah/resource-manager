@@ -11,6 +11,7 @@ export type CurrentUser = {
   password_confirmation?: string;
   current_password?: string;
   department: 'Service Center' | 'Training Center';
+  specializations: [];
 };
 
 export interface User {
@@ -27,3 +28,26 @@ export type ProfileUpdateResponse = {
   success: boolean;
   message: string;
 };
+
+export type SpecializationsResponse = {
+  success: boolean;
+  message: string;
+};
+
+export interface Specializations {
+  name: string[];
+}
+
+// export interface Departments {
+//   name: Pick<Specializations, 'name'>;
+// }
+
+export interface Departments {
+  name: string[];
+}
+
+export interface UserNotifications {
+  created_by: string;
+  time: string;
+  message: string;
+}
