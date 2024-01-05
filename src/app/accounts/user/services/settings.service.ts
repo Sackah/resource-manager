@@ -9,6 +9,7 @@ import { BASE_URL } from '../../../../environment/config';
 import { UpdateUserDetails } from '../../../auth/types/auth-types';
 import { HttpErrorResponse } from '@angular/common/http';
 import { throwError } from 'rxjs';
+import { Departments, Specializations } from '../../../shared/types/types';
 
 export type SettingsFields = 'profile' | 'password';
 
@@ -66,6 +67,39 @@ export class SettingsService {
         `${BASE_URL}/users/settings/update/password`,
         newPassword
       )
+      .pipe(catchError((error: HttpErrorResponse) => this.onError(error)));
+  }
+
+  /**
+   * Gets available specializations for display purposes
+   * @returns An observable of @see{@link Specializations}
+   */
+  getSpecializations(): Observable<{ specializations: Specializations[] }> {
+    return this.http
+      .get<{ specializations: Specializations[] }>(
+        `${BASE_URL}/specialization/fetch`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'skip-browser-warning',
+          },
+        }
+      )
+      .pipe(catchError((error: HttpErrorResponse) => this.onError(error)));
+  }
+
+  /**
+   * Gets available departments for display purposes
+   * @returns An observable of @see{@link any}
+   */
+  getDepartments(): Observable<{ departments: Departments[] }> {
+    return this.http
+      .get<{ departments: Departments[] }>(`${BASE_URL}/department/fetch`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'skip-browser-warning',
+        },
+      })
       .pipe(catchError((error: HttpErrorResponse) => this.onError(error)));
   }
 

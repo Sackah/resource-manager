@@ -59,20 +59,22 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   /**
    * These two arrays are just used to dynamically create option elements
    */
-  specializations: Specializations[] = [
-    'Frontend Developer',
-    'Backend Developer',
-    'UI/UX Designer',
-    'DevOps',
-    'Data Scientist',
-    'Software Tester',
-    'Operations',
-  ];
-  departments: Departments[] = [
-    'Service Center',
-    'Training Center',
-    'Operations',
-  ];
+  // specializations: Specializations[] = [
+  //   'Frontend Developer',
+  //   'Backend Developer',
+  //   'UI/UX Designer',
+  //   'DevOps',
+  //   'Data Scientist',
+  //   'Software Tester',
+  //   'Operations',
+  // ];
+  // departments: Departments[] = [
+  //   'Service Center',
+  //   'Training Center',
+  //   'Operations',
+  // ];
+  specializations!: Specializations[];
+  departments!: Departments[];
 
   constructor(
     private store: Store,
@@ -105,6 +107,18 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       next: res => {
         this.user = res.success?.user as CurrentUser;
         this.setValues();
+      },
+    });
+
+    this.settingsService.getSpecializations().subscribe({
+      next: res => {
+        this.specializations = res.specializations;
+      },
+    });
+
+    this.settingsService.getDepartments().subscribe({
+      next: res => {
+        this.departments = res.departments;
       },
     });
   }
