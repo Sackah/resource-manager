@@ -20,10 +20,15 @@ import { LoginSideIllustrationComponent } from '../../../../auth/components/logi
 import { validPhoneNumber } from '../../../../auth/validators/invalidphonenumber';
 import { selectLogin } from '../../../../auth/store/authorization/AuthReducers';
 import { Store } from '@ngrx/store';
-import { CurrentUser } from '../../../../shared/types/types';
-import { User } from '../../../../shared/types/types';
-import { Specializations } from '../../../../shared/types/types';
-import { Departments } from '../../../../shared/types/types';
+import {
+  CurrentUser,
+  Departments,
+  Specializations,
+} from '../../../../shared/types/types';
+
+/**
+ * Initial state of the signal
+ */
 type InitialState = {
   success: null | UpdateUserDetailsResponse;
   error: null | Error;
@@ -41,7 +46,6 @@ type InitialState = {
   ],
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
-  private ngUnsubscribe: Subject<void> = new Subject<void>();
   userDetails!: FormGroup;
   imgUrl = '../../../../../assets/images/user/profile-container-2.svg';
   user!: CurrentUser;
@@ -52,66 +56,23 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     error: null,
     pending: false,
   });
-
-  specializations: Specializations[] = [];
-  newSpecialization: Specializations = {
-    name: [],
-  };
-
-  department: Departments[] = [];
-  newDepartment: Departments = {
-    name: [],
-  };
-
-  fetchSpecializations(): void {
-    this.settingsService
-      .getSpecialization()
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(
-        (response: any) => {
-          console.log('Full response:', response);
-
-          const specializations = response && response.specializations;
-
-          if (Array.isArray(specializations)) {
-            this.specializations = specializations as Specializations[];
-          } else {
-            console.error(
-              'Invalid response format for specializations:',
-              specializations
-            );
-          }
-        },
-        (error: any) => {
-          console.error('Error fetching specializations:', error);
-        }
-      );
-  }
-
-  fetchDepartments(): void {
-    this.settingsService
-      .getDepartment()
-      .pipe(takeUntil(this.ngUnsubscribe))
-      .subscribe(
-        (response: any) => {
-          console.log('Full response:', response);
-
-          const departments = response && response.departments;
-
-          if (Array.isArray(departments)) {
-            this.department = departments as Departments[];
-          } else {
-            console.error(
-              'Invalid response format for department:',
-              departments
-            );
-          }
-        },
-        (error: any) => {
-          console.error('Error fetching department:', error);
-        }
-      );
-  }
+  /**
+   * These two arrays are just used to dynamically create option elements
+   */
+  specializations: Specializations[] = [
+    'Frontend Developer',
+    'Backend Developer',
+    'UI/UX Designer',
+    'DevOps',
+    'Data Scientist',
+    'Software Tester',
+    'Operations',
+  ];
+  departments: Departments[] = [
+    'Service Center',
+    'Training Center',
+    'Operations',
+  ];
 
   constructor(
     private store: Store,
@@ -120,9 +81,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.fetchSpecializations();
-    this.fetchDepartments();
-
     this.userDetails = new FormGroup({
       profilePicture: new FormControl(null),
       email: new FormControl({ value: '', disabled: true }, [
@@ -143,29 +101,10 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       specialization: new FormControl('', [Validators.required]),
     });
 
-    // Call methods to fetch specializations and departments
-    this.settingsService.getSpecialization().subscribe(() => {
-      this.userDetails.patchValue({
-        // userSpecialization: this.user?.specializations || '',
-      });
-    });
-
-    this.settingsService.getDepartment().subscribe((departments: User[]) => {
-      this.userDetails.patchValue({
-        department: this.user?.department || '',
-      });
-    });
-
-    this.setValues();
     this.storeSubscription = this.store.select(selectLogin).subscribe({
       next: res => {
         this.user = res.success?.user as CurrentUser;
-        this.userDetails.patchValue({
-          email: this.user?.email || '',
-          firstName: this.user?.firstName || '',
-          lastName: this.user?.lastName || '',
-          phoneNumber: this.user?.phoneNumber || '',
-        });
+        this.setValues();
       },
     });
   }
@@ -231,6 +170,11 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     return '';
   }
 
+  /**
+   * This method is used to change the image url when the user selects a file
+   * @param event
+   * @returns {void}
+   */
   onFileChange(event: any) {
     if (event.target?.files.length > 0) {
       let reader = new FileReader();
@@ -241,12 +185,18 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         this.imgUrl = event.target.result;
       };
 
-      this.userDetails.patchValue({
-        profilePicture: file,
-      });
+      /**
+       * Profile picture should be a string
+       */
+      // this.userDetails.patchValue({
+      //   profilePicture: file,
+      // });
     }
   }
 
+  /**
+   * setvalues() is called on instanciaion to replace all the values with data from state
+   */
   setValues() {
     if (this.user) {
       this.userDetails.patchValue({
@@ -254,6 +204,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         firstName: this.user.firstName,
         lastName: this.user.lastName,
         phoneNumber: this.user.phoneNumber,
+        department: this.user.department || '',
+        imgUrl: this.user.profilePicture,
+        specializations: this.user.specializations[0] || '',
       });
     }
   }
@@ -263,6 +216,11 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     return val;
   }
 
+  /**
+   * The form is submitted here
+   * @param event
+   * @returns {void}
+   */
   submitForm(event: Event) {
     event.preventDefault();
     this.settingsSig.set({
@@ -276,6 +234,9 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       return;
     }
 
+    /**
+     * Id is added to the user details for backend requirement purposes
+     */
     const userDetails: UpdateUserDetails = {
       ...this.userDetails.value,
       userId: this.user.userId,
@@ -305,7 +266,5 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.storeSubscription.unsubscribe();
-    this.ngUnsubscribe.next();
-    this.ngUnsubscribe.complete();
   }
 }

@@ -69,8 +69,7 @@
         type="email"
         class="input-settings {{ getEmailErrors() ? 'error' : '' }}"
         placeholder="something@example.com"
-        formControlName="email"
-        [disabled]="true" />
+        formControlName="email" />
       @if(getEmailErrors()){
       <div class="validation-error-message">
         {{ getEmailErrors() }}
@@ -102,14 +101,10 @@
         class="input-settings {{ getDepartmentErrors() ? 'error' : '' }}"
         id="department"
         formControlName="department">
-        <!-- <option value="" selected>Select an option...</option>
-        <option value="Service Center">Service Center</option>
-        <option value="Training Center">Training Center</option> -->
-        <option
-          *ngFor="let departmentItem of department"
-          [value]="departmentItem.name">
-          {{ departmentItem.name }}
-        </option>
+        <option value="">Select an option...</option>
+        @for (department of departments; track $index) {
+        <option [value]="department">{{ department }}</option>
+        }
       </select>
       @if(getDepartmentErrors()){
       <div class="validation-error-message">
@@ -125,14 +120,10 @@
         class="input-settings {{ getSpecializationErrors() ? 'error' : '' }}"
         id="specialization"
         formControlName="specialization">
-        <!-- <option selected>{{ this.user.specializations }}</option> -->
-        <!-- <option value="" selected>Update Specialization...</option> -->
-
-        <option
-          *ngFor="let specializationItem of specializations"
-          [value]="specializationItem.name">
-          {{ specializationItem.name }}
-        </option>
+        <option value="">Select an option...</option>
+        @for (specialization of specializations; track $index) {
+        <option [value]="specialization">{{ specialization }}</option>
+        }
       </select>
       @if(getSpecializationErrors()) {
       <div class="validation-error-message">

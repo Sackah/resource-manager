@@ -81,11 +81,7 @@ label:not(.visibly-hidden) {
 }
 
 /* .message-container {
-  position: fixed;
-  top: 20%;
-  right: -2%;
-  transform: translate(-50%, -50%);
-  text-align: center;
+  position: absolute;
 } */
 
 .alert {
@@ -114,4 +110,7 @@ label:not(.visibly-hidden) {
 
 .error-message {
   background: #fc2e20;
+  position: fixed;
+  top: 20vh;
+  right: 10vw;
 }

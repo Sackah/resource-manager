@@ -26,6 +26,7 @@ export const loginEffect = createEffect(
         return loginService.post(userDetails).pipe(
           map(response => {
             tokenService.set(response.accessToken);
+            console.log(response);
             return AuthActions.loginSuccess(response);
           }),
           catchError((error: HttpErrorResponse) => {

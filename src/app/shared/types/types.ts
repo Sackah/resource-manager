@@ -1,3 +1,16 @@
+export type Specializations =
+  | 'Frontend Developer'
+  | 'Backend Developer'
+  | 'UI/UX Designer'
+  | 'DevOps'
+  | 'Data Scientist'
+  | 'Software Tester'
+  | 'Operations';
+
+export type Roles = 'Basic User' | 'Administrator' | 'Manager';
+
+export type Departments = 'Service Center' | 'Training Center' | 'Operations';
+
 export type CurrentUser = {
   email: string;
   userId: string;
@@ -5,46 +18,29 @@ export type CurrentUser = {
   lastName: string;
   profilePicture: string;
   phoneNumber: string;
-  roles: 'Basic User' | 'Administrator' | 'Manager';
+  roles: Roles;
   changePassword: boolean;
   password?: string;
   password_confirmation?: string;
   current_password?: string;
-  department: 'Service Center' | 'Training Center';
-  specializations: [];
+  department: Departments;
+  specializations: Specializations[];
 };
 
-export interface User {
-  email: string;
-  firstName: string;
-  lastName: string;
-  profilePicture: string;
-  department: 'Service Center' | 'Training Center';
-  roles: 'Basic User' | 'Administrator' | 'Manager';
-  specializations: string[];
-}
+/**
+ * @description
+ * Yes CurrentUser is the same as User, but it may be used in different contexts where typing an object
+ * as User is more appropriate than typing it as CurrentUser
+ */
+export interface User extends CurrentUser {}
 
-export type ProfileUpdateResponse = {
+/**
+ * @description you can use this type, anywhere the response is not of utmost importance
+ */
+export type GenericResponse = {
   success: boolean;
   message: string;
 };
-
-export type SpecializationsResponse = {
-  success: boolean;
-  message: string;
-};
-
-export interface Specializations {
-  name: string[];
-}
-
-// export interface Departments {
-//   name: Pick<Specializations, 'name'>;
-// }
-
-export interface Departments {
-  name: string[];
-}
 
 export interface UserNotifications {
   created_by: string;
