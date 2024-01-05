@@ -19,8 +19,6 @@ export class LoginService {
   constructor(private http: HttpClient) {}
 
   post(user: LoginUserDetails) {
-    console.log(user);
-
     return this.http.post<LoginUserResponse>(`${BASE_URL}/users/login`, user);
   }
 }

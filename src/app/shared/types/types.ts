@@ -20,9 +20,7 @@ export type CurrentUser = {
   phoneNumber: string;
   roles: Roles;
   changePassword: boolean;
-  password?: string;
-  password_confirmation?: string;
-  current_password?: string;
+  permissions?: Permisions;
   department: Departments;
   specializations: Specializations[];
 };
@@ -47,3 +45,16 @@ export interface UserNotifications {
   time: string;
   message: string;
 }
+
+export type Permisions = {
+  can_add_manager: boolean;
+  can_add_user: boolean;
+  can_add_user_to_group: boolean;
+  can_assign_client_to_project: boolean;
+  can_assign_user_to_department: boolean;
+  can_assign_user_to_project: boolean;
+  can_assign_user_to_specialization: boolean;
+  can_create_client: boolean;
+  can_create_project: boolean;
+  can_update_user_role: boolean;
+};

@@ -6,12 +6,8 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
-import {
-  UpdateUserDetails,
-  UpdateUserDetailsResponse,
-} from '../../../../auth/types/auth-types';
 import { Subscription } from 'rxjs';
-import { selectLogin } from '../../../../auth/store/authorization/AuthReducers';
+import { selectCurrentUser } from '../../../../auth/store/authorization/AuthReducers';
 import { passwordMatchValidator } from '../../../../auth/validators/passwordmismatch';
 import { SettingsService } from '../../services/settings.service';
 import { CurrentUser } from '../../../../shared/types/types';
@@ -67,11 +63,11 @@ export class UserPasswordComponent {
       }
     );
 
-    this.setValues();
-
-    this.storeSubscription = this.store.select(selectLogin).subscribe({
-      next: (value: any) => {
-        this.user = (value.success?.user as CurrentUser) || null;
+    this.storeSubscription = this.store.select(selectCurrentUser).subscribe({
+      next: user => {
+        if (user) {
+          this.user = user;
+        }
       },
     });
   }
@@ -118,16 +114,6 @@ export class UserPasswordComponent {
     return '';
   }
 
-  setValues() {
-    if (this.user) {
-      this.userPasswordForm.patchValue({
-        current_password: this.user.current_password || '',
-        password: this.user.password || '',
-        password_confirmation: this.user.password_confirmation,
-      });
-    }
-  }
-
   get signalValues() {
     const val = this.settingsSig();
     return val;
@@ -142,21 +128,18 @@ export class UserPasswordComponent {
     });
 
     if (!this.user) {
-      console.log('User details not available');
+      throw new Error('User details not available');
     }
 
-    const newPassword: string =
-      this.userPasswordForm.get('password')?.value || '';
-    const currentPassword: string =
-      this.userPasswordForm.get('current_password')?.value || '';
-    const userPasswordForm: any = {
-      current_password: currentPassword,
-      password: newPassword,
-      password_confirmation: newPassword,
-      email: this.user.email,
-    };
+    /**
+     * do this if id is required
+     */
+    // const userPasswordForm = {
+    //   ...this.userPasswordForm.value,
+    //   userId: this.user.userId,
+    // };
 
-    this.settingsService.updatePassword(userPasswordForm).subscribe({
+    this.settingsService.updatePassword(this.userPasswordForm.value).subscribe({
       next: response => {
         if (response && response.message) {
           this.settingsSig.set({
