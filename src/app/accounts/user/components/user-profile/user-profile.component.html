@@ -103,7 +103,7 @@
         formControlName="department">
         <option value="">Select an option...</option>
         @for (department of departments; track $index) {
-        <option [value]="department.name">{{ department.name }}</option>
+        <option [value]="department">{{ department }}</option>
         }
       </select>
       @if(getDepartmentErrors()){
@@ -122,7 +122,7 @@
         formControlName="specialization">
         <option value="">Select an option...</option>
         @for (specialization of specializations; track $index) {
-        <option [value]="specialization.name">{{ specialization.name }}</option>
+        <option [value]="specialization">{{ specialization }}</option>
         }
       </select>
       @if(getSpecializationErrors()) {

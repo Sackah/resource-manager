@@ -59,10 +59,6 @@ export interface UpdateUserDetailsResponse extends LoginUserResponse {
   status: number;
 }
 
-// export interface UpdateUserProfileResponse extends LoginUserResponse {
-//   status: number;
-// }
-
 export interface UpdateUserDetailsError {
   errors?: string[];
   message: string;

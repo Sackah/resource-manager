@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, catchError } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map } from 'rxjs';
 import {
   UpdateUserDetailsResponse,
   UpdateUserPasswordResponse,
@@ -15,12 +15,12 @@ export type SettingsFields = 'profile' | 'password';
 
 /**
  * Service for managing user settings.
- * @usageNotes
+ * @example
  * ```
- * const settingsService = inject(SettingsService);
- * settingsService.toggle('password'); //to change the field to a password field
- * settingsService.updateDetails(newDetails); //to update the user details
- * settingsService.updatePassword(newPassword); //to update the user password
+ *  const settingsService = inject(SettingsService);
+ *  settingsService.toggle('password'); //to change the field to a password field
+ *  settingsService.updateDetails(newDetails); //to update the user details
+ *  settingsService.updatePassword(newPassword); //to update the user password
  * ```
  */
 @Injectable({
@@ -41,7 +41,7 @@ export class SettingsService {
   }
 
   /**
-   * Updates the user details.
+   * Updates the user details on their profile.
    * @param newDetails The new user details.
    * @returns An observable of @see{@link UpdateUserDetailsResponse}
    */
@@ -74,40 +74,53 @@ export class SettingsService {
    * Gets available specializations for display purposes
    * @returns An observable of @see{@link Specializations}
    */
-  getSpecializations(): Observable<{
-    specializations: [{ id: number; name: string }];
-  }> {
+  getSpecializations(): Observable<Specializations[]> {
     return this.http
-      .get<{ specializations: [{ id: number; name: string }] }>(
+      .get<{ specializations: [{ id: number; name: Specializations }] }>(
         `${BASE_URL}/specialization/fetch`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'skip-browser-warning',
-          },
-        }
+        this.headers
       )
-      .pipe(catchError((error: HttpErrorResponse) => this.onError(error)));
+      .pipe(
+        map(res => {
+          const temp: Specializations[] = [];
+          res.specializations.forEach(spec => temp.push(spec.name));
+          return temp;
+        }),
+        catchError((error: HttpErrorResponse) => this.onError(error))
+      );
   }
 
   /**
    * Gets available departments for display purposes
-   * @returns An observable of @see{@link any}
+   * @returns An observable of @see{@link Departments}
    */
-  getDepartments(): Observable<{
-    departments: [{ id: number; name: string }];
-  }> {
+  getDepartments(): Observable<Departments[]> {
     return this.http
-      .get<{ departments: [{ id: number; name: string }] }>(
+      .get<{ departments: [{ id: number; name: Departments }] }>(
         `${BASE_URL}/department/fetch`,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'skip-browser-warning',
-          },
-        }
+        this.headers
       )
-      .pipe(catchError((error: HttpErrorResponse) => this.onError(error)));
+      .pipe(
+        map(res => {
+          const temp: Departments[] = [];
+          res.departments.forEach(dep => temp.push(dep.name));
+          return temp;
+        }),
+        catchError((error: HttpErrorResponse) => this.onError(error))
+      );
+  }
+
+  /**
+   * Returns standard headers like ngrok skip warnings and content type
+   * @returns {HttpHeaders}
+   */
+  private get headers() {
+    return {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'skip-browser-warning',
+      }),
+    };
   }
 
   /**

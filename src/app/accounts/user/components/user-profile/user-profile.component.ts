@@ -1,7 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, signal } from '@angular/core';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import {
   ReactiveFormsModule,
@@ -9,18 +7,18 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
-
 import { SettingsService } from '../../services/settings.service';
-import {
-  UpdateUserDetails,
-  UpdateUserDetailsResponse,
-} from '../../../../auth/types/auth-types';
+import { UpdateUserDetailsResponse } from '../../../../auth/types/auth-types';
 import { Router } from '@angular/router';
 import { LoginSideIllustrationComponent } from '../../../../auth/components/login-side-illustration/login-side-illustration.component';
 import { validPhoneNumber } from '../../../../auth/validators/invalidphonenumber';
-import { selectLogin } from '../../../../auth/store/authorization/AuthReducers';
+import { selectCurrentUser } from '../../../../auth/store/authorization/AuthReducers';
 import { Store } from '@ngrx/store';
-import { CurrentUser } from '../../../../shared/types/types';
+import {
+  CurrentUser,
+  Departments,
+  Specializations,
+} from '../../../../shared/types/types';
 
 /**
  * Initial state of the signal
@@ -52,8 +50,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     error: null,
     pending: false,
   });
-  specializations!: [{ id: number; name: string }];
-  departments!: [{ id: number; name: string }];
+  specializations!: Specializations[];
+  departments!: Departments[];
 
   constructor(
     private store: Store,
@@ -82,24 +80,26 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       specialization: new FormControl('', [Validators.required]),
     });
 
-    this.storeSubscription = this.store.select(selectLogin).subscribe({
-      next: res => {
-        this.user = res.success?.user as CurrentUser;
-        this.setValues();
-      },
-    });
-
     this.settingsService.getSpecializations().subscribe({
       next: res => {
         console.log(res);
-        this.specializations = res.specializations;
+        this.specializations = res;
       },
     });
 
     this.settingsService.getDepartments().subscribe({
       next: res => {
         console.log(res);
-        this.departments = res.departments;
+        this.departments = res;
+      },
+    });
+
+    this.storeSubscription = this.store.select(selectCurrentUser).subscribe({
+      next: user => {
+        if (user) {
+          this.user = user;
+        }
+        this.setValues();
       },
     });
   }

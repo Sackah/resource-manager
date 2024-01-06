@@ -37,6 +37,8 @@
   border-radius: 16px;
   margin-top: 28px;
   cursor: pointer;
+  font-family: 'LexendMedium';
+  text-transform: capitalize;
 }
 
 .global-button-auth:disabled {

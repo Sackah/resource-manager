@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { CurrentUserService } from '../../services/current-user.service';
+import { Store } from '@ngrx/store';
+import { selectCurrentUser } from '../../store/authorization/AuthReducers';
 
 @Component({
   selector: 'app-redirect',
@@ -9,28 +10,28 @@ import { CurrentUserService } from '../../services/current-user.service';
   template: ``,
 })
 export class RedirectComponent implements OnInit {
-  constructor(
-    private router: Router,
-    private currentUserService: CurrentUserService
-  ) {}
+  constructor(private router: Router, private store: Store) {}
 
   ngOnInit(): void {
-    this.currentUserService.get().subscribe({
-      next: response => {
-        if (response) {
-          if (response.user.roles === 'Basic User') {
-            this.router.navigateByUrl('/user/dashboard');
-          } else if (response.user.roles === 'Manager') {
-            this.router.navigateByUrl('/manager/dashboard');
-          } else if (response.user.roles === 'Administrator') {
-            this.router.navigateByUrl('/admin/dashboard');
+    this.store.select(selectCurrentUser).subscribe({
+      next: user => {
+        if (user) {
+          switch (user.roles) {
+            case 'Basic User':
+              this.router.navigateByUrl('/user/dashboard');
+              break;
+            case 'Administrator':
+              this.router.navigateByUrl('/admin/dashboard');
+              break;
+            case 'Manager':
+              this.router.navigateByUrl('/manager/dashboard');
+              break;
+            default:
+              this.router.navigateByUrl('/login');
           }
         } else {
           this.router.navigateByUrl('/login');
         }
-      },
-      error: () => {
-        this.router.navigateByUrl('/login');
       },
     });
   }
