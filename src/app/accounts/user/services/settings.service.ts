@@ -74,9 +74,11 @@ export class SettingsService {
    * Gets available specializations for display purposes
    * @returns An observable of @see{@link Specializations}
    */
-  getSpecializations(): Observable<{ specializations: Specializations[] }> {
+  getSpecializations(): Observable<{
+    specializations: [{ id: number; name: string }];
+  }> {
     return this.http
-      .get<{ specializations: Specializations[] }>(
+      .get<{ specializations: [{ id: number; name: string }] }>(
         `${BASE_URL}/specialization/fetch`,
         {
           headers: {
@@ -92,14 +94,19 @@ export class SettingsService {
    * Gets available departments for display purposes
    * @returns An observable of @see{@link any}
    */
-  getDepartments(): Observable<{ departments: Departments[] }> {
+  getDepartments(): Observable<{
+    departments: [{ id: number; name: string }];
+  }> {
     return this.http
-      .get<{ departments: Departments[] }>(`${BASE_URL}/department/fetch`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'skip-browser-warning',
-        },
-      })
+      .get<{ departments: [{ id: number; name: string }] }>(
+        `${BASE_URL}/department/fetch`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'skip-browser-warning',
+          },
+        }
+      )
       .pipe(catchError((error: HttpErrorResponse) => this.onError(error)));
   }
 

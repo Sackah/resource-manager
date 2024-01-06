@@ -119,6 +119,10 @@ export class UserPasswordComponent {
     return val;
   }
 
+  /**
+   * The form is submitted here.
+   * @param event
+   */
   submitForm(event: Event) {
     event.preventDefault();
     this.settingsSig.set({
@@ -131,15 +135,12 @@ export class UserPasswordComponent {
       throw new Error('User details not available');
     }
 
-    /**
-     * do this if id is required
-     */
-    // const userPasswordForm = {
-    //   ...this.userPasswordForm.value,
-    //   userId: this.user.userId,
-    // };
+    const reqBody = {
+      ...this.userPasswordForm.value,
+      email: this.user.email,
+    };
 
-    this.settingsService.updatePassword(this.userPasswordForm.value).subscribe({
+    this.settingsService.updatePassword(reqBody).subscribe({
       next: response => {
         if (response && response.message) {
           this.settingsSig.set({

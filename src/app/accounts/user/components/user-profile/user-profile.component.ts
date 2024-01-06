@@ -20,11 +20,7 @@ import { LoginSideIllustrationComponent } from '../../../../auth/components/logi
 import { validPhoneNumber } from '../../../../auth/validators/invalidphonenumber';
 import { selectLogin } from '../../../../auth/store/authorization/AuthReducers';
 import { Store } from '@ngrx/store';
-import {
-  CurrentUser,
-  Departments,
-  Specializations,
-} from '../../../../shared/types/types';
+import { CurrentUser } from '../../../../shared/types/types';
 
 /**
  * Initial state of the signal
@@ -56,25 +52,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     error: null,
     pending: false,
   });
-  /**
-   * These two arrays are just used to dynamically create option elements
-   */
-  // specializations: Specializations[] = [
-  //   'Frontend Developer',
-  //   'Backend Developer',
-  //   'UI/UX Designer',
-  //   'DevOps',
-  //   'Data Scientist',
-  //   'Software Tester',
-  //   'Operations',
-  // ];
-  // departments: Departments[] = [
-  //   'Service Center',
-  //   'Training Center',
-  //   'Operations',
-  // ];
-  specializations!: Specializations[];
-  departments!: Departments[];
+  specializations!: [{ id: number; name: string }];
+  departments!: [{ id: number; name: string }];
 
   constructor(
     private store: Store,
@@ -112,12 +91,14 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
     this.settingsService.getSpecializations().subscribe({
       next: res => {
+        console.log(res);
         this.specializations = res.specializations;
       },
     });
 
     this.settingsService.getDepartments().subscribe({
       next: res => {
+        console.log(res);
         this.departments = res.departments;
       },
     });
@@ -220,7 +201,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         phoneNumber: this.user.phoneNumber,
         department: this.user.department || '',
         imgUrl: this.user.profilePicture,
-        specializations: this.user.specializations[0] || '',
+        specialization: this.user.specializations[0] || '',
       });
     }
   }
@@ -249,15 +230,18 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     }
 
     /**
-     * Id is added to the user details for backend requirement purposes
+     * Email is intentionally omitted from the request body
      */
-    const userDetails: UpdateUserDetails = {
-      ...this.userDetails.value,
-      userId: this.user.userId,
+    const reqBody = {
+      firstName: this.userDetails.value.firstName,
+      lastName: this.userDetails.value.lastName,
+      phoneNumber: this.userDetails.value.phoneNumber,
+      department: this.userDetails.value.department,
+      specialization: this.userDetails.value.specialization,
     };
 
     if (this.userDetails.valid) {
-      this.settingsService.updateDetails(userDetails).subscribe({
+      this.settingsService.updateDetails(reqBody).subscribe({
         next: response => {
           if (response && response.message) {
             this.settingsSig.set({
