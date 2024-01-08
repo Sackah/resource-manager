@@ -26,6 +26,7 @@ export const loginEffect = createEffect(
         return loginService.post(userDetails).pipe(
           map(response => {
             tokenService.set(response.accessToken);
+            console.log(response);
             return AuthActions.loginSuccess(response);
           }),
           catchError((error: HttpErrorResponse) => {
@@ -59,6 +60,9 @@ export const redirectAfterLogin = createEffect(
           switch (res.user.roles) {
             case 'Basic User':
               router.navigateByUrl('/user/dashboard');
+              break;
+            case 'Manager':
+              router.navigateByUrl('/manager/dashboard');
               break;
             case 'Administrator':
               console.log(res.user.changePassword);

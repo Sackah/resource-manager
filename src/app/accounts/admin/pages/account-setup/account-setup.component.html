@@ -21,6 +21,7 @@
             class="global-input-auth {{
               getOldPasswordErrors() ? 'error' : ''
             }}"
+            placeholder="Enter password"
             formControlName="old_password" />
           @if(getOldPasswordErrors()){
           <div class="validation-error-message">
@@ -40,6 +41,7 @@
             class="global-input-auth {{
               getNewPasswordErrors() ? 'error' : ''
             }}"
+            placeholder="Enter password"
             formControlName="password" />
           @if(getNewPasswordErrors()){
           <div class="validation-error-message">

@@ -44,8 +44,17 @@ export type UpdateUserDetails = {
   firstName?: string;
   lastName?: string;
   phoneNumber?: string;
+  qualification?: string;
+  department?: string;
 };
 
+export type ProfileState = {
+  isSubmitting: boolean;
+  userProfile: {
+    pending: boolean;
+    error: AuthErrorResponse | null;
+  };
+};
 export interface UpdateUserDetailsResponse extends LoginUserResponse {
   status: number;
 }

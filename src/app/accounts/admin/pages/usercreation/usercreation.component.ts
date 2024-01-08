@@ -7,7 +7,7 @@ import {
   FormBuilder,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AdminService } from '../../../services/admin.service';
+import { AdminService } from '../../services/admin.service';
 import { finalize } from 'rxjs/operators';
 
 @Component({

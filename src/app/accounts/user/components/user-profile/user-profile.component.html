@@ -1,6 +1,19 @@
 <h4>Personal Info</h4>
 <p>Update your personal details here</p>
 <form (submit)="submitForm($event)" [formGroup]="userDetails">
+  <div class="message-container">
+    @if (signalValues.success) {
+    <div class="success-message">
+      SUCCESS: {{ signalValues.success.message }}
+    </div>
+    <span class="close-btn"> </span>
+    } @if (signalValues.error) {
+    <div class="error-message">
+      {{ signalValues.error.message }}
+    </div>
+    }
+  </div>
+
   <div class="profile-picture">
     <img [src]="imgUrl" alt="profile picture" />
     <div class="camera-icon">
@@ -82,22 +95,20 @@
     </div>
 
     <div>
-      <label for="qualification">QUALIFICATION(OPTIONAL)</label>
+      <label for="department">DEPARTMENT</label>
       <select
-        name="qualification"
-        class="input-settings {{ getQualificationErrors() ? 'error' : '' }}"
-        id="qualification"
-        formControlName="qualification">
-        <option value="" disabled selected>Select an option...</option>
-        <option value="PHD">PHD</option>
-        <option value="Masters">Master's</option>
-        <option value="Bachelors">Bachelor's</option>
-        <option value="HND">Higher National Diploma</option>
-        <option value="SHS">Senior High School</option>
+        name="department"
+        class="input-settings {{ getDepartmentErrors() ? 'error' : '' }}"
+        id="department"
+        formControlName="department">
+        <option value="">Select an option...</option>
+        @for (department of departments; track $index) {
+        <option [value]="department">{{ department }}</option>
+        }
       </select>
-      @if(getQualificationErrors()){
+      @if(getDepartmentErrors()){
       <div class="validation-error-message">
-        {{ getQualificationErrors() }}
+        {{ getDepartmentErrors() }}
       </div>
       }
     </div>
@@ -109,13 +120,10 @@
         class="input-settings {{ getSpecializationErrors() ? 'error' : '' }}"
         id="specialization"
         formControlName="specialization">
-        <option value="" disabled selected>Select an option...</option>
-        <option value="ui_ux_designer">UI/UX Designer</option>
-        <option value="frontend_developer">Frontend Developer</option>
-        <option value="backend_developer">Backend Developer</option>
-        <option value="software_tester">Software Tester</option>
-        <option value="devops">DevOps</option>
-        <option value="data_scientist">Data Scientist</option>
+        <option value="">Select an option...</option>
+        @for (specialization of specializations; track $index) {
+        <option [value]="specialization">{{ specialization }}</option>
+        }
       </select>
       @if(getSpecializationErrors()) {
       <div class="validation-error-message">

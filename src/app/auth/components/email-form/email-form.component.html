@@ -13,7 +13,7 @@
       type="email"
       class="global-input-auth {{ getEmailErrors() ? 'error' : '' }}"
       formControlName="email"
-      placeholder="ellanaizer@amalitech.org" />
+      placeholder="something@example.com" />
     @if(getEmailErrors()){
     <div class="validation-error-message">
       {{ getEmailErrors() }}
@@ -22,7 +22,8 @@
     <button
       type="submit"
       class="global-button-auth"
-      [disabled]="this.storeData.isSubmitting">
+      [disabled]="this.storeData.isSubmitting"
+      style="font-family: 'LexendMedium'">
       RESET PASSWORD
     </button>
   </form>

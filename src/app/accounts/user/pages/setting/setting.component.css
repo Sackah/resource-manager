@@ -1,7 +1,6 @@
 .settings.page {
-  min-height: 100vh;
-  padding-left: 16%;
-  padding: calc(10vh + 30px) 50px 50px calc(16% + 50px);
+  padding-top: calc(10vh + 30px);
+  padding-left: calc(16% + 50px);
 }
 
 /* Global styles for settings */

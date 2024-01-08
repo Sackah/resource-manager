@@ -16,6 +16,7 @@ import {
   resetReducer,
 } from './auth/store/reset-password/ResetReducers';
 import { authInterceptor } from './auth/interceptors/authInterceptors';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -26,11 +27,12 @@ export const appConfig: ApplicationConfig = {
     provideState(resetFeatureKey, resetReducer),
     provideEffects(authEffects, resetEffects),
     provideStoreDevtools({
-      maxAge: 25,
-      logOnly: !isDevMode(),
-      autoPause: true,
-      trace: false,
-      traceLimit: 75,
+        maxAge: 25,
+        logOnly: !isDevMode(),
+        autoPause: true,
+        trace: false,
+        traceLimit: 75,
     }),
-  ],
+    provideAnimations()
+],
 };
