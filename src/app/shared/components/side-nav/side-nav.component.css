@@ -23,6 +23,7 @@
   margin-bottom: 0.625rem;
   font-family: 'LexendRegular';
   font-size: 14px;
+  cursor: pointer;
 }
 
 .sidenav-nav-link {

@@ -36,9 +36,4 @@ export const bottomNavData = [
     icon: 'settings-icon.svg',
     label: 'Settings',
   },
-  {
-    routeLink: 'logout',
-    icon: 'logout-icon.svg',
-    label: 'Logout',
-  },
 ];

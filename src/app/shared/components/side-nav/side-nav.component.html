@@ -34,6 +34,15 @@
           <span class="sidenav-link-text">{{ bottomData.label }}</span>
         </a>
       </li>
+      <li class="sidenav-nav-item" (click)="handleLogout($event)">
+        <div class="sidenav-nav-link">
+          <img
+            class="sidenav-link-icon"
+            src="assets/images/user/logout-icon.svg"
+            alt="logout" />
+          <span class="sidenav-link-text">Logout</span>
+        </div>
+      </li>
     </ul>
   </div>
 </div>
