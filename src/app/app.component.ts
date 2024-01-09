@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, Router } from '@angular/router';
 import { AccesstokenService } from './shared/services/accesstoken.service';
 import { CurrentUserService } from './auth/services/current-user.service';
 import { AuthActions } from './auth/store/authorization/AuthActions';
@@ -14,15 +14,29 @@ import { CdkMenuModule } from '@angular/cdk/menu';
   imports: [CommonModule, RouterOutlet, OverlayModule, CdkMenuModule],
   templateUrl: './app.component.html',
 })
-export class AppComponent implements OnInit {
-  constructor(private tokenService: AccesstokenService, private store: Store) {}
-  title = 'resource-manager';
+export class AppComponent implements OnInit, OnDestroy {
+  constructor(
+    private tokenService: AccesstokenService,
+    private store: Store,
+    private router: Router
+  ) {
+    window.addEventListener('beforeunload', () => {
+      console.log('beforeunload', this.router.url);
+      tokenService.set('lastRoute', this.router.url);
+    });
+  }
 
   ngOnInit(): void {
     // try to relog in a user from here
-    // const token = this.tokenService.get();
-    // if (token) {
-    //   this.store.dispatch(AuthActions.fetchCurrentUser());
-    // }
+    const token = this.tokenService.get();
+    if (token) {
+      this.store.dispatch(AuthActions.fetchCurrentUser());
+    }
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('beforeunload', () => {
+      this.tokenService.set('lastRoute', this.router.url);
+    });
   }
 }

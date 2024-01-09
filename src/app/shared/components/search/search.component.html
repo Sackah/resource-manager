@@ -1,5 +1,5 @@
 <div class="search">
-  <div class="search-container">
+  <form class="search-container" (submit)="performSearch()">
     <input
       type="search"
       class="search-input"
@@ -8,6 +8,6 @@
       id="search"
       placeholder="Search anything here" />
 
-    <button aria-label="search" (click)="performSearch()"></button>
-  </div>
+    <button type="submit" aria-label="search"></button>
+  </form>
 </div>

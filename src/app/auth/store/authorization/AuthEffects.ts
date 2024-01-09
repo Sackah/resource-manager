@@ -125,28 +125,37 @@ export const relogInUserEffect = createEffect(
  * Effect for redirecting users after relog in
  */
 export const redirectAfterReLogin = createEffect(
-  (action$ = inject(Actions), router = inject(Router)) => {
+  (
+    action$ = inject(Actions),
+    router = inject(Router),
+    tokenService = inject(AccesstokenService)
+  ) => {
     return action$.pipe(
       ofType(AuthActions.fetchCurrentUserSuccess),
       tap({
         next: res => {
           console.log(res);
+          const lastRoute = tokenService.get('lastRoute') as string;
           switch (res.user.roles) {
             case 'Basic User':
-              router.navigateByUrl('/user/dashboard');
+              router.navigateByUrl(lastRoute || '/user/dashboard');
               break;
             case 'Administrator':
               console.log(res.user.changePassword);
               if (res.user.changePassword) {
                 router.navigateByUrl('/admin/account-setup');
               } else {
-                router.navigateByUrl('/admin/dashboard');
+                router.navigateByUrl(lastRoute || '/admin/dashboard');
               }
+              break;
+            case 'Manager':
+              router.navigateByUrl(lastRoute || '/manager/dashboard');
               break;
             default:
               router.navigateByUrl('/login');
               break;
           }
+          tokenService.clear('lastRoute');
         },
       })
     );

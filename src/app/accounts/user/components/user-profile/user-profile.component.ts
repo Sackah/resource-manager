@@ -17,17 +17,9 @@ import { Store } from '@ngrx/store';
 import {
   CurrentUser,
   Departments,
+  InitialSig,
   Specializations,
 } from '../../../../shared/types/types';
-
-/**
- * Initial state of the signal
- */
-type InitialState = {
-  success: null | UpdateUserDetailsResponse;
-  error: null | Error;
-  pending: boolean;
-};
 
 @Component({
   selector: 'user-profile',
@@ -40,12 +32,12 @@ type InitialState = {
   ],
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
+  subscriptions: Subscription[] = [];
   userDetails!: FormGroup;
   imgUrl = '../../../../../assets/images/user/profile-container-2.svg';
   user!: CurrentUser;
   disable: boolean = false;
-  storeSubscription!: Subscription;
-  settingsSig = signal<InitialState>({
+  settingsSig = signal<InitialSig>({
     success: null,
     error: null,
     pending: false,
@@ -66,7 +58,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         Validators.required,
         Validators.email,
       ]),
-
       firstName: new FormControl('', [
         Validators.required,
         Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
@@ -80,21 +71,21 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       specialization: new FormControl('', [Validators.required]),
     });
 
-    this.settingsService.getSpecializations().subscribe({
+    const specSub = this.settingsService.getSpecializations().subscribe({
       next: res => {
         console.log(res);
         this.specializations = res;
       },
     });
 
-    this.settingsService.getDepartments().subscribe({
+    const departmentSub = this.settingsService.getDepartments().subscribe({
       next: res => {
         console.log(res);
         this.departments = res;
       },
     });
 
-    this.storeSubscription = this.store.select(selectCurrentUser).subscribe({
+    const storeSub = this.store.select(selectCurrentUser).subscribe({
       next: user => {
         if (user) {
           this.user = user;
@@ -102,6 +93,8 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         this.setValues();
       },
     });
+
+    this.subscriptions.push(specSub, departmentSub, storeSub);
   }
 
   getEmailErrors(): string {
@@ -263,6 +256,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.storeSubscription.unsubscribe();
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

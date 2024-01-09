@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { selectCurrentUser } from '../../store/authorization/AuthReducers';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-redirect',
@@ -9,11 +10,12 @@ import { selectCurrentUser } from '../../store/authorization/AuthReducers';
   imports: [],
   template: ``,
 })
-export class RedirectComponent implements OnInit {
+export class RedirectComponent implements OnInit, OnDestroy {
+  subscriptions: Subscription[] = [];
   constructor(private router: Router, private store: Store) {}
 
   ngOnInit(): void {
-    this.store.select(selectCurrentUser).subscribe({
+    const storeSub = this.store.select(selectCurrentUser).subscribe({
       next: user => {
         if (user) {
           switch (user.roles) {
@@ -34,5 +36,11 @@ export class RedirectComponent implements OnInit {
         }
       },
     });
+
+    this.subscriptions.push(storeSub);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

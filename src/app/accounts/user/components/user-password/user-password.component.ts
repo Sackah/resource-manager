@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnDestroy, OnInit } from '@angular/core';
 import {
   ReactiveFormsModule,
   FormGroup,
@@ -10,14 +10,9 @@ import { Subscription } from 'rxjs';
 import { selectCurrentUser } from '../../../../auth/store/authorization/AuthReducers';
 import { passwordMatchValidator } from '../../../../auth/validators/passwordmismatch';
 import { SettingsService } from '../../services/settings.service';
-import { CurrentUser } from '../../../../shared/types/types';
+import { CurrentUser, InitialSig } from '../../../../shared/types/types';
 import { Store } from '@ngrx/store';
 
-type InitialState = {
-  success: { user?: CurrentUser } | { message: string } | null;
-  error: { message: string } | null;
-  pending: boolean;
-};
 @Component({
   selector: 'user-password',
   standalone: true,
@@ -28,14 +23,13 @@ type InitialState = {
     '../../pages/setting/setting.component.css',
   ],
 })
-export class UserPasswordComponent {
+export class UserPasswordComponent implements OnInit, OnDestroy {
+  subscriptions: Subscription[] = [];
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
   userPasswordForm!: FormGroup;
   user!: CurrentUser;
-  storeSubscription!: Subscription;
-
-  settingsSig = signal<InitialState>({
+  settingsSig = signal<InitialSig>({
     success: null,
     error: null,
     pending: false,
@@ -63,13 +57,14 @@ export class UserPasswordComponent {
       }
     );
 
-    this.storeSubscription = this.store.select(selectCurrentUser).subscribe({
+    const storeSubscription = this.store.select(selectCurrentUser).subscribe({
       next: user => {
         if (user) {
           this.user = user;
         }
       },
     });
+    this.subscriptions.push(storeSubscription);
   }
 
   get passwordField() {
@@ -158,5 +153,9 @@ export class UserPasswordComponent {
         });
       },
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

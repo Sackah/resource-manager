@@ -21,11 +21,11 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { SendOtpResponse } from '../../types/reset-types';
 import { selectResponse } from '../../store/reset-password/ResetReducers';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'otp-form',
@@ -34,7 +34,8 @@ import { selectResponse } from '../../store/reset-password/ResetReducers';
   templateUrl: './otp-form.component.html',
   styleUrls: ['./otp-form.component.css', '../../styles/styles.css'],
 })
-export class OtpFormComponent implements OnInit, OnDestroy {
+export class OtpFormComponent implements OnInit, OnDestroy, AfterViewInit {
+  subscriptions: Subscription[] = [];
   otpForm!: FormGroup;
   nextFormField!: InputFields;
   resBody!: SendOtpResponse;
@@ -43,16 +44,6 @@ export class OtpFormComponent implements OnInit, OnDestroy {
   @Output() otpChange = new EventEmitter<string>();
   @ViewChild('otpInput') otpInput!: ElementRef;
   otpValues: string[] = [];
-
-  storeSubscription = this.store.select(selectResponse).subscribe({
-    next: res => {
-      console.log(res);
-      this.resBody = res as SendOtpResponse;
-    },
-    error: err => {
-      console.log(err);
-    },
-  });
 
   constructor(
     private resetToggleService: ResetToggleService,
@@ -63,6 +54,18 @@ export class OtpFormComponent implements OnInit, OnDestroy {
     this.otpForm = new FormGroup({
       otp: new FormControl('', [Validators.required, Validators.minLength(6)]),
     });
+
+    const storeSubscription = this.store.select(selectResponse).subscribe({
+      next: res => {
+        console.log(res);
+        this.resBody = res as SendOtpResponse;
+      },
+      error: err => {
+        console.log(err);
+      },
+    });
+
+    this.subscriptions.push(storeSubscription);
   }
 
   ngAfterViewInit() {
@@ -116,11 +119,6 @@ export class OtpFormComponent implements OnInit, OnDestroy {
 
   submitForm(event: Event) {
     event.preventDefault();
-
-    //otp form value has changed to an array of strings, need to patch that
-    // const { otp } = this.otpForm.value;
-
-    // console.log(this.otpValues.join(''), otp);
     const otp = parseInt(this.otpValues.join(''), 10);
 
     //Compare otp and switch field if it matches
@@ -131,6 +129,6 @@ export class OtpFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.storeSubscription.unsubscribe();
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

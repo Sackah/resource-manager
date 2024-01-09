@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   ReactiveFormsModule,
   FormGroup,
@@ -27,6 +27,7 @@ import {
   ResetPasswordRequest,
   ResetPasswordError,
 } from '../../types/reset-types';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'reset-password-form',
@@ -35,8 +36,9 @@ import {
   templateUrl: './reset-password-form.component.html',
   styleUrls: ['./reset-password-form.component.css', '../../styles/styles.css'],
 })
-export class ResetPasswordFormComponent implements OnInit {
+export class ResetPasswordFormComponent implements OnInit, OnDestroy {
   resetPasswordForm!: FormGroup;
+  subscriptions: Subscription[] = [];
   nextFormField!: InputFields;
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
@@ -44,26 +46,6 @@ export class ResetPasswordFormComponent implements OnInit {
   resBody!: ResetPasswordResponse | SendOtpResponse | null;
   successMessage!: string | undefined;
   errors!: ResetPasswordError;
-
-  storeSubscription = this.store.select(selectResponse).subscribe({
-    next: res => {
-      console.log(res);
-      if ((res as ResetPasswordResponse).accessToken) {
-        this.successMessage = res?.message;
-      }
-      this.resBody = res;
-    },
-    error: err => {
-      this.errors.message = err;
-      console.log(err);
-    },
-  });
-
-  errors$ = this.store.select(selectError).subscribe({
-    next: res => {
-      this.errors = res as ResetPasswordError;
-    },
-  });
 
   constructor(
     private resetToggleService: ResetToggleService,
@@ -87,6 +69,28 @@ export class ResetPasswordFormComponent implements OnInit {
         validators: passwordMatchValidator('password', 'password_confirmation'),
       }
     );
+
+    const storeSubscription$ = this.store.select(selectResponse).subscribe({
+      next: res => {
+        console.log(res);
+        if ((res as ResetPasswordResponse).accessToken) {
+          this.successMessage = res?.message;
+        }
+        this.resBody = res;
+      },
+      error: err => {
+        this.errors.message = err;
+        console.log(err);
+      },
+    });
+
+    const errors$ = this.store.select(selectError).subscribe({
+      next: res => {
+        this.errors = res as ResetPasswordError;
+      },
+    });
+
+    this.subscriptions.push(storeSubscription$, errors$);
   }
 
   get passwordField() {
@@ -165,5 +169,14 @@ export class ResetPasswordFormComponent implements OnInit {
       console.log(requestBody);
       this.store.dispatch(ResetActions.resetPassword(requestBody));
     }
+  }
+
+  /**
+   * Cleanup subscriptions
+   */
+  ngOnDestroy() {
+    this.subscriptions.forEach(subscription => {
+      subscription.unsubscribe();
+    });
   }
 }

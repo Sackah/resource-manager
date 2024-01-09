@@ -58,3 +58,13 @@ export type Permisions = {
   can_create_project: boolean;
   can_update_user_role: boolean;
 };
+
+/**
+ * @description This type can be used as a type argument for any signal where we are tracking
+ * success, error and pending states
+ */
+export type InitialSig = {
+  success: { user?: CurrentUser; message: string } | null;
+  error: { message: string } | null;
+  pending: boolean;
+};

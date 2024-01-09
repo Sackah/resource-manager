@@ -14,6 +14,7 @@ import {
   selectLogin,
 } from '../../store/authorization/AuthReducers';
 import { RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -28,15 +29,10 @@ import { RouterLink } from '@angular/router';
   styleUrls: ['./login.component.css', '../../styles/styles.css'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
+  subcriptions: Subscription[] = [];
   loginForm!: FormGroup;
   showPassword: boolean = false;
   storeData!: LoginState;
-
-  storeSubscription = this.store.select(selectLogin).subscribe({
-    next: res => {
-      this.storeData = res;
-    },
-  });
 
   constructor(private store: Store) {}
 
@@ -45,6 +41,14 @@ export class LoginComponent implements OnInit, OnDestroy {
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required]),
     });
+
+    const storeSubscription = this.store.select(selectLogin).subscribe({
+      next: res => {
+        this.storeData = res;
+      },
+    });
+
+    this.subcriptions.push(storeSubscription);
   }
 
   getEmailErrors(): string {
@@ -84,6 +88,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.storeSubscription.unsubscribe();
+    this.subcriptions.forEach(sub => sub.unsubscribe());
   }
 }

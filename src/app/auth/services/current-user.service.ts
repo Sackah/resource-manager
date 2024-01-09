@@ -18,7 +18,6 @@ export class CurrentUserService {
   constructor(private http: HttpClient) {}
 
   get() {
-    console.log('run current user service');
     return this.http.get<LoginUserResponse>(
       `${BASE_URL}/users/token/exchange`,
       {
