@@ -22,7 +22,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ) {
     window.addEventListener('beforeunload', () => {
       console.log('beforeunload', this.router.url);
-      tokenService.set('lastRoute', this.router.url);
+      tokenService.set(this.router.url, 'lastRoute');
     });
   }
 
