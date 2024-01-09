@@ -80,19 +80,13 @@ label:not(.visibly-hidden) {
   font-size: 12px;
 }
 
-/* .message-container {
-  position: absolute;
-} */
-
-.alert {
-  background: #4ec33d;
-  padding: 20px 40px;
-  max-width: 200px;
-  position: absolute;
-  right: 0;
-  top: 30%;
-  border-radius: 4px;
-  border-left: 4px solid #03a65a;
+.message-container {
+  position: fixed;
+  top: 20%;
+  /* left: 80%; */
+  right: -2%;
+  transform: translate(-50%, -50%);
+  text-align: center;
 }
 
 .success-message,
@@ -103,14 +97,9 @@ label:not(.visibly-hidden) {
 }
 
 .success-message {
-  padding: 0 20px;
-  font-size: 18px;
-  color: white;
+  color: #76bf4c;
 }
 
 .error-message {
-  background: #fc2e20;
-  position: fixed;
-  top: 20vh;
-  right: 10vw;
+  color: #fc2e20;
 }

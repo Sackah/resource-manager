@@ -57,10 +57,12 @@ export class NewPasswordFormComponent implements OnInit, OnDestroy {
         password: new FormControl('', [
           Validators.required,
           Validators.minLength(8),
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/),
         ]),
         password_confirmation: new FormControl('', [
           Validators.required,
           Validators.minLength(8),
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/),
         ]),
       },
       {
@@ -92,6 +94,8 @@ export class NewPasswordFormComponent implements OnInit, OnDestroy {
     if (control?.invalid && (control.dirty || control.touched)) {
       if (control.hasError('required')) {
         return "Password can't be empty";
+      } else if (control.hasError('required')) {
+        return 'Password must have at least one uppercase, one lowercase and a number';
       } else if (control.hasError('minlength')) {
         return 'Password must be at least 8 characters';
       }

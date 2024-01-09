@@ -4,7 +4,7 @@
   <div class="message-container">
     @if (signalValues.success) {
     <div class="success-message">
-      SUCCESS: {{ signalValues.success.message }}
+      {{ signalValues.success.message }}
     </div>
     <span class="close-btn"> </span>
     } @if (signalValues.error) {
@@ -96,16 +96,11 @@
 
     <div>
       <label for="department">DEPARTMENT</label>
-      <select
+      <input
         name="department"
         class="input-settings {{ getDepartmentErrors() ? 'error' : '' }}"
         id="department"
-        formControlName="department">
-        <option value="">Select an option...</option>
-        @for (department of departments; track $index) {
-        <option [value]="department">{{ department }}</option>
-        }
-      </select>
+        formControlName="department" />
       @if(getDepartmentErrors()){
       <div class="validation-error-message">
         {{ getDepartmentErrors() }}
@@ -115,16 +110,12 @@
 
     <div>
       <label for="specialization">SPECIALIZATION</label>
-      <select
+      <input
         name="specialization"
         class="input-settings {{ getSpecializationErrors() ? 'error' : '' }}"
         id="specialization"
-        formControlName="specialization">
-        <option value="">Select an option...</option>
-        @for (specialization of specializations; track $index) {
-        <option [value]="specialization">{{ specialization }}</option>
-        }
-      </select>
+        formControlName="specialization" />
+
       @if(getSpecializationErrors()) {
       <div class="validation-error-message">
         {{ getSpecializationErrors() }}
@@ -144,10 +135,14 @@
   </div>
 
   <div class="buttons">
-    <button type="reset" class="button-settings bg-[#FFFFFF] text-[#022F54]">
+    <button
+      type="reset"
+      class="button-settings bg-[#FFFFFF] text-[#022F54] hover:bg-[#e6e6e6]">
       Reset
     </button>
-    <button type="submit" class="button-settings bg-[#022F54] text-white">
+    <button
+      type="submit"
+      class="button-settings bg-[#022F54] text-white hover:bg-[#1b4465]">
       Update Profile
     </button>
   </div>

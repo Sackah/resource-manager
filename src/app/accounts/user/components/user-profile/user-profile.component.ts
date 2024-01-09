@@ -53,6 +53,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.userDetails = new FormGroup({
+      userId: new FormControl('', [Validators.required]),
       profilePicture: new FormControl(null),
       email: new FormControl({ value: '', disabled: true }, [
         Validators.required,
@@ -67,8 +68,12 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
       ]),
       phoneNumber: new FormControl('', [Validators.required, validPhoneNumber]),
-      department: new FormControl('', [Validators.required]),
-      specialization: new FormControl('', [Validators.required]),
+      department: new FormControl({ value: '', disabled: true }, [
+        Validators.required,
+      ]),
+      specialization: new FormControl({ value: '', disabled: true }, [
+        Validators.required,
+      ]),
     });
 
     const specSub = this.settingsService.getSpecializations().subscribe({
@@ -95,6 +100,18 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     });
 
     this.subscriptions.push(specSub, departmentSub, storeSub);
+  }
+
+  updateFormControls() {
+    const isBasicUser = this.user.roles === 'Basic User';
+
+    if (isBasicUser) {
+      this.userDetails.get('specialization')?.disable();
+      this.userDetails.get('department')?.disable();
+    } else {
+      this.userDetails.get('specialization')?.enable();
+      this.userDetails.get('department')?.enable();
+    }
   }
 
   getEmailErrors(): string {
@@ -188,6 +205,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   setValues() {
     if (this.user) {
       this.userDetails.patchValue({
+        userId: this.user.userId,
         email: this.user.email,
         firstName: this.user.firstName,
         lastName: this.user.lastName,
@@ -222,15 +240,20 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       return;
     }
 
+    console.log('User Details:', this.user);
+
     /**
      * Email is intentionally omitted from the request body
      */
+
+    const { firstName, lastName, phoneNumber } = this.userDetails.value;
     const reqBody = {
-      firstName: this.userDetails.value.firstName,
-      lastName: this.userDetails.value.lastName,
-      phoneNumber: this.userDetails.value.phoneNumber,
-      department: this.userDetails.value.department,
-      specialization: this.userDetails.value.specialization,
+      userId: this.user.userId,
+      firstName: firstName,
+      lastName: lastName,
+      phoneNumber: phoneNumber,
+      department: this.user.department,
+      specialization: this.user.specializations[0],
     };
 
     if (this.userDetails.valid) {
@@ -242,14 +265,30 @@ export class UserProfileComponent implements OnInit, OnDestroy {
               error: null,
               pending: false,
             });
+            setTimeout(() => {
+              this.settingsSig.set({
+                success: null,
+                error: null,
+                pending: false,
+              });
+            }, 3000);
           }
         },
         error: error => {
+          console.log(error);
           this.settingsSig.set({
             success: null,
-            error: error,
+            error: error.errors,
             pending: false,
           });
+
+          setTimeout(() => {
+            this.settingsSig.set({
+              success: null,
+              error: null,
+              pending: false,
+            });
+          }, 3000);
         },
       });
     }
