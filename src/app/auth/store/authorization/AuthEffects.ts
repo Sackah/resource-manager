@@ -90,7 +90,8 @@ export const relogInUserEffect = createEffect(
   (
     action$ = inject(Actions),
     relogUserService = inject(CurrentUserService),
-    router = inject(Router)
+    router = inject(Router),
+    tokenService = inject(AccesstokenService)
   ) => {
     return action$.pipe(
       ofType(AuthActions.fetchCurrentUser),
@@ -112,6 +113,7 @@ export const relogInUserEffect = createEffect(
               );
             }
             console.log(error);
+            tokenService.clear('lastRoute');
             return of(AuthActions.fetchCurrentUserFailure(error.error));
           })
         );

@@ -226,12 +226,15 @@ export class UserProfileComponent implements OnInit, OnDestroy {
      * Email is intentionally omitted from the request body
      */
     const reqBody = {
+      userId: this.user.userId,
       firstName: this.userDetails.value.firstName,
       lastName: this.userDetails.value.lastName,
       phoneNumber: this.userDetails.value.phoneNumber,
       department: this.userDetails.value.department,
-      specialization: this.userDetails.value.specialization,
+      specialization: this.userDetails.value.specialization[0],
     };
+
+    console.log(reqBody);
 
     if (this.userDetails.valid) {
       this.settingsService.updateDetails(reqBody).subscribe({
