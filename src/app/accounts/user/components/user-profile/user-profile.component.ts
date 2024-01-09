@@ -248,8 +248,12 @@ export class UserProfileComponent implements OnInit, OnDestroy {
 
     const { firstName, lastName, phoneNumber } = this.userDetails.value;
     const reqBody = {
-      department: this.userDetails.value.department,
-      specialization: this.userDetails.value.specialization,
+      userId: this.user.userId,
+      firstName: firstName,
+      lastName: lastName,
+      phoneNumber: phoneNumber,
+      department: this.user.department,
+      specialization: this.user.specializations[0],
     };
 
     console.log(reqBody);
