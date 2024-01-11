@@ -10,6 +10,10 @@
         {{ storeData.error.message }}
       </div>
       }
+
+      <div *ngIf="successMessage" class="success-message">
+        {{ successMessage }}
+      </div>
       <h2>Login</h2>
       <p>
         Welcome back, Enter your details to open your account. Don't have an

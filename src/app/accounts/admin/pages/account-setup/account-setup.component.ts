@@ -12,9 +12,8 @@ import { Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import {
   UserPasswordState,
-  selectLogin,
+  selectCurrentUser,
 } from '../../../../auth/store/authorization/AuthReducers';
-import { AuthActions } from '../../../../auth/store/authorization/AuthActions';
 import { selectUpdateUserPassword } from '../../../../auth/store/authorization/AuthReducers';
 import { Subscription } from 'rxjs';
 import { UpdatePasswordService } from '../../../../auth/services/update-password.service';
@@ -68,10 +67,10 @@ export class AccountSetupComponent implements OnInit, OnDestroy {
         },
       });
 
-    const emailSubscription = this.store.select(selectLogin).subscribe({
-      next: res => {
-        console.log(res);
-        this.email = res.success?.user.email as string;
+    const emailSubscription = this.store.select(selectCurrentUser).subscribe({
+      next: user => {
+        console.log(user);
+        this.email = user?.email as string;
         console.log(this.email);
       },
     });

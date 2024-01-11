@@ -11,4 +11,8 @@ export const modal = [
     delete: 'delete',
     label: 'Delete',
   },
+  {
+    archieve: 'Archieve',
+    label: 'archieve',
+  },
 ];

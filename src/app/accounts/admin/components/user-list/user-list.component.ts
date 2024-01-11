@@ -30,11 +30,13 @@ export class UserListComponent implements OnInit, OnDestroy {
     specializations: [],
   };
 
+  selectedContentView: string | null = null;
   dropdownModal = modal;
   loading: boolean = false;
   selectedUser: User | null = null;
-  showEditModal = false;
-
+  showViewModal = false;
+  showDeleteModal = false;
+  showReplaceModal = false;
   private dataSubscription: Subscription | undefined;
 
   constructor(
@@ -46,24 +48,14 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.fetchUsers();
   }
 
-  openEditModal(user: User): void {
-    this.selectedUser = user;
+  activeView = 'general';
 
-    console.log('Selected User:', this.selectedUser);
+  toggleView(view: string) {
+    this.activeView = view;
   }
 
-  handleDropdownOption(option: {
-    edit?: string;
-    view?: string;
-    delete?: string;
-  }): void {
-    if (option.edit && this.selectedUser) {
-      this.showEditModal = true;
-    } else if (option.view) {
-    } else if (option.delete && this.selectedUser) {
-    }
-
-    this.selectedUser = null;
+  closeModal() {
+    this.showViewModal = !this.showViewModal;
   }
 
   ngOnDestroy(): void {
@@ -72,6 +64,13 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
   }
 
+  onDropdownItemClick(modalItem: any) {
+    if (modalItem.content) {
+      this.showViewModal = true;
+      this.selectedContentView = modalItem.content;
+    } else {
+    }
+  }
   fetchUsers(): void {
     this.loading = true;
 

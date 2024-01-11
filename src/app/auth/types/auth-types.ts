@@ -7,6 +7,7 @@ export type AuthState = {
     success: LoginUserResponse | null;
     pending: boolean;
     error: AuthErrorResponse | null;
+    message: string | null;
   };
   updateUserDetails: {
     success: UpdateUserDetailsResponse | null;
@@ -24,6 +25,7 @@ export type AuthState = {
 export type LoginUserDetails = {
   email: string;
   password: string;
+  successMessage: string;
 };
 
 export type LoginUserResponse = {
@@ -65,6 +67,7 @@ export interface UpdateUserDetailsError {
 }
 
 export type UpdateUserPasswordDetails = {
+  email: string;
   password: string;
   confirmPassword: string;
 };

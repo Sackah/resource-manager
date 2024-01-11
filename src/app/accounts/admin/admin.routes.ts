@@ -12,6 +12,10 @@ export const AdminRoutes: Route[] = [
     component: AccountSetupComponent,
   },
   {
+    path: 'create-user',
+    component: UsercreationComponent,
+  },
+  {
     path: '',
     component: MainComponent,
     children: [
@@ -20,10 +24,6 @@ export const AdminRoutes: Route[] = [
         component: DashboardComponent,
       },
 
-      {
-        path: 'create-user',
-        component: UsercreationComponent,
-      },
       {
         path: 'users',
         component: UsersComponent,

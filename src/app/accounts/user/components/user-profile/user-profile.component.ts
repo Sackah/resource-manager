@@ -102,18 +102,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.subscriptions.push(specSub, departmentSub, storeSub);
   }
 
-  updateFormControls() {
-    const isBasicUser = this.user.roles === 'Basic User';
-
-    if (isBasicUser) {
-      this.userDetails.get('specialization')?.disable();
-      this.userDetails.get('department')?.disable();
-    } else {
-      this.userDetails.get('specialization')?.enable();
-      this.userDetails.get('department')?.enable();
-    }
-  }
-
   getEmailErrors(): string {
     const control = this.userDetails.get('email');
     if (control?.invalid && (control.dirty || control.touched)) {

@@ -143,6 +143,13 @@ export class UserPasswordComponent implements OnInit, OnDestroy {
             error: null,
             pending: false,
           });
+          setTimeout(() => {
+            this.settingsSig.set({
+              success: null,
+              error: null,
+              pending: false,
+            });
+          }, 3000);
         }
       },
       error: error => {
@@ -151,6 +158,13 @@ export class UserPasswordComponent implements OnInit, OnDestroy {
           error: error,
           pending: false,
         });
+        setTimeout(() => {
+          this.settingsSig.set({
+            success: null,
+            error: null,
+            pending: false,
+          });
+        }, 3000);
       },
     });
   }

@@ -25,8 +25,8 @@ export class UpdatePasswordService {
   constructor(private http: HttpClient) {}
 
   postUser(credentials: UpdateUserPasswordDetails) {
-    return this.http.put<UpdateUserPasswordResponse>(
-      `${BASE_URL}/users/update/new/password`,
+    return this.http.post<UpdateUserPasswordResponse>(
+      `${BASE_URL}/users/set/new/password`,
       credentials
     );
   }

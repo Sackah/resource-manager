@@ -32,6 +32,7 @@ import { Input } from '@angular/core';
 export class AccountSetupFormComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
   userDetails!: FormGroup;
+
   imgUrl = '../../../../../assets/images/user/profile-container.svg';
   storeData!: LoginState;
   @Input() email!: string;

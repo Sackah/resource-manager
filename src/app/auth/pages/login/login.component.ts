@@ -33,6 +33,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
   showPassword: boolean = false;
   storeData!: LoginState;
+  successMessage: string | null = null;
 
   constructor(private store: Store) {}
 
@@ -45,6 +46,15 @@ export class LoginComponent implements OnInit, OnDestroy {
     const storeSubscription = this.store.select(selectLogin).subscribe({
       next: res => {
         this.storeData = res;
+        // Check if login is successful and set successMessage
+        if (this.storeData.message === 'Login successful') {
+          this.successMessage = this.storeData.message;
+
+          // Assuming you want to clear the message after displaying it once
+          setTimeout(() => {
+            this.successMessage = null;
+          }, 5000); // Clear message after 5 seconds (adjust as needed)
+        }
       },
     });
 

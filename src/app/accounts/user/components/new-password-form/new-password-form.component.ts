@@ -157,6 +157,7 @@ export class NewPasswordFormComponent implements OnInit, OnDestroy {
         email,
         userId,
       };
+      console.log('reqbody', reqBody);
 
       this.store.dispatch(AuthActions.updateUserPassword(reqBody));
     } else {

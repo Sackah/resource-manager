@@ -8,6 +8,7 @@ const initialState: AuthState = {
     success: null,
     error: null,
     pending: false,
+    message: '',
   },
   updateUserDetails: {
     success: null,
@@ -29,7 +30,7 @@ const authFeature = createFeature({
   name: 'auth',
   reducer: createReducer(
     initialState,
-    on(AuthActions.login, (state, payload) => ({
+    on(AuthActions.login, (state, { successMessage, ...payload }) => ({
       ...state,
       login: {
         ...state.login,
