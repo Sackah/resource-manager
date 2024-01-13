@@ -78,10 +78,6 @@ td {
   height: 16px;
 }
 
-.actions-btn:hover .action-dropdown {
-  display: block;
-}
-
 .actions-container {
   display: flex;
   justify-content: center;
@@ -257,7 +253,7 @@ main.visible > .backdrop {
     position: absolute;
     top: 0;
     left: 0;
-    height: 100%;
+    height: 100vh;
     width: 100%;
     /* max-width: 1900px; */
     overflow: hidden;

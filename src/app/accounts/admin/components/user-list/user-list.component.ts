@@ -6,56 +6,88 @@ import { UsersService } from '../../services/users.service';
 import { CommonModule } from '@angular/common';
 import { modal } from './modal';
 import { CdkMenuModule } from '@angular/cdk/menu';
-import { EditModalComponent } from '../edit-modal/edit-modal.component';
-
+import { ViewModalComponent } from '../view-modal/view-modal.component';
+import { Overlay, OverlayConfig } from '@angular/cdk/overlay';
+import { ComponentPortal } from '@angular/cdk/portal';
+import { DeleteModalComponent } from '../delete-modal/delete-modal.component';
+import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 @Component({
   selector: 'user-list',
   standalone: true,
-  imports: [CommonModule, CdkMenuModule, EditModalComponent],
+  imports: [
+    CommonModule,
+    CdkMenuModule,
+    ViewModalComponent,
+    PaginationComponent,
+    DeleteModalComponent,
+  ],
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.css'],
 })
 export class UserListComponent implements OnInit, OnDestroy {
   users: User[] = [];
-  newUser: User = {
-    profilePicture: '',
-    firstName: '',
-    lastName: '',
-    email: '',
-    userId: '',
-    phoneNumber: '',
-    changePassword: false,
-    department: 'Service Center',
-    roles: 'Basic User',
-    specializations: [],
-  };
-
-  selectedContentView: string | null = null;
+  currentPage: number = 1;
+  itemsPerPage: number = 6;
+  totalPages: number = 0;
   dropdownModal = modal;
   loading: boolean = false;
-  selectedUser: User | null = null;
-  showViewModal = false;
-  showDeleteModal = false;
-  showReplaceModal = false;
+
   private dataSubscription: Subscription | undefined;
 
   constructor(
     private usersService: UsersService,
-    private userCreationService: CreateUserService
+    private userCreationService: CreateUserService,
+    private overlay: Overlay
   ) {}
 
   ngOnInit(): void {
     this.fetchUsers();
   }
 
+  openDeleteModal(): void {
+    const overlayConfig = new OverlayConfig({
+      hasBackdrop: true,
+      backdropClass: 'cdk-overlay-dark-backdrop',
+      positionStrategy: this.overlay
+        .position()
+        .global()
+        .centerHorizontally()
+        .centerVertically(),
+    });
+
+    const overlayRef = this.overlay.create(overlayConfig);
+
+    const deleteModalPortal = new ComponentPortal(DeleteModalComponent);
+    const deleteModalRef = overlayRef.attach(deleteModalPortal);
+  }
+
+  openModal() {
+    const overlayConfig = new OverlayConfig({
+      hasBackdrop: true,
+      backdropClass: 'cdk-overlay-dark-backdrop',
+      positionStrategy: this.overlay
+        .position()
+        .global()
+        .centerHorizontally()
+        .centerVertically(),
+    });
+
+    const overlayRef = this.overlay.create(overlayConfig);
+
+    const modalPortal = new ComponentPortal(ViewModalComponent);
+    const deleteModalPortal = new ComponentPortal(DeleteModalComponent);
+    overlayRef.attach(modalPortal);
+    overlayRef.attach(deleteModalPortal);
+  }
   activeView = 'general';
 
   toggleView(view: string) {
     this.activeView = view;
   }
 
-  closeModal() {
-    this.showViewModal = !this.showViewModal;
+  onPageChange(page: number): void {
+    this.currentPage = page;
+    this.fetchUsers();
   }
 
   ngOnDestroy(): void {
@@ -64,21 +96,19 @@ export class UserListComponent implements OnInit, OnDestroy {
     }
   }
 
-  onDropdownItemClick(modalItem: any) {
-    if (modalItem.content) {
-      this.showViewModal = true;
-      this.selectedContentView = modalItem.content;
-    } else {
-    }
-  }
   fetchUsers(): void {
     this.loading = true;
+
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+
+    const endIndex = startIndex + this.itemsPerPage;
 
     this.usersService.getUsers().subscribe(
       (response: any) => {
         const users = response.users || response.data;
         if (Array.isArray(users)) {
-          this.users = users as User[];
+          this.users = users.slice(startIndex, endIndex) as User[];
+          this.totalPages = Math.ceil(users.length / this.itemsPerPage);
         } else {
           console.error('Invalid response format for users:', users);
         }
@@ -90,104 +120,5 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.loading = false;
       }
     );
-
-    // fetchSpecializations();
-    // this.users = [
-    //   {
-    //     profilePicture: '',
-    //     firstName: 'John',
-    //     lastName: 'Doe',
-    //     email: 'john@example.com',
-    //     roles: 'Basic User',
-    //     department: 'Service Center',
-    //     specializations: [],
-    //   },
-    //   {
-    //     profilePicture: '',
-    //     firstName: 'John',
-    //     lastName: 'Doe',
-    //     email: 'john@example.com',
-    //     roles: 'Basic User',
-    //     department: 'Service Center',
-    //     specializations: [],
-    //   },
-    //   {
-    //     profilePicture: '',
-    //     firstName: 'John',
-    //     lastName: 'Doe',
-    //     email: 'john@example.com',
-    //     roles: 'Basic User',
-    //     department: 'Service Center',
-    //     specializations: [],
-    //   },
-    //   {
-    //     profilePicture: '',
-    //     firstName: 'John',
-    //     lastName: 'Doe',
-    //     email: 'john@example.com',
-    //     roles: 'Basic User',
-    //     department: 'Service Center',
-    //     specializations: [],
-    //   },
-    //   {
-    //     profilePicture: '',
-    //     firstName: 'John',
-    //     lastName: 'Doe',
-    //     email: 'john@example.com',
-    //     roles: 'Basic User',
-    //     department: 'Service Center',
-    //     specializations: [],
-    //   },
-    //   {
-    //     profilePicture: '',
-    //     firstName: 'John',
-    //     lastName: 'Doe',
-    //     email: 'john@example.com',
-    //     roles: 'Basic User',
-    //     department: 'Service Center',
-    //     specializations: [],
-    //   },
-    //   {
-    //     profilePicture: '',
-    //     firstName: 'John',
-    //     lastName: 'Doe',
-    //     email: 'john@example.com',
-    //     roles: 'Basic User',
-    //     department: 'Service Center',
-    //     specializations: [],
-    //   },
-    //   {
-    //     profilePicture: '',
-    //     firstName: 'John',
-    //     lastName: 'Doe',
-    //     email: 'john@example.com',
-    //     roles: 'Basic User',
-    //     department: 'Service Center',
-    //     specializations: [],
-    //   },
-    // ];
-  }
-
-  createUser(): void {
-    this.userCreationService.createUser(this.newUser).subscribe({
-      next: createdUser => {
-        this.users.push(createdUser);
-        this.newUser = {
-          firstName: '',
-          lastName: '',
-          userId: '',
-          phoneNumber: '',
-          changePassword: false,
-          profilePicture: '',
-          specializations: [],
-          email: '',
-          roles: 'Basic User',
-          department: 'Service Center',
-        };
-      },
-      error: error => {
-        console.error('Error creating user:', error);
-      },
-    });
   }
 }

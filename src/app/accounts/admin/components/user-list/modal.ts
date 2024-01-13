@@ -6,13 +6,14 @@ export const modal = [
   {
     view: 'view',
     label: 'View',
+    content: 'accountModal',
   },
   {
     delete: 'delete',
     label: 'Delete',
   },
   {
-    archieve: 'Archieve',
-    label: 'archieve',
+    archieve: 'Archive',
+    label: 'Archive',
   },
 ];
