@@ -6,6 +6,7 @@
       <div class="spinner-dot"></div>
     </div>
   </div>
+  <button type="button" (click)="this.openViewModal()">Click to see view modal</button>
 </ng-container>
 <ng-template #userList>
   <div class="user-list-container">
@@ -27,10 +28,7 @@
       <tbody>
         <tr *ngFor="let user of users">
           <td style="display: flex">
-            <input
-              type="checkbox"
-              [checked]="false"
-              style="
+            <input type="checkbox" [checked]="false" style="
                 width: 20px;
                 height: 20px;
                 margin-right: 8px;
@@ -53,17 +51,14 @@
       </tbody>
     </table>
   </div>
-  <pagination
-    [currentPage]="currentPage"
-    [totalPages]="totalPages"
-    (pageChange)="onPageChange($event)"></pagination>
+  <pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></pagination>
 </ng-template>
 <ng-template #dropdownOverlay let-user>
   <div class="dropdown-container">
     <div class="overlay overlay-dropdown overlay-fall" cdkMenuItem>
       <ul class="dropdown-details-container">
         <li>Edit</li>
-        <li (click)="openModal()" style="cursor: pointer">View</li>
+        <li (click)="openViewModal(user)" style="cursor: pointer">View</li>
         <li (click)="openDeleteModal()" style="cursor: pointer">Delete</li>
       </ul>
     </div>

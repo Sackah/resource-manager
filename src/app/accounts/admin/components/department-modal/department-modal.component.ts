@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+// import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { DepartmentService } from '../../services/department.service';
 
 @Component({
@@ -23,7 +23,7 @@ export class DepartmentModalComponent {
 
   constructor(
     private fb: FormBuilder,
-    private activeModal: NgbActiveModal,
+    // private activeModal: NgbActiveModal,
     private departmentService: DepartmentService
   ) {
     this.modalForm = this.fb.group({
@@ -60,6 +60,6 @@ export class DepartmentModalComponent {
   }
 
   closeModal() {
-    this.activeModal.close();
+    // this.activeModal.close();
   }
 }

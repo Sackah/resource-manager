@@ -6,7 +6,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+// import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SpecializationService } from '../../services/specialization.service';
 //import { SpecializationResponse } from '../reponse.model';
 import { catchError } from 'rxjs/operators';
@@ -26,7 +26,7 @@ export class SpecializationModalComponent {
 
   constructor(
     private fb: FormBuilder,
-    private activeModal: NgbActiveModal,
+    // private activeModal: NgbActiveModal,
     private specializationService: SpecializationService
   ) {
     this.modalForm = this.fb.group({
@@ -73,6 +73,6 @@ export class SpecializationModalComponent {
   }
 
   closeModal() {
-    this.activeModal.close();
+    // this.activeModal.close();
   }
 }

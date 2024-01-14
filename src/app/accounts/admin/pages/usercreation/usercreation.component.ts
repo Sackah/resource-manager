@@ -13,7 +13,7 @@ import { SpecializationModalComponent } from '../../components/specialization-mo
 import { DepartmentModalComponent } from '../../components/department-modal/department-modal.component';
 import { DepartmentService } from '../../services/department.service';
 import { HttpClientModule } from '@angular/common/http';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+// import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { finalize } from 'rxjs/operators';
 
 @Component({
@@ -45,7 +45,7 @@ export class UsercreationComponent {
     private adminService: AdminService,
     private specializationService: SpecializationService,
     private fb: FormBuilder,
-    private modalService: NgbModal,
+    // private modalService: NgbModal,
     private departmentService: DepartmentService
   ) {
     this.formData = this.fb.group({
@@ -128,17 +128,16 @@ export class UsercreationComponent {
   }
 
   openSpecializationModal() {
-    const modalRef = this.modalService.open(SpecializationModalComponent, {
-      centered: true,
-    });
-
-    modalRef.componentInstance.saveSpecialization.subscribe(
-      (newSpecialization: string) => {
-        console.log('Received new specialization:', newSpecialization);
-        this.updateSpecializationDropdown(newSpecialization);
-        this.fetchSpecializations();
-      }
-    );
+    // const modalRef = this.modalService.open(SpecializationModalComponent, {
+    //   centered: true,
+    // });
+    // modalRef.componentInstance.saveSpecialization.subscribe(
+    //   (newSpecialization: string) => {
+    //     console.log('Received new specialization:', newSpecialization);
+    //     this.updateSpecializationDropdown(newSpecialization);
+    //     this.fetchSpecializations();
+    //   }
+    // );
   }
 
   updateSpecializationDropdown(newSpecialization: string) {
@@ -178,17 +177,16 @@ export class UsercreationComponent {
   }
 
   openDepartmentModal() {
-    const modalRef = this.modalService.open(DepartmentModalComponent, {
-      centered: true,
-    });
-
-    modalRef.componentInstance.saveDepartment.subscribe(
-      (newDepartment: string) => {
-        console.log('Received new department:', newDepartment);
-        this.updateDepartmentDropdown(newDepartment);
-        this.fetchDepartments();
-      }
-    );
+    // const modalRef = this.modalService.open(DepartmentModalComponent, {
+    //   centered: true,
+    // });
+    // modalRef.componentInstance.saveDepartment.subscribe(
+    //   (newDepartment: string) => {
+    //     console.log('Received new department:', newDepartment);
+    //     this.updateDepartmentDropdown(newDepartment);
+    //     this.fetchDepartments();
+    //   }
+    // );
   }
 
   updateDepartmentDropdown(newDepartment: string) {

@@ -15,7 +15,7 @@ export const AccountRoutes: Routes = [
   {
     path: 'user',
     loadChildren: () => import('./user/user.routes').then(m => m.UserRoutes),
-    canActivate: [UserGuard],
+    // canActivate: [UserGuard],
   },
   {
     path: 'manager',
@@ -26,6 +26,6 @@ export const AccountRoutes: Routes = [
   {
     path: 'admin',
     loadChildren: () => import('./admin/admin.routes').then(m => m.AdminRoutes),
-    canActivate: [AdminGuard],
+    // canActivate: [AdminGuard],
   },
 ];
