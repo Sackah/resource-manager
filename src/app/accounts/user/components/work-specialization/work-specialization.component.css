@@ -31,6 +31,10 @@ label:not(.visibly-hidden) {
   padding-top: 30px;
 }
 
+form {
+  margin-bottom: 60px;
+}
+
 .buttons {
   display: flex;
   gap: 40px;
