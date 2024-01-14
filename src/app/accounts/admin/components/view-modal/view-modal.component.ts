@@ -55,6 +55,7 @@ export class ViewModalComponent implements OnInit {
     setTimeout(() => {
       this.opening = false;
     }, 100);
+    console.log(this.user);
   }
 
   get modalClasses() {

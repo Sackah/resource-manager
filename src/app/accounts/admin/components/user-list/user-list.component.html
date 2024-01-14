@@ -6,7 +6,6 @@
       <div class="spinner-dot"></div>
     </div>
   </div>
-  <button type="button" (click)="this.openViewModal()">Click to see view modal</button>
 </ng-container>
 <ng-template #userList>
   <div class="user-list-container">
@@ -51,7 +50,7 @@
       </tbody>
     </table>
   </div>
-  <pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></pagination>
+  <!-- <pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></pagination> -->
 </ng-template>
 <ng-template #dropdownOverlay let-user>
   <div class="dropdown-container">
