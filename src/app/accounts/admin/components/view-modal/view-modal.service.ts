@@ -41,7 +41,12 @@ export class ViewModalService {
   }
 
   closeModal(modalComponentRef: ComponentRef<ViewModalComponent>) {
-    modalComponentRef.destroy();
+    /**
+     * This timer is to make the modal fade out before destroying it
+     */
+    setTimeout(() => {
+      modalComponentRef.destroy();
+    }, 400);
   }
 
   submitModal(modalComponentRef: ComponentRef<ViewModalComponent>) {

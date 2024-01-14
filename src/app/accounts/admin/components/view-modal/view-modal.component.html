@@ -1,4 +1,4 @@
-<div class="modal">
+<div [class]="modalClasses">
   <header>
     <span (click)="close()">
       <img src="assets/images/user/x-close.svg" alt="close icon" />
@@ -42,4 +42,4 @@
     }
   </main>
 </div>
-<div class="backdrop" (click)="close()"></div>
+<div [class]="backdropClasses" (click)="close()"></div>
