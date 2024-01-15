@@ -38,6 +38,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   totalPages: number = 0;
   dropdownModal = modal;
   loading: boolean = false;
+  showDropdownForUser: User | null = null;
 
   private dataSubscription: Subscription | undefined;
   private viewModalRef?: ComponentRef<ViewModalComponent>;
@@ -109,6 +110,11 @@ export class UserListComponent implements OnInit, OnDestroy {
   onPageChange(page: number): void {
     this.currentPage = page;
     this.fetchUsers();
+  }
+
+  toggleDropdown(user: User): void {
+    // Toggle the dropdown for the specified user
+    this.showDropdownForUser = this.showDropdownForUser === user ? null : user;
   }
 
   ngOnDestroy(): void {

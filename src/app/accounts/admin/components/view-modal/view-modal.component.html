@@ -6,36 +6,53 @@
     <h2>Employee</h2>
     <div class="user-details">
       <div>
-        <img src="assets/images/user/avatar.svg" alt="avatar">
+        <img src="assets/images/user/avatar.svg" alt="avatar" />
         <section>
           <h4>Joshuan Mensah</h4>
           <p>joshuan.mensahamalitech.com</p>
-          <p>UI/UX Designer</p>
+          <!-- <p>UI/UX Designer</p> -->
+          <!-- <div class="availability">
+            <p>Available</p>
+          </div> -->
         </section>
       </div>
       <p>Edit</p>
     </div>
   </header>
-  <hr>
+  <hr />
   <main>
     <div class="toggles">
-      <h3 [class]="display === 'general' ? 'active' : ''" (click)="display = 'general'">General</h3>
-      <h3 [class]="display !== 'general' ? 'active' : ''" (click)="display = 'normal-avaliability'">Normal Availability
+      <h3
+        [class]="display === 'general' ? 'active' : ''"
+        (click)="display = 'general'">
+        General
+      </h3>
+      <h3
+        [class]="display !== 'general' ? 'active' : ''"
+        (click)="display = 'normal-avaliability'">
+        Normal Availability
       </h3>
     </div>
     @if (display === 'general') {
     <div class="d-grid">
-      <div class="key">Capacity</div>
-      <div class="value">(GMT+0) UTC</div>
-      <div class="key">Notes</div>
-      <div class="value">60</div>
+      <div class="key">Specialization</div>
+      <div class="value">Frontend</div>
+      <div class="key">User Role</div>
+      <div class="value">Basic User</div>
+      <div class="key">Phone Number</div>
+      <div class="value">0553402325</div>
+      <div class="key">Skills</div>
+      <div class="value">Angular</div>
+      <div class="key">Bookable</div>
+      <div class="value">No</div>
       <div class="key">Assigned Project</div>
-      <div class="value">Notes</div>
-      <div class="key">Assigned Clients</div>
+      <div class="value">Capstone</div>
+      <div class="key">Assigned Client</div>
+      <div class="value">Joseph</div>
+      <div class="key">Time Zone</div>
       <div class="value">Capstone</div>
     </div>
-    }
-    @else if (display === 'normal-avaliability') {
+    } @else if (display === 'normal-avaliability') {
     <div>
       <h5>Weeky total: 168h</h5>
     </div>

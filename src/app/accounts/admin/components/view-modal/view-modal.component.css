@@ -82,6 +82,15 @@ div.user-details {
       font-size: 0.875rem;
       color: #5e718d;
     }
+    /* .availability {
+      width: 200px;
+      height: 40px;
+      background: #11a75c;
+      color: #fff;
+      border-radius: 6px;
+      font-size: 12px;
+      text-align: center;
+    } */
   }
 
   & > div {
