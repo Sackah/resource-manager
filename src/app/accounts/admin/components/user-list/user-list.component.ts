@@ -58,10 +58,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     });
   }
 
-  openViewModal(user?: User) {
-    /**
-     * user parameter should not be optional.
-     */
+  openViewModal(user: User) {
     this.viewModalRef = this.viewModalService.open(this.viewContainerRef, {
       user,
     });
