@@ -10,8 +10,6 @@ import { Subscription } from 'rxjs';
 import { CreateUserService } from '../../services/create-user.service';
 import { UsersService } from '../../services/users.service';
 import { CommonModule } from '@angular/common';
-import { modal } from './modal';
-import { CdkMenuModule } from '@angular/cdk/menu';
 import { ViewModalComponent } from '../view-modal/view-modal.component';
 import { Overlay, OverlayConfig } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
@@ -23,7 +21,6 @@ import { ViewModalService } from '../view-modal/view-modal.service';
   standalone: true,
   imports: [
     CommonModule,
-    CdkMenuModule,
     ViewModalComponent,
     PaginationComponent,
     DeleteModalComponent,
@@ -36,7 +33,6 @@ export class UserListComponent implements OnInit, OnDestroy {
   currentPage: number = 1;
   itemsPerPage: number = 6;
   totalPages: number = 0;
-  dropdownModal = modal;
   loading: boolean = false;
   showDropdownForUser: User | null = null;
 

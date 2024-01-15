@@ -16,4 +16,21 @@ import { ButtonNewComponent } from '../../../user/components/button-new/button-n
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',
 })
-export class UsersComponent {}
+export class UsersComponent {
+  managerUserCreationModalOpen = false;
+  display: 'all' | 'archives' = 'all';
+  closed: boolean = false;
+  opening: boolean = true;
+
+  openManagerUserCreationModal() {
+    this.managerUserCreationModalOpen = true;
+  }
+
+  get toggleClasses() {
+    return {
+      [`currentview`]: true,
+      [`opening`]: this.opening,
+      [`closed`]: this.closed,
+    };
+  }
+}

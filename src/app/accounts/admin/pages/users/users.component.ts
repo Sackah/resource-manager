@@ -20,4 +20,16 @@ import { UserListComponent } from '../../components/user-list/user-list.componen
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',
 })
-export class UsersComponent {}
+export class UsersComponent {
+  display: 'all' | 'archives' = 'all';
+  closed: boolean = false;
+  opening: boolean = true;
+
+  get toggleClasses() {
+    return {
+      [`currentview`]: true,
+      [`opening`]: this.opening,
+      [`closed`]: this.closed,
+    };
+  }
+}
