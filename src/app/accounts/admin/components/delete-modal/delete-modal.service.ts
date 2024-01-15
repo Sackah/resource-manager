@@ -4,9 +4,11 @@ import {
   Inject,
   Injectable,
   Injector,
+  TemplateRef,
   ViewContainerRef,
 } from '@angular/core';
 import { DeleteModalComponent } from './delete-modal.component';
+import { User } from '../../../../shared/types/types';
 
 @Injectable({
   providedIn: 'root',
@@ -17,13 +19,16 @@ export class DeleteModalService {
     @Inject(DOCUMENT) private document: Document
   ) {}
 
-  open(viewContainerRef: ViewContainerRef) {
+  open(viewContainerRef: ViewContainerRef, options?: { user?: User }) {
     const modalComponentRef = viewContainerRef.createComponent(
       DeleteModalComponent,
       {
         injector: this.injector,
       }
     );
+    if (options?.user) {
+      modalComponentRef.instance.user = options.user;
+    }
     modalComponentRef.instance.deleteConfirmedEvent.subscribe(() =>
       this.deleteConfirmed(modalComponentRef)
     );

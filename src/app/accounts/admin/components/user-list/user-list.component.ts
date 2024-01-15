@@ -16,6 +16,8 @@ import { ComponentPortal } from '@angular/cdk/portal';
 import { DeleteModalComponent } from '../delete-modal/delete-modal.component';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import { ViewModalService } from '../view-modal/view-modal.service';
+import { DeleteModalService } from '../delete-modal/delete-modal.service';
+
 @Component({
   selector: 'user-list',
   standalone: true,
@@ -41,8 +43,7 @@ export class UserListComponent implements OnInit, OnDestroy {
 
   constructor(
     private usersService: UsersService,
-    private userCreationService: CreateUserService,
-    private overlay: Overlay,
+    private deleteModalService: DeleteModalService,
     private viewModalService: ViewModalService,
     private viewContainerRef: ViewContainerRef
   ) {}
@@ -51,21 +52,10 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.fetchUsers();
   }
 
-  openDeleteModal(): void {
-    const overlayConfig = new OverlayConfig({
-      hasBackdrop: true,
-      backdropClass: 'cdk-overlay-dark-backdrop',
-      positionStrategy: this.overlay
-        .position()
-        .global()
-        .centerHorizontally()
-        .centerVertically(),
+  openDeleteModal(user: User): void {
+    this.deleteModalService.open(this.viewContainerRef, {
+      user,
     });
-
-    const overlayRef = this.overlay.create(overlayConfig);
-
-    const deleteModalPortal = new ComponentPortal(DeleteModalComponent);
-    const deleteModalRef = overlayRef.attach(deleteModalPortal);
   }
 
   openViewModal(user?: User) {
@@ -76,29 +66,6 @@ export class UserListComponent implements OnInit, OnDestroy {
       user,
     });
   }
-  // openModal() {
-  //   const overlayConfig = new OverlayConfig({
-  //     hasBackdrop: true,
-  //     backdropClass: 'cdk-overlay-dark-backdrop',
-  //     positionStrategy: this.overlay
-  //       .position()
-  //       .global()
-  //       .centerHorizontally()
-  //       .centerVertically(),
-  //   });
-
-  //   const overlayRef = this.overlay.create(overlayConfig);
-
-  //   const modalPortal = new ComponentPortal(ViewModalComponent);
-  //   const deleteModalPortal = new ComponentPortal(DeleteModalComponent);
-  //   overlayRef.attach(modalPortal);
-  //   overlayRef.attach(deleteModalPortal);
-  // }
-  // activeView = 'general';
-
-  // toggleView(view: string) {
-  //   this.activeView = view;
-  // }
 
   onPageChange(page: number): void {
     this.currentPage = page;
