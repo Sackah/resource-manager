@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LoginSideIllustrationComponent } from '../../../../auth/components/login-side-illustration/login-side-illustration.component';
 import { AccountSetupFormComponent } from '../../components/account-setup-form/account-setup-form.component';
@@ -9,6 +9,7 @@ import {
 import { NewPasswordFormComponent } from '../../components/new-password-form/new-password-form.component';
 import { ActivatedRoute } from '@angular/router';
 import { AccesstokenService } from '../../../../shared/services/accesstoken.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-account-setup',
@@ -25,7 +26,8 @@ import { AccesstokenService } from '../../../../shared/services/accesstoken.serv
     '../../../../auth/styles/styles.css',
   ],
 })
-export class AccountSetupComponent {
+export class AccountSetupComponent implements OnDestroy {
+  subscriptions: Subscription[] = [];
   setupProgress: SetupProgress = 'password';
   userDetails = {
     accessToken: '',
@@ -38,11 +40,12 @@ export class AccountSetupComponent {
     private route: ActivatedRoute,
     private tokenService: AccesstokenService
   ) {
-    this.setupService.data.subscribe({
+    const setupSub = this.setupService.data.subscribe({
       next: data => {
         this.setupProgress = data;
       },
     });
+    this.subscriptions.push(setupSub);
 
     // Retrieve route parameters
     this.route.params.subscribe(params => {
@@ -51,5 +54,9 @@ export class AccountSetupComponent {
       this.userDetails.email = params['email'];
       this.userDetails.userId = params['userId'];
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

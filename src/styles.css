@@ -1,3 +1,5 @@
+@import '@angular/cdk/overlay-prebuilt.css';
+
 @font-face {
   font-family: 'LexendBlack';
   src: url('./assets/fonts/Lexend-Black.ttf'), format('truetype');
@@ -83,6 +85,11 @@ h6 {
   font-size: 1.2rem;
   margin-bottom: 20px;
   color: rgb(20, 183, 20);
+}
+
+.page {
+  min-height: 100vh;
+  padding: 10vh 40px 0px calc(16% + 40px);
 }
 
 @tailwind base;

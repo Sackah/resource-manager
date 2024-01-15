@@ -7,6 +7,7 @@ export type AuthState = {
     success: LoginUserResponse | null;
     pending: boolean;
     error: AuthErrorResponse | null;
+    message: string | null;
   };
   updateUserDetails: {
     success: UpdateUserDetailsResponse | null;
@@ -24,6 +25,7 @@ export type AuthState = {
 export type LoginUserDetails = {
   email: string;
   password: string;
+  successMessage: string;
 };
 
 export type LoginUserResponse = {
@@ -44,8 +46,17 @@ export type UpdateUserDetails = {
   firstName?: string;
   lastName?: string;
   phoneNumber?: string;
+  qualification?: string;
+  department?: string;
 };
 
+export type ProfileState = {
+  isSubmitting: boolean;
+  userProfile: {
+    pending: boolean;
+    error: AuthErrorResponse | null;
+  };
+};
 export interface UpdateUserDetailsResponse extends LoginUserResponse {
   status: number;
 }
@@ -56,6 +67,7 @@ export interface UpdateUserDetailsError {
 }
 
 export type UpdateUserPasswordDetails = {
+  email: string;
   password: string;
   confirmPassword: string;
 };

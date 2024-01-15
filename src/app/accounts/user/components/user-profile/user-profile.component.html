@@ -1,6 +1,18 @@
 <h4>Personal Info</h4>
 <p>Update your personal details here</p>
 <form (submit)="submitForm($event)" [formGroup]="userDetails">
+  <div class="message-container">
+    @if (signalValues.success) {
+    <div class="success-message">
+      {{ signalValues.success.message }}
+    </div>
+    } @if (signalValues.error) {
+    <div class="error-message">
+      {{ signalValues.error.message }}
+    </div>
+    }
+  </div>
+
   <div class="profile-picture">
     <img [src]="imgUrl" alt="profile picture" />
     <div class="camera-icon">
@@ -80,66 +92,17 @@
       </div>
       }
     </div>
-
-    <div>
-      <label for="qualification">QUALIFICATION(OPTIONAL)</label>
-      <select
-        name="qualification"
-        class="input-settings {{ getQualificationErrors() ? 'error' : '' }}"
-        id="qualification"
-        formControlName="qualification">
-        <option value="" disabled selected>Select an option...</option>
-        <option value="PHD">PHD</option>
-        <option value="Masters">Master's</option>
-        <option value="Bachelors">Bachelor's</option>
-        <option value="HND">Higher National Diploma</option>
-        <option value="SHS">Senior High School</option>
-      </select>
-      @if(getQualificationErrors()){
-      <div class="validation-error-message">
-        {{ getQualificationErrors() }}
-      </div>
-      }
-    </div>
-
-    <div>
-      <label for="specialization">SPECIALIZATION</label>
-      <select
-        name="specialization"
-        class="input-settings {{ getSpecializationErrors() ? 'error' : '' }}"
-        id="specialization"
-        formControlName="specialization">
-        <option value="" disabled selected>Select an option...</option>
-        <option value="ui_ux_designer">UI/UX Designer</option>
-        <option value="frontend_developer">Frontend Developer</option>
-        <option value="backend_developer">Backend Developer</option>
-        <option value="software_tester">Software Tester</option>
-        <option value="devops">DevOps</option>
-        <option value="data_scientist">Data Scientist</option>
-      </select>
-      @if(getSpecializationErrors()) {
-      <div class="validation-error-message">
-        {{ getSpecializationErrors() }}
-      </div>
-      }
-    </div>
-
-    <!-- <div>
-      <label for="addSkill">ADD SKILL</label>
-      <input
-        id="addSkill"
-        type="text"
-        class="input-settings {{ getNameErrors('lastName') ? 'error' : '' }}"
-        placeholder="Enter skill"
-        formControlName="addSkill" />
-    </div> -->
   </div>
 
   <div class="buttons">
-    <button type="reset" class="button-settings bg-[#FFFFFF] text-[#022F54]">
+    <button
+      type="reset"
+      class="button-settings bg-[#FFFFFF] text-[#022F54] hover:bg-[#e6e6e6]">
       Reset
     </button>
-    <button type="submit" class="button-settings bg-[#022F54] text-white">
+    <button
+      type="submit"
+      class="button-settings bg-[#022F54] text-white hover:bg-[#1b4465]">
       Update Profile
     </button>
   </div>

@@ -8,20 +8,12 @@ export type SetupProgress = 'password' | 'details';
  *
  * @description
  * A service for managing account setup on first login. Toggles between different states
- * of a setup, set new password and user details
+ * of a setup: "set new password" and "user details".
  *
- * @property dataSource - A BehaviorSubject that holds the
- * current state of the setup progress.
- * @property data - An Observable derived from dataSource.
- * Use this to subscribe to changes in the setup progress.
- *
- * @method constructor - By default, the state of the setup progress is 'password'.
- * @method toggle - Changes the state of the setup progress. @param SetupProgress
- *
- * @usageNotes
+ * @example
  * ```
- * const accountSetupService = inject(AccountSetupService);
- * accountSetupService.toggle("password"); //switches the field to a password field
+ *  const accountSetupService = inject(AccountSetupService);
+ *  accountSetupService.toggle("password"); //switches the field to a password field
  * ```
  */
 
@@ -29,11 +21,24 @@ export type SetupProgress = 'password' | 'details';
   providedIn: 'root',
 })
 export class AccountSetupService {
+  /**
+   * @property dataSource - A BehaviorSubject that holds the
+   * current state of the setup progress.
+   */
   private dataSource = new BehaviorSubject<SetupProgress>('password');
+
+  /**
+   * @property data - An Observable derived from dataSource.
+   * Use this to subscribe to changes in the setup progress.
+   */
   data = this.dataSource.asObservable();
 
   constructor() {}
 
+  /**
+   * @method toggle - Changes the state of the setup progress.
+   * @param {SetupProgress} data
+   */
   toggle(data: SetupProgress) {
     this.dataSource.next(data);
   }

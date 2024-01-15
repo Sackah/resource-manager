@@ -26,6 +26,7 @@ export const loginEffect = createEffect(
         return loginService.post(userDetails).pipe(
           map(response => {
             tokenService.set(response.accessToken);
+            console.log(response);
             return AuthActions.loginSuccess(response);
           }),
           catchError((error: HttpErrorResponse) => {
@@ -60,6 +61,9 @@ export const redirectAfterLogin = createEffect(
             case 'Basic User':
               router.navigateByUrl('/user/dashboard');
               break;
+            case 'Manager':
+              router.navigateByUrl('/manager/dashboard');
+              break;
             case 'Administrator':
               console.log(res.user.changePassword);
               if (res.user.changePassword) {
@@ -86,7 +90,8 @@ export const relogInUserEffect = createEffect(
   (
     action$ = inject(Actions),
     relogUserService = inject(CurrentUserService),
-    router = inject(Router)
+    router = inject(Router),
+    tokenService = inject(AccesstokenService)
   ) => {
     return action$.pipe(
       ofType(AuthActions.fetchCurrentUser),
@@ -108,6 +113,7 @@ export const relogInUserEffect = createEffect(
               );
             }
             console.log(error);
+            tokenService.clear('lastRoute');
             return of(AuthActions.fetchCurrentUserFailure(error.error));
           })
         );
@@ -121,28 +127,37 @@ export const relogInUserEffect = createEffect(
  * Effect for redirecting users after relog in
  */
 export const redirectAfterReLogin = createEffect(
-  (action$ = inject(Actions), router = inject(Router)) => {
+  (
+    action$ = inject(Actions),
+    router = inject(Router),
+    tokenService = inject(AccesstokenService)
+  ) => {
     return action$.pipe(
       ofType(AuthActions.fetchCurrentUserSuccess),
       tap({
         next: res => {
           console.log(res);
+          const lastRoute = tokenService.get('lastRoute') as string;
           switch (res.user.roles) {
             case 'Basic User':
-              router.navigateByUrl('/user/dashboard');
+              router.navigateByUrl(lastRoute || '/user/dashboard');
               break;
             case 'Administrator':
               console.log(res.user.changePassword);
               if (res.user.changePassword) {
                 router.navigateByUrl('/admin/account-setup');
               } else {
-                router.navigateByUrl('/admin/dashboard');
+                router.navigateByUrl(lastRoute || '/admin/dashboard');
               }
+              break;
+            case 'Manager':
+              router.navigateByUrl(lastRoute || '/manager/dashboard');
               break;
             default:
               router.navigateByUrl('/login');
               break;
           }
+          tokenService.clear('lastRoute');
         },
       })
     );

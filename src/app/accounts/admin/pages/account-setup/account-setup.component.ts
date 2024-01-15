@@ -12,12 +12,10 @@ import { Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import {
   UserPasswordState,
-  selectLogin,
+  selectCurrentUser,
 } from '../../../../auth/store/authorization/AuthReducers';
-import { AuthActions } from '../../../../auth/store/authorization/AuthActions';
 import { selectUpdateUserPassword } from '../../../../auth/store/authorization/AuthReducers';
 import { Subscription } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 import { UpdatePasswordService } from '../../../../auth/services/update-password.service';
 
 @Component({
@@ -31,6 +29,7 @@ import { UpdatePasswordService } from '../../../../auth/services/update-password
   ],
 })
 export class AccountSetupComponent implements OnInit, OnDestroy {
+  subscriptions: Subscription[] = [];
   resetPasswordForm!: FormGroup;
   showOldPassword: boolean = false;
   showNewPassword: boolean = false;
@@ -38,11 +37,6 @@ export class AccountSetupComponent implements OnInit, OnDestroy {
   storeData!: UserPasswordState;
   email!: string;
   errorMessage!: string;
-  /**
-   * These subscriptions are created to be destroyed on unmount ^performance
-   */
-  storeSubscription!: Subscription;
-  emailSubscription!: Subscription;
 
   constructor(
     private router: Router,
@@ -62,7 +56,7 @@ export class AccountSetupComponent implements OnInit, OnDestroy {
       ]),
     });
 
-    this.storeSubscription = this.store
+    const storeSubscription = this.store
       .select(selectUpdateUserPassword)
       .subscribe({
         next: res => {
@@ -73,13 +67,15 @@ export class AccountSetupComponent implements OnInit, OnDestroy {
         },
       });
 
-    this.emailSubscription = this.store.select(selectLogin).subscribe({
-      next: res => {
-        console.log(res);
-        this.email = res.success?.user.email as string;
+    const emailSubscription = this.store.select(selectCurrentUser).subscribe({
+      next: user => {
+        console.log(user);
+        this.email = user?.email as string;
         console.log(this.email);
       },
     });
+
+    this.subscriptions.push(storeSubscription);
   }
 
   get oldPasswordField() {
@@ -156,12 +152,10 @@ export class AccountSetupComponent implements OnInit, OnDestroy {
           this.errorMessage = err.message;
         },
       });
-      //Make some api call
-      // this.store.dispatch(AuthActions.updateUserPassword(reqBody));
     }
   }
 
   ngOnDestroy(): void {
-    this.storeSubscription.unsubscribe();
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

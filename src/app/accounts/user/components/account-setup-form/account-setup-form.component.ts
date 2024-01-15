@@ -13,7 +13,7 @@ import {
   selectLogin,
   LoginState,
 } from '../../../../auth/store/authorization/AuthReducers';
-import { combineLatest } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
 import { AuthState } from '../../../../auth/types/auth-types';
 import { Store } from '@ngrx/store';
 import { AuthActions } from '../../../../auth/store/authorization/AuthActions';
@@ -30,17 +30,13 @@ import { Input } from '@angular/core';
   ],
 })
 export class AccountSetupFormComponent implements OnInit, OnDestroy {
+  subscriptions: Subscription[] = [];
   userDetails!: FormGroup;
+
   imgUrl = '../../../../../assets/images/user/profile-container.svg';
   storeData!: LoginState;
   @Input() email!: string;
   @Input() userId!: string;
-
-  storeSubscription = this.store.select(selectLogin).subscribe({
-    next: res => {
-      this.storeData = res;
-    },
-  });
 
   constructor(private store: Store, private router: Router) {}
 
@@ -58,6 +54,13 @@ export class AccountSetupFormComponent implements OnInit, OnDestroy {
       ]),
       phoneNumber: new FormControl('', [Validators.required, validPhoneNumber]),
     });
+
+    const storeSubscription = this.store.select(selectLogin).subscribe({
+      next: res => {
+        this.storeData = res;
+      },
+    });
+    this.subscriptions.push(storeSubscription);
   }
 
   getEmailErrors(): string {
@@ -135,6 +138,6 @@ export class AccountSetupFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.storeSubscription.unsubscribe();
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

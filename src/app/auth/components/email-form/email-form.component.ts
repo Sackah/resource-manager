@@ -9,7 +9,7 @@ import {
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { ResetActions } from '../../store/reset-password/ResetActions';
-import { combineLatest } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
 import { ResetState, SendOtpError } from '../../types/reset-types';
 import {
   selectIsSubmitting,
@@ -24,22 +24,12 @@ import {
   styleUrls: ['./email-form.component.css', '../../styles/styles.css'],
 })
 export class EmailFormComponent implements OnInit, OnDestroy {
+  subscriptions: Subscription[] = [];
   emailForm!: FormGroup;
   storeData!: Pick<ResetState, 'error' | 'isSubmitting'>;
   storeData$ = combineLatest({
     isSubmitting: this.store.select(selectIsSubmitting),
     error: this.store.select(selectError),
-  });
-  storeSubscription = this.storeData$.subscribe({
-    next: res => {
-      if (res.error) {
-        this.storeData.error = res.error;
-      }
-      this.storeData = res;
-    },
-    error: (err: SendOtpError) => {
-      this.storeData.error = err;
-    },
   });
 
   constructor(private store: Store) {}
@@ -48,6 +38,20 @@ export class EmailFormComponent implements OnInit, OnDestroy {
     this.emailForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
     });
+
+    const storeSubscription = this.storeData$.subscribe({
+      next: res => {
+        if (res.error) {
+          this.storeData.error = res.error;
+        }
+        this.storeData = res;
+      },
+      error: (err: SendOtpError) => {
+        this.storeData.error = err;
+      },
+    });
+
+    this.subscriptions.push(storeSubscription);
   }
 
   getEmailErrors(): string {
@@ -72,6 +76,6 @@ export class EmailFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.storeSubscription.unsubscribe();
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

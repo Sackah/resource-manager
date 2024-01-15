@@ -32,7 +32,7 @@ export class UpdateUserDetailsService {
 
   post(details: UpdateUserDetails) {
     return this.http.post<UpdateUserDetailsResponse>(
-      `${BASE_URL}/users/update`,
+      `${BASE_URL}/users/account/setup`,
       details
     );
   }

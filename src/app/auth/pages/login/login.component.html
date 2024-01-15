@@ -10,6 +10,10 @@
         {{ storeData.error.message }}
       </div>
       }
+
+      <div *ngIf="successMessage" class="success-message">
+        {{ successMessage }}
+      </div>
       <h2>Login</h2>
       <p>
         Welcome back, Enter your details to open your account. Don't have an
@@ -22,7 +26,8 @@
           id="email"
           type="email"
           class="global-input-auth {{ getEmailErrors() ? 'error' : '' }}"
-          formControlName="email" />
+          formControlName="email"
+          placeholder="something@example.com" />
         @if(getEmailErrors()){
         <div class="validation-error-message">
           {{ getEmailErrors() }}
@@ -34,7 +39,8 @@
             id="password"
             type="{{ passwordField }}"
             class="global-input-auth {{ getPasswordErrors() ? 'error' : '' }}"
-            formControlName="password" />
+            formControlName="password"
+            placeholder="Enter password" />
           @if(getPasswordErrors()){
           <div class="validation-error-message">
             {{ getPasswordErrors() }}
@@ -56,7 +62,7 @@
           type="submit"
           class="global-button-auth"
           [disabled]="storeData.pending">
-          SUBMIT
+          LOGIN
         </button>
       </form>
     </div>

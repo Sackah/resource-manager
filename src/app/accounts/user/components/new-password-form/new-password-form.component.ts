@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import {
   ReactiveFormsModule,
   FormGroup,
@@ -15,13 +15,10 @@ import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { AuthActions } from '../../../../auth/store/authorization/AuthActions';
 import {
-  UpdateUserPasswordResponse,
-  UpdateUserPasswordError,
-} from '../../../../auth/types/auth-types';
-import {
   UserPasswordState,
   selectUpdateUserPassword,
 } from '../../../../auth/store/authorization/AuthReducers';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'new-password-form',
@@ -33,7 +30,8 @@ import {
     '../../../../auth/styles/styles.css',
   ],
 })
-export class NewPasswordFormComponent implements OnInit {
+export class NewPasswordFormComponent implements OnInit, OnDestroy {
+  subscriptions: Subscription[] = [];
   resetPasswordForm!: FormGroup;
   setupProgress!: SetupProgress;
   @Input() userDetails!: {
@@ -46,14 +44,6 @@ export class NewPasswordFormComponent implements OnInit {
   passwordStrength!: 'weak' | 'medium' | 'strong' | '';
   storeData!: UserPasswordState;
   storeData$ = this.store.select(selectUpdateUserPassword);
-  storeSubscription = this.storeData$.subscribe({
-    next: res => {
-      this.storeData = res;
-    },
-    error: err => {
-      this.storeData.error = err;
-    },
-  });
 
   constructor(
     private setupService: AccountSetupService,
@@ -67,16 +57,28 @@ export class NewPasswordFormComponent implements OnInit {
         password: new FormControl('', [
           Validators.required,
           Validators.minLength(8),
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/),
         ]),
         password_confirmation: new FormControl('', [
           Validators.required,
           Validators.minLength(8),
+          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/),
         ]),
       },
       {
         validators: passwordMatchValidator('password', 'password_confirmation'),
       }
     );
+
+    const storeSubscription = this.storeData$.subscribe({
+      next: res => {
+        this.storeData = res;
+      },
+      error: err => {
+        this.storeData.error = err;
+      },
+    });
+    this.subscriptions.push(storeSubscription);
   }
 
   get passwordField() {
@@ -92,6 +94,8 @@ export class NewPasswordFormComponent implements OnInit {
     if (control?.invalid && (control.dirty || control.touched)) {
       if (control.hasError('required')) {
         return "Password can't be empty";
+      } else if (control.hasError('required')) {
+        return 'Password must have at least one uppercase, one lowercase and a number';
       } else if (control.hasError('minlength')) {
         return 'Password must be at least 8 characters';
       }
@@ -153,12 +157,15 @@ export class NewPasswordFormComponent implements OnInit {
         email,
         userId,
       };
+      console.log('reqbody', reqBody);
 
-      //Make some api call
       this.store.dispatch(AuthActions.updateUserPassword(reqBody));
-      // this.setupService.toggle('details');
     } else {
       console.log(false);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

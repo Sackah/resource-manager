@@ -1,3 +1,10 @@
+<div class="overlay" *ngIf="loggingOut">
+  <div class="custom-spinner">
+    <div class="spinner"></div>
+    <div class="spinner"></div>
+    <div class="spinner"></div>
+  </div>
+</div>
 <div class="side-nav">
   <div class="logo-container">
     <div class="logo">
@@ -33,6 +40,15 @@
             alt="{{ bottomData.label }}" />
           <span class="sidenav-link-text">{{ bottomData.label }}</span>
         </a>
+      </li>
+      <li class="sidenav-nav-item" (click)="handleLogout($event)">
+        <div class="sidenav-nav-link">
+          <img
+            class="sidenav-link-icon"
+            src="assets/images/user/logout-icon.svg"
+            alt="logout" />
+          <span class="sidenav-link-text">Logout</span>
+        </div>
       </li>
     </ul>
   </div>

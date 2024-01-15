@@ -1,24 +1,29 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal } from '@angular/core';
+import { Subscription } from 'rxjs';
 import {
   ReactiveFormsModule,
   FormGroup,
   FormControl,
   Validators,
 } from '@angular/forms';
+import { SettingsService } from '../../services/settings.service';
+import { UpdateUserDetailsResponse } from '../../../../auth/types/auth-types';
 import { Router } from '@angular/router';
-import { LoginSideIllustrationComponent } from '../../../../auth/components/login-side-illustration/login-side-illustration.component';
 import { validPhoneNumber } from '../../../../auth/validators/invalidphonenumber';
-import { selectLogin } from '../../../../auth/store/authorization/AuthReducers';
+import { selectCurrentUser } from '../../../../auth/store/authorization/AuthReducers';
 import { Store } from '@ngrx/store';
-import { AuthActions } from '../../../../auth/store/authorization/AuthActions';
-import { Input } from '@angular/core';
-import { CurrentUser } from '../../../../shared/types/types';
+import {
+  CurrentUser,
+  Departments,
+  InitialSig,
+  Specializations,
+} from '../../../../shared/types/types';
 
 @Component({
   selector: 'user-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, LoginSideIllustrationComponent],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './user-profile.component.html',
   styleUrls: [
     './user-profile.component.css',
@@ -26,58 +31,54 @@ import { CurrentUser } from '../../../../shared/types/types';
   ],
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
+  subscriptions: Subscription[] = [];
   userDetails!: FormGroup;
   imgUrl = '../../../../../assets/images/user/profile-container-2.svg';
   user!: CurrentUser;
-  // No need for this input, all data will be gotten from the store
-  @Input() email!: string;
-
-  storeSubscription = this.store.select(selectLogin).subscribe({
-    next: res => {
-      this.user = res.success?.user as CurrentUser;
-    },
+  disable: boolean = false;
+  settingsSig = signal<InitialSig>({
+    success: null,
+    error: null,
+    pending: false,
   });
+  specializations!: Specializations[];
+  departments!: Departments[];
 
-  constructor(private store: Store, private router: Router) {}
+  constructor(
+    private store: Store,
+    private router: Router,
+    private settingsService: SettingsService
+  ) {}
 
   ngOnInit(): void {
     this.userDetails = new FormGroup({
+      userId: new FormControl('', [Validators.required]),
       profilePicture: new FormControl(null),
-      email: new FormControl(
-        '',
-        // {
-        //   value: this.user.email,
-        //   disabled: false,
-        // },
-        [Validators.required, Validators.email]
-      ),
-      firstName: new FormControl(
-        '',
-        // {
-        //   value: this.user.firstName,
-        //   disabled: false,
-        // },
-        [Validators.required, Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$')]
-      ),
-      lastName: new FormControl(
-        '',
-        // {
-        //   value: this.user.lastName,
-        //   disabled: false,
-        // },
-        [Validators.required, Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$')]
-      ),
-      phoneNumber: new FormControl(
-        '',
-        // {
-        //   value: this.user.phoneNumber,
-        //   disabled: false,
-        // },
-        [Validators.required, validPhoneNumber]
-      ),
-      qualification: new FormControl('', [Validators.required]),
-      specialization: new FormControl('', [Validators.required]),
+      email: new FormControl({ value: '', disabled: true }, [
+        Validators.required,
+        Validators.email,
+      ]),
+      firstName: new FormControl('', [
+        Validators.required,
+        Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
+      ]),
+      lastName: new FormControl('', [
+        Validators.required,
+        Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
+      ]),
+      phoneNumber: new FormControl('', [Validators.required, validPhoneNumber]),
     });
+
+    const storeSub = this.store.select(selectCurrentUser).subscribe({
+      next: user => {
+        if (user) {
+          this.user = user;
+        }
+        this.setValues();
+      },
+    });
+
+    this.subscriptions.push(storeSub);
   }
 
   getEmailErrors(): string {
@@ -106,17 +107,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  getSpecializationErrors(): string {
-    const control = this.userDetails.get('specialization');
-    if (control?.invalid && (control.dirty || control.touched)) {
-      if (control.hasError('required')) {
-        return 'This field is required';
-      }
-    }
-
-    return '';
-  }
-
   getNumberErrors() {
     const control = this.userDetails.get('phoneNumber');
     if (control?.invalid && (control.dirty || control.touched)) {
@@ -130,17 +120,11 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  getQualificationErrors(): string {
-    const control = this.userDetails.get('qualification');
-    if (control?.invalid && (control.dirty || control.touched)) {
-      if (control.hasError('required')) {
-        return 'This field is required';
-      }
-    }
-
-    return '';
-  }
-
+  /**
+   * This method is used to change the image url when the user selects a file
+   * @param event
+   * @returns {void}
+   */
   onFileChange(event: any) {
     if (event.target?.files.length > 0) {
       let reader = new FileReader();
@@ -151,24 +135,104 @@ export class UserProfileComponent implements OnInit, OnDestroy {
         this.imgUrl = event.target.result;
       };
 
+      /**
+       * Profile picture should be a string
+       */
+      // this.userDetails.patchValue({
+      //   profilePicture: file,
+      // });
+    }
+  }
+
+  /**
+   * setvalues() is called on instanciaion to replace all the values with data from state
+   */
+  setValues() {
+    if (this.user) {
       this.userDetails.patchValue({
-        profilePicture: file,
+        userId: this.user.userId,
+        email: this.user.email,
+        firstName: this.user.firstName,
+        lastName: this.user.lastName,
+        phoneNumber: this.user.phoneNumber,
+        imgUrl: this.user.profilePicture,
       });
     }
   }
 
+  get signalValues() {
+    const val = this.settingsSig();
+    return val;
+  }
+
+  /**
+   * The form is submitted here
+   * @param event
+   * @returns {void}
+   */
   submitForm(event: Event) {
     event.preventDefault();
-    const userDetails = this.userDetails.value;
+    this.settingsSig.set({
+      success: null,
+      error: null,
+      pending: true,
+    });
 
-    //make a different api call here instead, dispatching the action has
-    //other side effects
+    if (!this.user) {
+      console.error('User details not available.');
+      return;
+    }
+
+    /**
+     * Email is intentionally omitted from the request body
+     */
+
+    const { firstName, lastName, phoneNumber } = this.userDetails.value;
+    const reqBody = {
+      userId: this.user.userId,
+      firstName: firstName,
+      lastName: lastName,
+      phoneNumber: phoneNumber,
+    };
+
     if (this.userDetails.valid) {
-      // this.store.dispatch(AuthActions.updateUserDetails(userDetails));
+      this.settingsService.updateDetails(reqBody).subscribe({
+        next: response => {
+          if (response && response.message) {
+            this.settingsSig.set({
+              success: response,
+              error: null,
+              pending: false,
+            });
+            setTimeout(() => {
+              this.settingsSig.set({
+                success: null,
+                error: null,
+                pending: false,
+              });
+            }, 3000);
+          }
+        },
+        error: error => {
+          this.settingsSig.set({
+            success: null,
+            error: error.errors,
+            pending: false,
+          });
+
+          setTimeout(() => {
+            this.settingsSig.set({
+              success: null,
+              error: null,
+              pending: false,
+            });
+          }, 3000);
+        },
+      });
     }
   }
 
   ngOnDestroy(): void {
-    this.storeSubscription.unsubscribe();
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 }

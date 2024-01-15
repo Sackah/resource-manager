@@ -3,7 +3,6 @@ import { LoginSideIllustrationComponent } from '../../components/login-side-illu
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { AuthActions } from '../../store/authorization/AuthActions';
-import { combineLatest } from 'rxjs';
 import {
   ReactiveFormsModule,
   FormGroup,
@@ -14,8 +13,8 @@ import {
   LoginState,
   selectLogin,
 } from '../../store/authorization/AuthReducers';
-import { AuthState } from '../../types/auth-types';
 import { RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -30,15 +29,11 @@ import { RouterLink } from '@angular/router';
   styleUrls: ['./login.component.css', '../../styles/styles.css'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
+  subcriptions: Subscription[] = [];
   loginForm!: FormGroup;
   showPassword: boolean = false;
   storeData!: LoginState;
-
-  storeSubscription = this.store.select(selectLogin).subscribe({
-    next: res => {
-      this.storeData = res;
-    },
-  });
+  successMessage: string | null = null;
 
   constructor(private store: Store) {}
 
@@ -47,6 +42,23 @@ export class LoginComponent implements OnInit, OnDestroy {
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required]),
     });
+
+    const storeSubscription = this.store.select(selectLogin).subscribe({
+      next: res => {
+        this.storeData = res;
+        // Check if login is successful and set successMessage
+        if (this.storeData.message === 'Login successful') {
+          this.successMessage = this.storeData.message;
+
+          // Assuming you want to clear the message after displaying it once
+          setTimeout(() => {
+            this.successMessage = null;
+          }, 5000); // Clear message after 5 seconds (adjust as needed)
+        }
+      },
+    });
+
+    this.subcriptions.push(storeSubscription);
   }
 
   getEmailErrors(): string {
@@ -81,12 +93,11 @@ export class LoginComponent implements OnInit, OnDestroy {
     event.preventDefault();
     const userDetails = this.loginForm.value;
     if (this.loginForm.valid) {
-      console.log(userDetails);
       this.store.dispatch(AuthActions.login(userDetails));
     }
   }
 
   ngOnDestroy(): void {
-    this.storeSubscription.unsubscribe();
+    this.subcriptions.forEach(sub => sub.unsubscribe());
   }
 }

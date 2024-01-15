@@ -1,0 +1,67 @@
+<ng-container *ngIf="loading; else userList">
+  <div class="spinner-dots">
+    <div class="custom-spinner">
+      <div class="spinner-dot"></div>
+      <div class="spinner-dot"></div>
+      <div class="spinner-dot"></div>
+    </div>
+  </div>
+</ng-container>
+<ng-template #userList>
+  <div class="user-list-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Department</th>
+          <th>Actions</th>
+        </tr>
+        <!-- <delete-modal
+          *ngIf="showDeleteModal"
+          [userEmailToDelete]="userToDeleteEmail"
+          (deleteConfirmed)="deleteUser($event)"
+          (cancel)="cancelDeleteModal()"></delete-modal> -->
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td style="display: flex">
+            <input type="checkbox" [checked]="false" style="
+                width: 20px;
+                height: 20px;
+                margin-right: 8px;
+                font-family: 'LexendMedium';
+                color: #022f54;
+              " />
+            {{ user.firstName }} {{ user.lastName }}
+          </td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.roles }}</td>
+          <td>{{ user.department }}</td>
+          <td>
+            <div class="dropdown-container" *ngIf="showDropdownForUser === user">
+              <ul class="dropdown-details-container">
+                <li>Edit</li>
+                <li (click)="openViewModal(user)" style="cursor: pointer">
+                  View
+                </li>
+                <li>Archive</li>
+                <li (click)="openDeleteModal(user)" style="cursor: pointer">
+                  Delete
+                </li>
+              </ul>
+            </div>
+
+            <button class="actions-btn" (click)="toggleDropdown(user)">
+              <div class="actions-dot">
+                <img src="assets/images/user/dots-v.svg" alt="dots" />
+              </div>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- <pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></pagination> -->
+</ng-template>
