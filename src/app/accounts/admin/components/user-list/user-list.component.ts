@@ -123,8 +123,8 @@ export class UserListComponent implements OnInit, OnDestroy {
 
     const endIndex = startIndex + this.itemsPerPage;
 
-    this.usersService.getUsers().subscribe(
-      (response: any) => {
+    this.usersService.getUsers().subscribe({
+      next: (response: any) => {
         const users = response.users || response.data;
         if (Array.isArray(users)) {
           this.users = users.slice(startIndex, endIndex) as User[];
@@ -133,12 +133,12 @@ export class UserListComponent implements OnInit, OnDestroy {
           console.error('Invalid response format for users:', users);
         }
       },
-      error => {
+      error: error => {
         console.error('Error fetching users:', error);
       },
-      () => {
+      complete: () => {
         this.loading = false;
-      }
-    );
+      },
+    });
   }
 }

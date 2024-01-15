@@ -35,28 +35,28 @@ export class DepartmentModalComponent {
     if (this.modalForm.valid) {
       const newDepartment: string = this.modalForm.value.newDepartment;
 
-      this.departmentService.addDepartment(newDepartment).subscribe(
-        (response: ResponseType) => {
+      this.departmentService.addDepartment(newDepartment).subscribe({
+        next: (response: ResponseType) => {
           console.log('New department added to the backend:', newDepartment);
-
           this.saveDepartment.emit(newDepartment);
           this.closeModal();
         },
-        err => {
+        error: err => {
           console.error('Error adding department to the backend:', err);
-        }
-      );
+        },
+      });
     }
   }
   fetchDepartments() {
-    this.departmentService.getDepartments().subscribe(
-      (departments: string[]) => {
-        console.log('Fetched specializations from the backend:', departments);
+    this.departmentService.getDepartments().subscribe({
+      next: (departments: string[]) => {
+        console.log('Fetched departments from the backend:', departments);
       },
-      err => {
-        console.error('Error fetching specializations from the backend:', err);
-      }
-    );
+      error: err => {
+        console.error('Error fetching departments from the backend:', err);
+      },
+      complete: () => {},
+    });
   }
 
   closeModal() {
