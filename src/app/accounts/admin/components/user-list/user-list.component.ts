@@ -72,12 +72,9 @@ export class UserListComponent implements OnInit, OnDestroy {
     const deleteModalRef = overlayRef.attach(deleteModalPortal);
   }
 
-  /**
-   * Sam
-   */
   openViewModal(user?: User) {
     /**
-     * user parameter should not be optional. I did this for demonstration purposes.
+     * user parameter should not be optional.
      */
     this.viewModalRef = this.viewModalService.open(this.viewContainerRef, {
       user,
