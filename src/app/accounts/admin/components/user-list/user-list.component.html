@@ -27,7 +27,10 @@
       <tbody>
         <tr *ngFor="let user of users">
           <td style="display: flex">
-            <input type="checkbox" [checked]="false" style="
+            <input
+              type="checkbox"
+              [checked]="false"
+              style="
                 width: 20px;
                 height: 20px;
                 margin-right: 8px;
@@ -40,7 +43,9 @@
           <td>{{ user.roles }}</td>
           <td>{{ user.department }}</td>
           <td>
-            <div class="dropdown-container" *ngIf="showDropdownForUser === user">
+            <div
+              class="dropdown-container"
+              *ngIf="showDropdownForUser === user">
               <ul class="dropdown-details-container">
                 <li>Edit</li>
                 <li (click)="openViewModal(user)" style="cursor: pointer">
@@ -63,5 +68,8 @@
       </tbody>
     </table>
   </div>
-  <!-- <pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></pagination> -->
+  <pagination
+    [currentPage]="currentPage"
+    [totalPages]="totalPages"
+    (pageChange)="onPageChange($event)"></pagination>
 </ng-template>

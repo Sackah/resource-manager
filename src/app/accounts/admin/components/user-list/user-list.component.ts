@@ -5,7 +5,7 @@ import {
   ViewContainerRef,
   ComponentRef,
 } from '@angular/core';
-import { User } from '../../../../shared/types/types';
+import { GenericResponse, User } from '../../../../shared/types/types';
 import { Subscription } from 'rxjs';
 import { CreateUserService } from '../../services/create-user.service';
 import { UsersService } from '../../services/users.service';
@@ -53,12 +53,24 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   openDeleteModal(user: User): void {
-    this.deleteModalService.open(this.viewContainerRef, {
+    const modalRef = this.deleteModalService.open(this.viewContainerRef, {
       user,
+    });
+
+    modalRef.instance.deleteConfirmedEvent.subscribe({
+      next: (response: GenericResponse) => {
+        console.log('Deletion successful:', response);
+      },
+      error: (error: any) => {
+        console.error('Error deleting user:', error);
+      },
     });
   }
 
-  openViewModal(user: User) {
+  openViewModal(user?: User) {
+    /**
+     * user parameter should not be optional.
+     */
     this.viewModalRef = this.viewModalService.open(this.viewContainerRef, {
       user,
     });
