@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { User } from '../../../../shared/types/types';
+import { User } from '../../../types/types';
 
 @Component({
   selector: 'delete-modal',

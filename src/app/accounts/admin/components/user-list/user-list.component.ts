@@ -10,15 +10,15 @@ import { Subscription } from 'rxjs';
 import { CreateUserService } from '../../services/create-user.service';
 import { UsersService } from '../../services/users.service';
 import { CommonModule } from '@angular/common';
-import { ViewModalComponent } from '../view-modal/view-modal.component';
+import { ViewModalComponent } from '../../../../shared/components/modals/view-modal/view-modal.component';
 import { Overlay, OverlayConfig } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
-import { DeleteModalComponent } from '../delete-modal/delete-modal.component';
+import { DeleteModalComponent } from '../../../../shared/components/modals/delete-modal/delete-modal.component';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
-import { ViewModalService } from '../view-modal/view-modal.service';
-import { DeleteModalService } from '../delete-modal/delete-modal.service';
-import { AssignModalComponent } from '../assign-modal/assign-modal.component';
-import { AssignModalService } from '../assign-modal/assign.service';
+import { ViewModalService } from '../../../../shared/components/modals/view-modal/view-modal.service';
+import { DeleteModalService } from '../../../../shared/components/modals/delete-modal/delete-modal.service';
+import { AssignModalComponent } from '../../../../shared/components/modals/assign-modal/assign-modal.component';
+import { AssignModalService } from '../../../../shared/components/modals/assign-modal/assign.service';
 
 @Component({
   selector: 'user-list',

@@ -26,6 +26,13 @@ export class UsersService {
     );
   }
 
+  /**
+   * This should take a query parameter.
+   * for example: /users/fetch?query=bookable&name=John
+   * name here would be whatever the user types in the search bar, so initially when the name is '' it
+   * should return all users, but when the user types in a name it should return all users that match
+   * @returns an observable of an array of users that are bookable
+   */
   getBookableUsers(): Observable<User[]> {
     return this.http.get<User[]>(`${BASE_URL}/users/fetch/bookable`, {
       headers: {
