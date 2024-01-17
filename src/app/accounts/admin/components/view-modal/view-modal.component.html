@@ -41,8 +41,9 @@
       <div class="value">{{ user.roles }}</div>
       <div class="key">Phone Number</div>
       <div class="value">{{ user.phoneNumber }}</div>
-      <div class="key">Skills</div>
-      <div class="value">{{ user.skills }}</div>
+      <div class="value" *ngFor="let skill of user.skills[0] | keyvalue">
+        {{ skill.value }}
+      </div>
       <div class="key">Bookable</div>
       <div class="value" style="text-transform: capitalize">
         {{ user.bookable }}

@@ -3,11 +3,12 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { User } from '../../../../shared/types/types';
 import { UsersService } from '../../services/users.service';
 import { ChangeDetectorRef } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'assign-modal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './assign-modal.component.html',
   styleUrl: './assign-modal.component.css',
 })
@@ -17,6 +18,7 @@ export class AssignModalComponent {
   closed: boolean = false;
   loading: boolean = false;
   bookableUsers: User[] = [];
+  searchQuery: string = '';
 
   @Output() closeAssignEvent = new EventEmitter<void>();
   @Output() submitEvent = new EventEmitter<void>();
@@ -53,6 +55,10 @@ export class AssignModalComponent {
     }, 100);
     console.log(this.user);
 
+    this.fetchBookableUsers();
+  }
+
+  onSearchInput(): void {
     this.fetchBookableUsers();
   }
 
