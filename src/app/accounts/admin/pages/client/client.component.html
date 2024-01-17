@@ -1,1 +1,19 @@
-<p>client works!</p>
+<div class="client page">
+  <header>
+    <h1>Clients</h1>
+    <div class="buttons-wrapper">
+      <button-new></button-new>
+    </div>
+  </header>
+  <div class="toggles">
+    <h3 [class]="display === 'all' ? 'active' : ''" (click)="display = 'all'">
+      All
+    </h3>
+    <h3
+      [class]="display !== 'all' ? 'active' : ''"
+      (click)="display = 'archives'">
+      Archives
+    </h3>
+    @if(display === 'all') { } @else if (display=== 'archives') {I'm archives}
+  </div>
+</div>

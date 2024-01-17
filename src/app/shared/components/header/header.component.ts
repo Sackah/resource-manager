@@ -38,7 +38,6 @@ export class HeaderComponent implements OnInit {
     this.notificationService.getNotifications().subscribe(
       (response: any) => {
         const notifications = response.notifications || response.data;
-        console.log(notifications);
         if (Array.isArray(notifications)) {
           this.notifications = notifications as UserNotifications[];
         } else {
@@ -46,7 +45,7 @@ export class HeaderComponent implements OnInit {
         }
       },
       error => {
-        console.log('Error fetching users', error);
+        console.log('Error fetching notification', error);
       }
     );
   }

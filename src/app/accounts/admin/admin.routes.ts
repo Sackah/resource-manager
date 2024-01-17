@@ -5,6 +5,7 @@ import { UsercreationComponent } from '../admin/pages/usercreation/usercreation.
 import { UsersComponent } from '../admin/pages/users/users.component';
 import { MainComponent } from '../admin/main.component';
 import { SettingsComponent } from '../admin/pages/settings/settings.component';
+import { ClientComponent } from '../admin/pages/client/client.component';
 
 export const AdminRoutes: Route[] = [
   {
@@ -31,6 +32,10 @@ export const AdminRoutes: Route[] = [
       {
         path: 'settings',
         component: SettingsComponent,
+      },
+      {
+        path: 'client',
+        component: ClientComponent,
       },
     ],
   },

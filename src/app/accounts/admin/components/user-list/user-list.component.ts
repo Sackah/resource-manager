@@ -17,6 +17,8 @@ import { DeleteModalComponent } from '../delete-modal/delete-modal.component';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import { ViewModalService } from '../view-modal/view-modal.service';
 import { DeleteModalService } from '../delete-modal/delete-modal.service';
+import { AssignModalComponent } from '../assign-modal/assign-modal.component';
+import { AssignModalService } from '../assign-modal/assign.service';
 
 @Component({
   selector: 'user-list',
@@ -26,6 +28,7 @@ import { DeleteModalService } from '../delete-modal/delete-modal.service';
     ViewModalComponent,
     PaginationComponent,
     DeleteModalComponent,
+    AssignModalComponent,
   ],
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.css'],
@@ -33,19 +36,21 @@ import { DeleteModalService } from '../delete-modal/delete-modal.service';
 export class UserListComponent implements OnInit, OnDestroy {
   users: User[] = [];
   currentPage: number = 1;
-  itemsPerPage: number = 6;
+  itemsPerPage: number = 10;
   totalPages: number = 0;
   loading: boolean = false;
   showDropdownForUser: User | null = null;
 
   private dataSubscription: Subscription | undefined;
   private viewModalRef?: ComponentRef<ViewModalComponent>;
+  private assignModalRef?: ComponentRef<AssignModalComponent>;
 
   constructor(
     private usersService: UsersService,
     private deleteModalService: DeleteModalService,
     private viewModalService: ViewModalService,
-    private viewContainerRef: ViewContainerRef
+    private viewContainerRef: ViewContainerRef,
+    private assignModalService: AssignModalService
   ) {}
 
   ngOnInit(): void {
@@ -72,6 +77,11 @@ export class UserListComponent implements OnInit, OnDestroy {
      * user parameter should not be optional.
      */
     this.viewModalRef = this.viewModalService.open(this.viewContainerRef, {
+      user,
+    });
+  }
+  openAssignModal(user?: User) {
+    this.assignModalRef = this.assignModalService.open(this.viewContainerRef, {
       user,
     });
   }

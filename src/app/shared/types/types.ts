@@ -30,6 +30,8 @@ export type CurrentUser = {
   created_at: string;
 };
 
+export interface Client extends CurrentUser {}
+
 /**
  * @description
  * Yes CurrentUser is the same as User, but it may be used in different contexts where typing an object

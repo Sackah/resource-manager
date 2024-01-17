@@ -67,6 +67,10 @@ export class SideNavComponent implements OnInit, OnDestroy {
       },
       error: err => {
         console.error(err);
+        if (err.status == 401) {
+          this.tokenService.clear();
+          this.router.navigateByUrl('/login');
+        }
       },
     });
 

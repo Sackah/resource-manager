@@ -21,7 +21,7 @@ export const AccountRoutes: Routes = [
     path: 'manager',
     loadChildren: () =>
       import('./manager/manager.routes').then(m => m.ManagerRoutes),
-    canActivate: [ManagerGuard],
+    // canActivate: [ManagerGuard],
   },
   {
     path: 'admin',

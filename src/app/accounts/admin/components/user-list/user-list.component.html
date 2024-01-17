@@ -47,6 +47,7 @@
               class="dropdown-container"
               *ngIf="showDropdownForUser === user">
               <ul class="dropdown-details-container">
+                <li (click)="openAssignModal(user)">Assign</li>
                 <li>Edit</li>
                 <li (click)="openViewModal(user)" style="cursor: pointer">
                   View

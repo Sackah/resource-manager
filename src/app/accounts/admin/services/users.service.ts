@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BASE_URL } from '../../../../environment/config';
-import { Observable } from 'rxjs';
+import { Observable, tap, throwError, catchError } from 'rxjs';
 import { User, GenericResponse } from '../../../shared/types/types';
 
 @Injectable({
@@ -24,5 +24,14 @@ export class UsersService {
       `${BASE_URL}/users/settings/delete`,
       { email: email }
     );
+  }
+
+  getBookableUsers(): Observable<User[]> {
+    return this.http.get<User[]>(`${BASE_URL}/users/fetch/bookable`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'skip-browser-warning',
+      },
+    });
   }
 }
