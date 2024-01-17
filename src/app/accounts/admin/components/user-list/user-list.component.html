@@ -28,10 +28,7 @@
       <tbody>
         <tr *ngFor="let user of users">
           <td style="display: flex">
-            <input
-              type="checkbox"
-              [checked]="false"
-              style="
+            <input type="checkbox" [checked]="false" style="
                 width: 20px;
                 height: 20px;
                 margin-right: 8px;
@@ -44,33 +41,15 @@
           <td>{{ user.roles }}</td>
           <td>{{ user.department }}</td>
           <td *ngIf="user.specializations && user.specializations.length > 0">
-            <span
-              *ngFor="let specialization of user.specializations[0] | keyvalue">
+            <span *ngFor="let specialization of user.specializations[0] | keyvalue">
               {{ specialization.value }}
             </span>
           </td>
-          <td
-            *ngIf="
+          <td *ngIf="
               !user.specializations || user.specializations.length === 0
             "></td>
           <td>
-            <div
-              class="dropdown-container"
-              *ngIf="showDropdownForUser === user">
-              <ul class="dropdown-details-container">
-                <li (click)="openAssignModal(user)">Assign</li>
-                <li>Edit</li>
-                <li (click)="openViewModal(user)" style="cursor: pointer">
-                  View
-                </li>
-                <li>Archive</li>
-                <li (click)="openDeleteModal(user)" style="cursor: pointer">
-                  Delete
-                </li>
-              </ul>
-            </div>
-
-            <button class="actions-btn" (click)="toggleDropdown(user)">
+            <button class="actions-btn" (click)="openDropdown($event, user)">
               <div class="actions-dot">
                 <img src="assets/images/user/dots-v.svg" alt="dots" />
               </div>
@@ -80,8 +59,5 @@
       </tbody>
     </table>
   </div>
-  <pagination
-    [currentPage]="currentPage"
-    [totalPages]="totalPages"
-    (pageChange)="onPageChange($event)"></pagination>
+  <pagination [currentPage]="currentPage" [totalPages]="totalPages" (pageChange)="onPageChange($event)"></pagination>
 </ng-template>
