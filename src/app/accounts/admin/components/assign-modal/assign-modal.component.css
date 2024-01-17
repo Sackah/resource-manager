@@ -113,6 +113,12 @@ label:not(.visibly-hidden) {
   border: 1px solid #f5f6f7;
   justify-content: flex-start;
   margin-bottom: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.group-item.selected {
+  background-color: #f2f5ff;
 }
 
 .profile-picture {
