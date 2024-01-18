@@ -40,6 +40,8 @@ export class UserListComponent implements OnInit, OnDestroy {
   totalPages: number = 0;
   loading: boolean = false;
   showDropdownForUser: User | null = null;
+  successMessage: string | null = null;
+  errorMessage: string | null = null;
 
   private dataSubscription: Subscription | undefined;
   private viewModalRef?: ComponentRef<ViewModalComponent>;
@@ -126,5 +128,26 @@ export class UserListComponent implements OnInit, OnDestroy {
         this.loading = false;
       },
     });
+  }
+
+  archiveUser(email: string): void {
+    this.usersService.archiveUser(email).subscribe(
+      () => {
+        this.successMessage = 'User archived successfully.';
+        this.errorMessage = null;
+        this.fetchUsers();
+        setTimeout(() => {
+          this.successMessage = null;
+        }, 3000);
+      },
+      error => {
+        this.errorMessage = 'Error archiving user.';
+        this.successMessage = null;
+        console.error('Error archiving user:', error);
+        setTimeout(() => {
+          this.errorMessage = null;
+        }, 3000);
+      }
+    );
   }
 }

@@ -5,6 +5,7 @@ import { HeaderComponent } from '../../../../shared/components/header/header.com
 import { ButtonAssignComponent } from '../../../user/components/button-assign/button-assign.component';
 import { ButtonNewComponent } from '../../../user/components/button-new/button-new.component';
 import { UserListComponent } from '../../components/user-list/user-list.component';
+import { ArchivedListComponent } from '../../components/archived-list/archived-list.component';
 
 @Component({
   selector: 'app-users',
@@ -16,6 +17,7 @@ import { UserListComponent } from '../../components/user-list/user-list.componen
     ButtonAssignComponent,
     ButtonNewComponent,
     UserListComponent,
+    ArchivedListComponent,
   ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',

@@ -8,11 +8,21 @@
   <div>
     <div>
       <label for="projectName">Project</label>
-      <input id="projectName" type="text" class="project-input" placeholder="Enter project name" />
+      <input
+        id="projectName"
+        name="name"
+        type="text"
+        class="project-input"
+        placeholder="Enter project name" />
     </div>
   </div>
-  <input type="search" class="search-input" id="search" placeholder="Search for individuals or specialization"
-    [(ngModel)]="searchQuery" (input)="onSearchInput()" />
+  <input
+    type="search"
+    class="search-input"
+    id="search"
+    placeholder="Search for individuals or specialization"
+    [(ngModel)]="searchQuery"
+    (input)="onSearchInput()" />
 
   <div *ngIf="loading; else userList">
     <div class="spinner-dots">
@@ -26,26 +36,41 @@
 
   <ng-template #userList>
     <div *ngIf="bookableUsers.length > 0" class="dropdown-list-item">
-      <div *ngFor="let user of bookableUsers" class="group-item" [ngClass]="{ selected: user.selected }">
-        <img src="assets/images/user/avatar.svg" class="profile-picture" alt="profile" />
+      <div
+        *ngFor="let user of bookableUsers"
+        class="group-item"
+        [ngClass]="{ selected: user.selected }">
+        <img
+          src="assets/images/user/avatar.svg"
+          class="profile-picture"
+          alt="profile" />
         <div class="info">
           <p class="name">{{ user.firstName }} {{ user.lastName }}</p>
           <p class="position">
-            <span *ngFor="let specialization of user.specializations[0] | keyvalue">
+            <span
+              *ngFor="let specialization of user.specializations[0] | keyvalue">
               {{ specialization.value }}
             </span>
           </p>
         </div>
-        <input type="checkbox" name="userId" value="{{ user.userId }}" [(ngModel)]="user.selected" />
+        <input
+          type="checkbox"
+          name="userId[]"
+          value="{{ user.userId }}"
+          [(ngModel)]="user.selected" />
       </div>
     </div>
   </ng-template>
 
   <div class="buttons-wrapper">
-    <button type="reset" class="button bg-[#FFFFFF] text-[#022F54] hover:bg-[#e6e6e6]">
+    <button
+      type="reset"
+      class="button bg-[#FFFFFF] text-[#022F54] hover:bg-[#e6e6e6]">
       Cancel
     </button>
-    <button type="submit" class="button bg-[#1F26A8] text-white hover:bg-[#353cb1]">
+    <button
+      type="submit"
+      class="button bg-[#1F26A8] text-white hover:bg-[#353cb1]">
       Assign
     </button>
   </div>
