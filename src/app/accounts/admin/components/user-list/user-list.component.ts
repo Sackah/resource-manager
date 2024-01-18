@@ -19,6 +19,8 @@ import { ViewModalService } from '../../../../shared/components/modals/view-moda
 import { DeleteModalService } from '../../../../shared/components/modals/delete-modal/delete-modal.service';
 import { AssignModalComponent } from '../../../../shared/components/modals/assign-modal/assign-modal.component';
 import { AssignModalService } from '../../../../shared/components/modals/assign-modal/assign.service';
+import { DropdownService } from '../../../../shared/components/dropdown/dropdown.service';
+import { DropdownComponent } from '../../../../shared/components/dropdown/dropdown.component';
 
 @Component({
   selector: 'user-list',
@@ -46,56 +48,33 @@ export class UserListComponent implements OnInit, OnDestroy {
   private dataSubscription: Subscription | undefined;
   private viewModalRef?: ComponentRef<ViewModalComponent>;
   private assignModalRef?: ComponentRef<AssignModalComponent>;
+  private dropdownRef?: ComponentRef<DropdownComponent>;
 
   constructor(
     private usersService: UsersService,
-    private deleteModalService: DeleteModalService,
-    private viewModalService: ViewModalService,
-    private viewContainerRef: ViewContainerRef,
-    private assignModalService: AssignModalService
+    private dropdownService: DropdownService,
+    private viewContainerRef: ViewContainerRef
   ) {}
 
   ngOnInit(): void {
     this.fetchUsers();
   }
 
-  openDeleteModal(user: User): void {
-    const modalRef = this.deleteModalService.open(this.viewContainerRef, {
+  openDropdown(event: MouseEvent, user: User) {
+    const position = {
+      top: event.clientY + 20,
+      left: event.clientX - 100,
+    };
+    this.dropdownRef = this.dropdownService.open(
+      this.viewContainerRef,
       user,
-    });
-
-    modalRef.instance.deleteConfirmedEvent.subscribe({
-      next: (response: GenericResponse) => {
-        console.log('Deletion successful:', response);
-      },
-      error: (error: any) => {
-        console.error('Error deleting user:', error);
-      },
-    });
-  }
-
-  openViewModal(user?: User) {
-    /**
-     * user parameter should not be optional.
-     */
-    this.viewModalRef = this.viewModalService.open(this.viewContainerRef, {
-      user,
-    });
-  }
-  openAssignModal(user?: User) {
-    this.assignModalRef = this.assignModalService.open(this.viewContainerRef, {
-      user,
-    });
+      position
+    );
   }
 
   onPageChange(page: number): void {
     this.currentPage = page;
     this.fetchUsers();
-  }
-
-  toggleDropdown(user: User): void {
-    // Toggle the dropdown for the specified user
-    this.showDropdownForUser = this.showDropdownForUser === user ? null : user;
   }
 
   ngOnDestroy(): void {

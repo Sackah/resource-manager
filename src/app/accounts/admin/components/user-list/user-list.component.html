@@ -61,23 +61,7 @@
               !user.specializations || user.specializations.length === 0
             "></td>
           <td>
-            <div
-              class="dropdown-container"
-              *ngIf="showDropdownForUser === user">
-              <ul class="dropdown-details-container">
-                <li (click)="openAssignModal(user)">Assign</li>
-                <li>Edit</li>
-                <li (click)="openViewModal(user)" style="cursor: pointer">
-                  View
-                </li>
-                <li (click)="archiveUser(user.email)">Archive</li>
-                <li (click)="openDeleteModal(user)" style="cursor: pointer">
-                  Delete
-                </li>
-              </ul>
-            </div>
-
-            <button class="actions-btn" (click)="toggleDropdown(user)">
+            <button class="actions-btn" (click)="openDropdown($event, user)">
               <div class="actions-dot">
                 <img src="assets/images/user/dots-v.svg" alt="dots" />
               </div>
