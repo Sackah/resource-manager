@@ -75,11 +75,6 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.fetchUsers();
   }
 
-  toggleDropdown(user: User): void {
-    // Toggle the dropdown for the specified user
-    this.showDropdownForUser = this.showDropdownForUser === user ? null : user;
-  }
-
   ngOnDestroy(): void {
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();
