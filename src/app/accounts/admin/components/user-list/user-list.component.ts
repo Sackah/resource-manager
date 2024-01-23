@@ -7,16 +7,11 @@ import {
 } from '@angular/core';
 import { GenericResponse, User } from '../../../../shared/types/types';
 import { Subscription } from 'rxjs';
-import { CreateUserService } from '../../services/create-user.service';
 import { UsersService } from '../../services/users.service';
 import { CommonModule } from '@angular/common';
 import { ViewModalComponent } from '../../../../shared/components/modals/view-modal/view-modal.component';
-import { Overlay, OverlayConfig } from '@angular/cdk/overlay';
-import { ComponentPortal } from '@angular/cdk/portal';
-import { DeleteModalComponent } from '../../../../shared/components/modals/delete-modal/delete-modal.component';
+// import { DeleteModalComponent } from '../../../../shared/components/modals/delete-modal/delete-modal.component';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
-import { ViewModalService } from '../../../../shared/components/modals/view-modal/view-modal.service';
-import { DeleteModalService } from '../../../../shared/components/modals/delete-modal/delete-modal.service';
 import { AssignModalComponent } from '../../../../shared/components/modals/assign-modal/assign-modal.component';
 import { AssignModalService } from '../../../../shared/components/modals/assign-modal/assign.service';
 import { DropdownService } from '../../../../shared/components/dropdown/dropdown.service';
@@ -29,7 +24,7 @@ import { DropdownComponent } from '../../../../shared/components/dropdown/dropdo
     CommonModule,
     ViewModalComponent,
     PaginationComponent,
-    DeleteModalComponent,
+    // DeleteModalComponent,
     AssignModalComponent,
   ],
   templateUrl: './user-list.component.html',
@@ -44,6 +39,9 @@ export class UserListComponent implements OnInit, OnDestroy {
   showDropdownForUser: User | null = null;
   successMessage: string | null = null;
   errorMessage: string | null = null;
+  totalUsers: number = 0;
+  // selectedUsers: Set<User> = new Set<User>();
+  selectedUsers: User[] = [];
 
   private dataSubscription: Subscription | undefined;
   private viewModalRef?: ComponentRef<ViewModalComponent>;
@@ -53,7 +51,8 @@ export class UserListComponent implements OnInit, OnDestroy {
   constructor(
     private usersService: UsersService,
     private dropdownService: DropdownService,
-    private viewContainerRef: ViewContainerRef
+    private viewContainerRef: ViewContainerRef,
+    private assignModalService: AssignModalService
   ) {}
 
   ngOnInit(): void {
@@ -95,6 +94,7 @@ export class UserListComponent implements OnInit, OnDestroy {
         const users = response.users || response.data;
         if (Array.isArray(users)) {
           this.users = users.slice(startIndex, endIndex) as User[];
+          this.totalUsers = users.length;
           this.totalPages = Math.ceil(users.length / this.itemsPerPage);
         } else {
           console.error('Invalid response format for users:', users);
@@ -109,9 +109,25 @@ export class UserListComponent implements OnInit, OnDestroy {
     });
   }
 
+  toggleUserSelection(user: User): void {
+    if (this.isSelected(user)) {
+      this.selectedUsers = this.selectedUsers.filter(u => u !== user);
+    } else {
+      this.selectedUsers.push(user);
+    }
+  }
+
+  isSelected(user: User): boolean {
+    return this.selectedUsers.includes(user);
+  }
+
+  // archiveUser(user: User): void {
+  //   console.log(user);
+  //   this.archiveUserEvent.emit(user.email);
+  // }
   archiveUser(email: string): void {
-    this.usersService.archiveUser(email).subscribe(
-      () => {
+    this.usersService.archiveUser(email).subscribe({
+      next: () => {
         this.successMessage = 'User archived successfully.';
         this.errorMessage = null;
         this.fetchUsers();
@@ -119,14 +135,14 @@ export class UserListComponent implements OnInit, OnDestroy {
           this.successMessage = null;
         }, 3000);
       },
-      error => {
+      error: (error: any) => {
         this.errorMessage = 'Error archiving user.';
         this.successMessage = null;
         console.error('Error archiving user:', error);
         setTimeout(() => {
           this.errorMessage = null;
         }, 3000);
-      }
-    );
+      },
+    });
   }
 }

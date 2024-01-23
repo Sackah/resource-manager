@@ -4,6 +4,8 @@ import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { BASE_URL } from '../../../../environment/config';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { DepartmentModalComponent } from '../../../shared/components/modals/department-modal/department-modal.component';
 
 @Injectable({
   providedIn: 'root',
@@ -14,15 +16,32 @@ export class DepartmentService {
   >([]);
   departments$ = this._departments.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private departmentService: NgbModal) {
     this._departments.next([]);
+  }
+
+  openDepartmentModal(): NgbModalRef {
+
+    const modalRef = this.departmentService.open(DepartmentModalComponent, {
+      centered: true,
+      backdrop: 'static', 
+
+    });
+    
+    modalRef.result.finally(() => {
+     
+    });
+
+    return modalRef;
+
+
   }
 
   addDepartment(department: string): Observable<any> {
     const currentDepartments = this._departments.getValue();
-    const updatedDepartments = [...currentDepartments, department];
-    console.log('Updated Departments:', updatedDepartments);
-    this._departments.next(updatedDepartments);
+    // const updatedDepartments = [...currentDepartments, department];
+    // console.log('Updated Departments:', updatedDepartments);
+    // this._departments.next(updatedDepartments);
 
     return this.http
       .post<any>(`${BASE_URL}/department/store`, { name: department })

@@ -31,7 +31,11 @@ export type CurrentUser = {
   selected?: boolean;
 };
 
-export interface Client extends CurrentUser {}
+export type AdminUser = Pick<CurrentUser, 'email' | 'department' | 'roles' > & {
+  skills: string;
+  department: string;
+  specializations : string;
+};
 
 /**
  * @description
@@ -40,13 +44,26 @@ export interface Client extends CurrentUser {}
  */
 export interface User extends CurrentUser {}
 
-/**
- * @description you can use this type, anywhere the response is not of utmost importance
- */
 export type GenericResponse = {
   success: boolean;
   message: string;
 };
+
+export type ClientDetails = {
+  name: string;
+  clientId: string;
+  details: string;
+  employees: string[];
+  totalProjects: number;
+
+}
+export type ProjectDetails = Pick<ClientDetails, 'name' | 'details' > & {
+  date: Date;
+  client: string;
+  projectCode: string;
+  projectName: string;
+  billable: Boolean;
+  }
 
 export interface UserNotifications {
   created_by: string;
@@ -75,4 +92,9 @@ export type InitialSig = {
   success: { user?: CurrentUser; message: string } | null;
   error: { message: string } | null;
   pending: boolean;
+};
+
+export type Projects = {
+  id: string;
+  name: string;
 };

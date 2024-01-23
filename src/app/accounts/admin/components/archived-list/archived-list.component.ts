@@ -14,6 +14,9 @@ export class ArchivedListComponent implements OnInit {
   archivedUsers: User[] = [];
   loading: boolean = true;
   showDropdownForUser: User | null = null;
+  totalUsers: number = 0;
+  successMessage: string | null = null;
+  errorMessage: string | null = null;
 
   constructor(private usersService: UsersService) {}
 
@@ -32,6 +35,7 @@ export class ArchivedListComponent implements OnInit {
         const archivedUsers = response?.archives || [];
         if (Array.isArray(archivedUsers)) {
           this.archivedUsers = archivedUsers as User[];
+          this.totalUsers = archivedUsers.length;
         } else {
           console.error('Invalid archived users format:', archivedUsers);
         }
@@ -48,11 +52,26 @@ export class ArchivedListComponent implements OnInit {
   restoreUser(email: string): void {
     this.usersService.restoreUser(email).subscribe(
       (response: GenericResponse) => {
-        console.log('User restored successfully:', response);
         this.fetchArchivedUsers();
+
+        if (response.message) {
+          this.successMessage = response.message;
+          setTimeout(() => {
+            this.successMessage = null;
+          }, 3000);
+        }
       },
       error => {
         console.error('Error restoring user:', error);
+        if (error.message) {
+          this.errorMessage = error.message;
+        } else {
+          this.errorMessage = 'Error restoring user. Please try again.';
+        }
+
+        setTimeout(() => {
+          this.errorMessage = null;
+        }, 3000);
       }
     );
   }

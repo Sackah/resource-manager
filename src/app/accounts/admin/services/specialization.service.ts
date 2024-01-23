@@ -3,27 +3,49 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { BASE_URL } from '../../../../environment/config';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { SpecializationModalComponent } from '../../../shared/components/modals/specialization-modal/specialization-modal.component';
 
 import { HttpClient } from '@angular/common/http';
+import { specializationResponse } from '../interfaces';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SpecializationService {
-  private _specializations: BehaviorSubject<string[]> = new BehaviorSubject<
+   private _specializations: BehaviorSubject<string[]> = new BehaviorSubject<
     string[]
   >([]);
   specializations$ = this._specializations.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private specializationService: NgbModal) {
     this._specializations.next([]);
   }
 
-  addSpecialization(specialization: string): Observable<any> {
+  openSpecializationModal(): NgbModalRef {
+
+    const modalRef = this.specializationService.open(SpecializationModalComponent, {
+      centered: true,
+      backdrop: 'static', 
+
+    });
+    
+    modalRef.result.finally(() => {
+     
+    });
+
+    return modalRef;
+
+
+  }
+    
+  
+
+  addSpecialization(specialization: string): Observable<specializationResponse> {
     const currentSpecializations = this._specializations.getValue();
-    const updatedSpecializations = [...currentSpecializations, specialization];
-    console.log('Updated Specializations:', updatedSpecializations);
-    this._specializations.next(updatedSpecializations);
+    // const updatedSpecializations = [...currentSpecializations, specialization];
+    // console.log('Updated Specializations:', updatedSpecializations);
+    // this._specializations.next(updatedSpecializations);
 
     return this.http
       .post<any>(`${BASE_URL}/specialization/store`, { name: specialization })

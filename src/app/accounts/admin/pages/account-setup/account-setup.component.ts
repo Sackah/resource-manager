@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { LoginSideIllustrationComponent } from '../../../../auth/components/login-side-illustration/login-side-illustration.component';
-import { passwordMatchValidator } from '../../../../auth/validators/passwordmismatch';
 import {
   ReactiveFormsModule,
   FormGroup,
@@ -69,9 +68,7 @@ export class AccountSetupComponent implements OnInit, OnDestroy {
 
     const emailSubscription = this.store.select(selectCurrentUser).subscribe({
       next: user => {
-        console.log(user);
         this.email = user?.email as string;
-        console.log(this.email);
       },
     });
 
@@ -134,15 +131,10 @@ export class AccountSetupComponent implements OnInit, OnDestroy {
     const credentials = this.resetPasswordForm.value;
     const email = this.email;
     if (this.resetPasswordForm.valid) {
-      console.log(credentials);
-
-      //send this to the backend
       const reqBody = {
         ...credentials,
         email,
       };
-
-      console.log(reqBody);
 
       this.updatePassword.postAdmin(reqBody).subscribe({
         next: () => {

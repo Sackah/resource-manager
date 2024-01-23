@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   FormGroup,
@@ -9,21 +9,31 @@ import {
 import { CommonModule } from '@angular/common';
 import { AdminService } from '../../services/admin.service';
 import { SpecializationService } from '../../services/specialization.service';
-import { SpecializationModalComponent } from '../../components/specialization-modal/specialization-modal.component';
-import { DepartmentModalComponent } from '../../components/department-modal/department-modal.component';
+import { SpecializationModalComponent } from '../../../../shared/components/modals/specialization-modal/specialization-modal.component';
+import { DepartmentModalComponent } from '../../../../shared/components/modals/department-modal/department-modal.component';
 import { DepartmentService } from '../../services/department.service';
 import { HttpClientModule } from '@angular/common/http';
-// import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-usercreation',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    SpecializationModalComponent,
+    DepartmentModalComponent,
+  ],
   templateUrl: './usercreation.component.html',
   styleUrl: './usercreation.component.css',
 })
-export class UsercreationComponent {
+export class UsercreationComponent implements OnInit {
+  @Input() isOpen = true;
+
+  specializationModalOpen = false;
+  departmentModalOpen = false;
+
   formData: FormGroup;
   loading = false;
   success = false;
@@ -45,7 +55,7 @@ export class UsercreationComponent {
     private adminService: AdminService,
     private specializationService: SpecializationService,
     private fb: FormBuilder,
-    // private modalService: NgbModal,
+    private modalService: NgbModal,
     private departmentService: DepartmentService
   ) {
     this.formData = this.fb.group({
@@ -54,6 +64,7 @@ export class UsercreationComponent {
       specialization: [''],
       department: [''],
       role: [''],
+      skills: [''],
     });
 
     this.specializationService.specializations$.subscribe(
@@ -105,7 +116,7 @@ export class UsercreationComponent {
   }
 
   selectOption(option: string) {
-    console.log('Selected Option:', option);
+    option;
     this.SpecializationDropdown();
     this.DepartmentDropdown();
     this.RolesDropdown();
@@ -128,16 +139,15 @@ export class UsercreationComponent {
   }
 
   openSpecializationModal() {
-    // const modalRef = this.modalService.open(SpecializationModalComponent, {
-    //   centered: true,
-    // });
-    // modalRef.componentInstance.saveSpecialization.subscribe(
-    //   (newSpecialization: string) => {
-    //     console.log('Received new specialization:', newSpecialization);
-    //     this.updateSpecializationDropdown(newSpecialization);
-    //     this.fetchSpecializations();
-    //   }
-    // );
+    this.specializationModalOpen = true;
+  }
+
+  handleAddSpecialization(newSpecializationEvent: string) {
+    if (typeof newSpecializationEvent === 'string') {
+      const newSpecialization = newSpecializationEvent;
+      this.updateSpecializationDropdown(newSpecialization);
+      this.fetchSpecializations();
+    }
   }
 
   updateSpecializationDropdown(newSpecialization: string) {
@@ -157,11 +167,7 @@ export class UsercreationComponent {
   private fetchSpecializations() {
     this.specializationService.getSpecializations().subscribe(
       (specializations: string[]) => {
-        console.log(
-          'Fetched specializations from the backend:',
-          specializations
-        );
-        // Handle the fetched departments as needed
+        specializations;
       },
       err => {
         console.error('Error fetching specializations from the backend:', err);
@@ -177,16 +183,16 @@ export class UsercreationComponent {
   }
 
   openDepartmentModal() {
-    // const modalRef = this.modalService.open(DepartmentModalComponent, {
-    //   centered: true,
-    // });
-    // modalRef.componentInstance.saveDepartment.subscribe(
-    //   (newDepartment: string) => {
-    //     console.log('Received new department:', newDepartment);
-    //     this.updateDepartmentDropdown(newDepartment);
-    //     this.fetchDepartments();
-    //   }
-    // );
+    this.departmentModalOpen = true;
+  }
+  handleAddDepartment(newDepartmentEvent: string) {
+    if (typeof newDepartmentEvent === 'string') {
+      const newDepartment = newDepartmentEvent;
+
+      this.updateDepartmentDropdown(newDepartment);
+
+      this.fetchDepartments();
+    }
   }
 
   updateDepartmentDropdown(newDepartment: string) {
@@ -201,14 +207,12 @@ export class UsercreationComponent {
   }
 
   fetchDepartments() {
-    // Call the service to fetch the list of departments
     this.departmentService.getDepartments().subscribe(
       (departments: string[]) => {
-        console.log('Fetched departments from the backend:', departments);
-        // Handle the fetched departments as needed
+        departments;
       },
       err => {
-        console.error('Error fetching departments from the backend:', err);
+        err;
       }
     );
   }
@@ -231,8 +235,7 @@ export class UsercreationComponent {
         )
         .subscribe(
           response => {
-            console.log('Post request successful', response);
-
+            response;
             this.success = true;
           },
           error => {
@@ -249,8 +252,13 @@ export class UsercreationComponent {
       console.error('Form is not valid');
     }
   }
+  closeUsercreationModal() {
+    this.isOpen = false;
+  }
 
   exitPage() {
     this.router.navigate(['/admin/dashboard']);
   }
+
+  ngOnInit(): void {}
 }

@@ -1,24 +1,25 @@
-import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ButtonNewComponent } from '../../../user/components/button-new/button-new.component';
+import { ClientCreationModalComponent } from '../../../../shared/components/modals/client-creation-modal/client-creation-modal.component';
+import { ClientTableComponent } from '../../components/client-table/client-table.component';
 
 @Component({
   selector: 'app-client',
   standalone: true,
-  imports: [CommonModule, ButtonNewComponent],
+  imports: [
+    ButtonNewComponent,
+    ClientCreationModalComponent,
+    ClientTableComponent
+  ],
   templateUrl: './client.component.html',
-  styleUrl: './client.component.css',
+  styleUrl: './client.component.css', 
 })
 export class ClientComponent {
-  display: 'all' | 'archives' = 'all';
-  closed: boolean = false;
-  opening: boolean = true;
+  clientCreationModalOpen = false;
 
-  get toggleClasses() {
-    return {
-      [`currentview`]: true,
-      [`opening`]: this.opening,
-      [`closed`]: this.closed,
-    };
+  openClientCreationModal() {
+    this.clientCreationModalOpen = true;
   }
+
+
 }

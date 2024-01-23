@@ -32,7 +32,10 @@
       <tbody>
         <tr *ngFor="let user of users">
           <td class="grid-item">
-            <input type="checkbox" [checked]="false" class="checkbox-input" />
+            <input
+              type="checkbox"
+              (change)="toggleUserSelection(user)"
+              class="checkbox-input" />
             {{ user.firstName }} {{ user.lastName }}
           </td>
           <td class="grid-item">{{ user.email }}</td>

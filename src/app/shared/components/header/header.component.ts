@@ -4,8 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { SearchComponent } from '../search/search.component';
 import { CdkMenuModule } from '@angular/cdk/menu';
 import { NotificationsService } from '../../services/notifications.service';
-import { UserNotifications } from '../../types/types';
-
+import { UserNotifications, CurrentUser } from '../../types/types';
+import { CurrentUserService } from '../../../auth/services/current-user.service';
 @Component({
   selector: 'rm-header',
   standalone: true,
@@ -17,21 +17,21 @@ export class HeaderComponent implements OnInit {
   query: string = '';
   notifications: UserNotifications[] = [];
   isOnline: boolean = navigator.onLine;
+  hasNewNotifications: boolean = false;
 
-  constructor(private notificationService: NotificationsService) {}
+  constructor(
+    private notificationService: NotificationsService,
+    private currentUserService: CurrentUserService
+  ) {}
 
   ngOnInit() {
     window.addEventListener('online', () => this.updateOnlineStatus(true));
     window.addEventListener('offline', () => this.updateOnlineStatus(false));
-
-    // Fetch notifications when the component initializes
     this.fetchNotifications();
   }
-
   private updateOnlineStatus(online: boolean) {
     this.isOnline = online;
   }
-
   performSearch() {}
 
   private fetchNotifications() {
@@ -41,14 +41,33 @@ export class HeaderComponent implements OnInit {
         if (Array.isArray(notifications)) {
           this.notifications = notifications as UserNotifications[];
         } else {
-          console.log('Invalid notifications format for users', notifications);
+          notifications;
         }
       },
       error => {
-        console.log('Error fetching notification', error);
+        error;
       }
     );
   }
 
-  markAllAsRead() {}
+  markAllAsRead() {
+    this.currentUserService.get().subscribe(
+      (response: any) => {
+        const currentUser = response.user;
+        this.notificationService.markAllAsRead(currentUser.email).subscribe(
+          (markAsReadResponse: any) => {
+            markAsReadResponse;
+
+            this.fetchNotifications();
+          },
+          error => {
+            error;
+          }
+        );
+      },
+      error => {
+        error;
+      }
+    );
+  }
 }

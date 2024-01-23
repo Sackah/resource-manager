@@ -6,6 +6,7 @@
 
 .grid-item {
   padding: 17px;
+  color: #5e718d;
 }
 
 .checkbox-input {
@@ -20,6 +21,14 @@
   display: flex;
   width: 100%;
   overflow: hidden;
+}
+
+.total-users {
+  font-size: 12px;
+  margin-top: -38px;
+  padding-bottom: 20px;
+  color: #5e718d;
+  margin-left: 45px;
 }
 
 table {

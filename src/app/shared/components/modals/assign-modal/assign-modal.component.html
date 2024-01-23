@@ -1,4 +1,11 @@
 <div [class]="modalClasses">
+  <div *ngIf="successMessage" class="success-message">
+    {{ successMessage }}
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
   <header>
     <h2>Assign Resources</h2>
     <span (click)="close()">
@@ -8,12 +15,17 @@
   <div>
     <div>
       <label for="projectName">Project</label>
-      <input
-        id="projectName"
+      <select
+        #projectNameInput
+        id="name"
         name="name"
-        type="text"
         class="project-input"
-        placeholder="Enter project name" />
+        [(ngModel)]="selectedProject">
+        <option value="" disabled selected>Select a project</option>
+        <option *ngFor="let project of projects" [value]="project.id">
+          {{ project.name }}
+        </option>
+      </select>
     </div>
   </div>
   <input
@@ -22,8 +34,10 @@
     id="search"
     placeholder="Search for individuals or specialization"
     [(ngModel)]="searchQuery"
-    (input)="onSearchInput()" />
-
+    (input)="onSearchChange($event)" />
+  <div *ngFor="let user of selectedUsers">
+    {{ user.firstName }} {{ user.lastName }}
+  </div>
   <div *ngIf="loading; else userList">
     <div class="spinner-dots">
       <div class="custom-spinner">
@@ -35,7 +49,9 @@
   </div>
 
   <ng-template #userList>
-    <div *ngIf="bookableUsers.length > 0" class="dropdown-list-item">
+    <div
+      *ngIf="bookableUsers.length > 0; else noUsersFound"
+      class="dropdown-list-item">
       <div
         *ngFor="let user of bookableUsers"
         class="group-item"
@@ -62,6 +78,13 @@
     </div>
   </ng-template>
 
+  <ng-template #noUsersFound>
+    <img src="assets/images/user/searchh.svg" class="search" />
+    <div class="no-users-message">
+      <p>No users found.</p>
+    </div>
+  </ng-template>
+
   <div class="buttons-wrapper">
     <button
       type="reset"
@@ -70,6 +93,7 @@
     </button>
     <button
       type="submit"
+      (click)="submit()"
       class="button bg-[#1F26A8] text-white hover:bg-[#353cb1]">
       Assign
     </button>

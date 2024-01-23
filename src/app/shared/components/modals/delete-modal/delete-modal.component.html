@@ -1,7 +1,14 @@
+<!-- <div *ngIf="successMessage" class="success-message">
+  {{ successMessage }}
+</div>
+<div *ngIf="errorMessage" class="error-message">
+  {{ errorMessage }}
+</div>
+
 <div [class]="modalClasses">
   <header>
     <div>
-      <h2>Confirm Deletion</h2>
+      <h2>Confirm Archive</h2>
       <span (click)="close()">
         <img src="assets/images/user/x-close.svg" alt="close icon" />
       </span>
@@ -9,26 +16,24 @@
   </header>
   <div class="delete-content">
     <p>
-      Are you sure you want to delete {{ user?.firstName }}
-      {{ user?.lastName }} and email {{ user?.email }}? This cannot be undone.
+      Are you sure you want to archive {{ user?.firstName }}
+      {{ user?.lastName }} ?
     </p>
   </div>
 
   <div class="buttons-wrapper">
     <button
       type="reset"
-      class="delete-button bg-[#FFFFFF] text-[#022F54] hover:bg-[#e6e6e6]">
+      class="delete-button bg-[#FFFFFF] text-[#27313F] hover:bg-[#e6e6e6]">
       Cancel
     </button>
     <button
       type="submit"
-      class="delete-button bg-[#ff574d] text-white hover:bg-[#e64e45]"
-      (deleteConfirmedEvent)="deleteUser()"
-      (cancelEvent)="closeDeleteModal()"
-      (click)="deleteUser()">
-      Delete
+      class="delete-button bg-[#ff574d] text-white hover:bg-[#e64e45]">
+      Yes
     </button>
   </div>
 </div>
 
 <div [class]="backdropClasses" (click)="close()"></div>
+(click)="confirmDeletion()"> -->

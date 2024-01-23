@@ -1,5 +1,6 @@
 .dropdown {
   position: absolute;
+  margin-left: -25px;
   background-color: white;
   border-radius: 8px;
   z-index: 15;

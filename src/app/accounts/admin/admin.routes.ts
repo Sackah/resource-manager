@@ -6,6 +6,9 @@ import { UsersComponent } from '../admin/pages/users/users.component';
 import { MainComponent } from '../admin/main.component';
 import { SettingsComponent } from '../admin/pages/settings/settings.component';
 import { ClientComponent } from '../admin/pages/client/client.component';
+import { ProjectComponent } from '../admin/pages/project/project.component';
+import { ScheduleComponent } from '../admin/pages/schedule/schedule.component';
+import { MessageComponent } from '../admin/pages/message/message.component';
 
 export const AdminRoutes: Route[] = [
   {
@@ -36,6 +39,18 @@ export const AdminRoutes: Route[] = [
       {
         path: 'client',
         component: ClientComponent,
+      },
+      {
+        path: 'project',
+        component: ProjectComponent,
+      },
+      {
+        path: 'schedule',
+        component: ScheduleComponent,
+      },
+      {
+        path: 'message',
+        component: MessageComponent,
       },
     ],
   },

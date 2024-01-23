@@ -1,12 +1,12 @@
 import { Route } from '@angular/router';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { UsersComponent } from './pages/users/users.component';
+import { UserGroupComponent } from './pages/user-group/user-group.component';
 import { ScheduleComponent } from './pages/schedule/schedule.component';
 import { ProjectComponent } from './pages/project/project.component';
 import { SettingComponent } from './pages/setting/setting.component';
 import { MessageComponent } from './pages/message/message.component';
 import { MainComponent } from './main.component';
-import { ClientComponent } from './pages/client/client.component';
 
 export const UserRoutes: Route[] = [
   {
@@ -20,7 +20,7 @@ export const UserRoutes: Route[] = [
       { path: 'users', component: UsersComponent },
       {
         path: 'client',
-        component: ClientComponent,
+        component: UserGroupComponent,
       },
       {
         path: 'schedule',

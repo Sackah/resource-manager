@@ -65,7 +65,6 @@
   outline: 2px solid #dc3545;
 }
 
-/* SMALLER DESKTOP */
 @media only screen and (max-height: 700px) {
   .validation-error-message {
     font-size: 0.85rem;
