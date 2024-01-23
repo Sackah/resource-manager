@@ -1,6 +1,23 @@
 .user-list-container {
-  display: flex;
+  display: grid;
   grid-template-columns: repeat(6, 1fr);
+  /* gap: 20px; */
+}
+
+.grid-item {
+  padding: 17px;
+}
+
+.checkbox-input {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+  font-family: 'LexendMedium';
+  color: #022f54;
+}
+
+.user-list-container {
+  display: flex;
   width: 100%;
   overflow: hidden;
 }

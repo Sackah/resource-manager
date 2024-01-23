@@ -5,6 +5,7 @@ import {
   Input,
   Output,
   ViewContainerRef,
+  OnInit,
 } from '@angular/core';
 import { ClickOutsideDirective } from '../../directives/click-outside.directive';
 import { GenericResponse, User } from '../../types/types';
@@ -13,6 +14,7 @@ import { ViewModalService } from '../modals/view-modal/view-modal.service';
 import { AssignModalService } from '../modals/assign-modal/assign.service';
 import { ViewModalComponent } from '../modals/view-modal/view-modal.component';
 import { AssignModalComponent } from '../modals/assign-modal/assign-modal.component';
+import { UsersService } from '../../../accounts/admin/services/users.service';
 
 @Component({
   selector: 'app-dropdown',
@@ -25,6 +27,7 @@ export class DropdownComponent {
   @Input() position?: { top: number; left: number };
   @Output() closeEvent = new EventEmitter<void>();
   @Input() user!: User;
+  @Output() archiveUserEvent = new EventEmitter<string>();
 
   private viewModalRef?: ComponentRef<ViewModalComponent>;
   private assignModalRef?: ComponentRef<AssignModalComponent>;
@@ -33,7 +36,8 @@ export class DropdownComponent {
     private deleteModalService: DeleteModalService,
     private viewModalService: ViewModalService,
     private viewContainerRef: ViewContainerRef,
-    private assignModalService: AssignModalService
+    private assignModalService: AssignModalService,
+    private usersService: UsersService
   ) {}
 
   openDeleteModal(user: User): void {
@@ -56,6 +60,11 @@ export class DropdownComponent {
       user,
     });
   }
+
+  archiveUser(user: User): void {
+    this.archiveUserEvent.emit(user.email);
+  }
+
   openAssignModal(user: User) {
     this.assignModalRef = this.assignModalService.open(this.viewContainerRef, {
       user,
