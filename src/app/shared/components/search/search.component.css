@@ -13,4 +13,5 @@
 .search input[type='search']:focus {
   outline: none;
   color: #1b293a;
+  font-family: 'LexendRegular';
 }

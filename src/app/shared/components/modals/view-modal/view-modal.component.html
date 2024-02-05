@@ -10,10 +10,6 @@
         <section>
           <h4>{{ user.firstName }} {{ user.lastName }}</h4>
           <p>{{ user.email }}</p>
-          <!-- <p>UI/UX Designer</p> -->
-          <!-- <div class="availability">
-            <p>Available</p>
-          </div> -->
         </section>
       </div>
       <p>Edit</p>
@@ -56,11 +52,19 @@
         {{ user.bookable }}
       </div>
       <div class="key">Assigned Project</div>
-      <div class="value">Capstone</div>
+      <div
+        class="value"
+        *ngFor="let assignProject of user.project[0] | keyvalue">
+        {{ assignProject.value }}
+      </div>
       <div class="key">Assigned Client</div>
-      <div class="value">Joseph</div>
+      <div class="value" *ngFor="let assignClient of user.client[0] | keyvalue">
+        {{ assignClient.value }}
+      </div>
+      <div class="key">Location</div>
+      <div class="value">{{ user.location }}</div>
       <div class="key">Time Zone</div>
-      <div class="value">Capstone</div>
+      <div class="value">{{ user.timeZone }}</div>
       <div class="key">Created At</div>
       <div class="value">{{ user.created_at }}</div>
     </div>

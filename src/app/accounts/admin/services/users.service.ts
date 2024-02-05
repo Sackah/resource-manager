@@ -1,8 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BASE_URL } from '../../../../environment/config';
-import { Observable } from 'rxjs';
+import { Observable, catchError } from 'rxjs';
 import { GenericResponse, User } from '../../../shared/types/types';
+import {
+  UpdateUserDetailsResponse,
+  UpdateUserPasswordResponse,
+} from '../../../auth/types/auth-types';
+import { HttpErrorResponse } from '@angular/common/http';
+import { UpdateUserDetails } from '../../../auth/types/auth-types';
 
 @Injectable({
   providedIn: 'root',
@@ -18,16 +24,29 @@ export class UsersService {
       },
     });
   }
+
+  updateDetails(
+    newDetails: UpdateUserDetails
+  ): Observable<UpdateUserDetailsResponse> {
+    return this.http.put<UpdateUserDetailsResponse>(
+      `${BASE_URL}/users/settings/edit`,
+      newDetails
+    );
+  }
+
   deleteUser(email: string): Observable<GenericResponse> {
-    return this.http.delete<GenericResponse>(`${BASE_URL}/users/delete`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'ngrok-skip-browser-warning': 'skip-browser-warning',
-      },
-      params: {
-        email: email,
-      },
-    });
+    return this.http.delete<GenericResponse>(
+      `${BASE_URL}/users/archives/delete`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'skip-browser-warning',
+        },
+        params: {
+          email: email,
+        },
+      }
+    );
   }
 
   getBookableUsers(query: string): Observable<User[]> {
@@ -55,25 +74,11 @@ export class UsersService {
   }
 
   archivedUsers(): Observable<User[]> {
-    return new Observable(observer => {
-      this.http
-        .get<User[]>(`${BASE_URL}/users/archives/fetch`, {
-          headers: {
-            'Content-Type': 'application/json',
-            'ngrok-skip-browser-warning': 'skip-browser-warning',
-          },
-        })
-        .subscribe({
-          next: (archivedUsers: User[]) => {
-            observer.next(archivedUsers);
-          },
-          error: error => {
-            observer.error(error);
-          },
-          complete: () => {
-            observer.complete();
-          },
-        });
+    return this.http.get<User[]>(`${BASE_URL}/users/archives/fetch`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'skip-browser-warning',
+      },
     });
   }
 

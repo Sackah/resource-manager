@@ -4,7 +4,6 @@ import {
   Inject,
   Injectable,
   Injector,
-  TemplateRef,
   ViewContainerRef,
 } from '@angular/core';
 import { AssignModalComponent } from './assign-modal.component';
@@ -31,7 +30,7 @@ export class AssignModalService {
     if (options?.user) {
       modalComponentRef.instance.user = options.user;
     }
-    modalComponentRef.instance.closeAssignEvent.subscribe(() =>
+    modalComponentRef.instance.closeEvent.subscribe(() =>
       this.closeModal(modalComponentRef)
     );
     modalComponentRef.instance.submitEvent.subscribe(() =>
@@ -50,14 +49,7 @@ export class AssignModalService {
     return modalComponentRef;
   }
 
-  closeModal(modalComponentRef: ComponentRef<AssignModalComponent>) {
-    /**
-     * This timer is to make the modal fade out before destroying it
-     */
-    setTimeout(() => {
-      modalComponentRef.destroy();
-    }, 400);
-  }
+  closeModal(modalComponentRef: ComponentRef<AssignModalComponent>) {}
 
   submitModal(modalComponentRef: ComponentRef<AssignModalComponent>) {
     modalComponentRef.destroy();
@@ -69,7 +61,6 @@ export class AssignModalService {
     }
   }
 
-  // Expose a method to set the onSelect callback
   setOnSelectCallback(callback: (selectedUsers: User[]) => void) {
     this.onSelectCallback = callback;
   }

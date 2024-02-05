@@ -36,9 +36,7 @@ export class UsersComponent {
   }
 
   handleAssignModal(selectedUsers: User[]): void {
-    console.log('Selected Users:', selectedUsers);
-    // Perform any additional logic with selected users
-    // You can store them in a property or perform any other action
+    selectedUsers;
   }
 
   get toggleClasses() {

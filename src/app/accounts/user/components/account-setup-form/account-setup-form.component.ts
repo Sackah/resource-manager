@@ -18,9 +18,10 @@ import { Store } from '@ngrx/store';
 import { AuthActions } from '../../../../auth/store/authorization/AuthActions';
 import { Input } from '@angular/core';
 import { GlobalInputComponent } from '../../../../shared/components/global-input/global-input.component';
+import * as momentTimeZone from 'moment-timezone';
 
 @Component({
-  selector: 'account-setup-form',
+  selector: 'app-account-setup-form',
   standalone: true,
   imports: [
     CommonModule,
@@ -42,10 +43,17 @@ export class AccountSetupFormComponent implements OnInit, OnDestroy {
   storeData!: LoginState;
   @Input() email!: string;
   @Input() userId!: string;
+  timeZones = momentTimeZone.tz.names();
 
   constructor(private store: Store, private router: Router) {}
 
   ngOnInit(): void {
+    this.setupForm();
+    this.storeSubscription();
+    this.userDetails.patchValue({});
+  }
+
+  public setupForm() {
     this.userDetails = new FormGroup({
       profilePicture: new FormControl(null),
       email: new FormControl('', [Validators.required, Validators.email]),
@@ -58,8 +66,12 @@ export class AccountSetupFormComponent implements OnInit, OnDestroy {
         Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
       ]),
       phoneNumber: new FormControl('', [Validators.required, validPhoneNumber]),
+      location: new FormControl('', [Validators.required]),
+      timeZone: new FormControl('', [Validators.required]),
     });
+  }
 
+  public storeSubscription() {
     const storeSubscription = this.store.select(selectLogin).subscribe({
       next: res => {
         this.storeData = res;
@@ -67,7 +79,6 @@ export class AccountSetupFormComponent implements OnInit, OnDestroy {
     });
     this.subscriptions.push(storeSubscription);
   }
-
   getEmailErrors(): string {
     const control = this.userDetails.get('email');
     if (control?.invalid && (control.dirty || control.touched)) {
@@ -107,6 +118,16 @@ export class AccountSetupFormComponent implements OnInit, OnDestroy {
     return '';
   }
 
+  getLocationErrors() {
+    const control = this.userDetails.get('location');
+    if (control?.invalid && (control.dirty || control.touched)) {
+      if (control.hasError('required')) {
+        return 'This field is required';
+      }
+    }
+    return '';
+  }
+
   onFileChange(event: any) {
     if (event.target?.files.length > 0) {
       let reader = new FileReader();
@@ -127,15 +148,12 @@ export class AccountSetupFormComponent implements OnInit, OnDestroy {
     event.preventDefault();
     const userDetails = this.userDetails.value;
     const userId = this.userId;
+    const reqBody = {
+      ...userDetails,
+      userId,
+    };
 
-    if (this.userDetails.valid) {
-      const reqBody = {
-        ...userDetails,
-        userId,
-      };
-
-      this.store.dispatch(AuthActions.updateUserDetails(reqBody));
-    }
+    this.store.dispatch(AuthActions.updateUserDetails(reqBody));
   }
 
   ngOnDestroy(): void {

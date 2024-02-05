@@ -13,14 +13,14 @@
   <p>No worries, we'll send you reset instructions</p>
   <form [formGroup]="emailForm" (submit)="submitForm($event)">
     <label for="email" class="form-label">Email</label>
-    <global-input
+    <app-global-input
       [id]="'email'"
       [control]="emailForm.get('email')"
       [placeholder]="'something@example.com'"
       [class]="'global-input-auth'"
       [type]="'email'"
       [errorMessage]="'Email field is required'">
-    </global-input>
+    </app-global-input>
     @if(getEmailErrors()) {
     <div class="validation-error-message">
       {{ getEmailErrors() }}

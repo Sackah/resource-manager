@@ -3,7 +3,7 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 500px;
+  width: 400px;
   height: auto;
   background-color: white;
   border-radius: 12px;
@@ -48,12 +48,12 @@
 
 header {
   display: flex;
-  gap: 230px;
+  gap: 190px;
   margin-bottom: 20px;
 }
 
 header > h2 {
-  font-size: 22px;
+  font-size: 15px;
   font-family: 'LexendSemiBold';
 }
 
@@ -70,11 +70,25 @@ label:not(.visibly-hidden) {
 }
 
 .project-input {
+  display: block;
+  width: 100%;
+  font-size: 14px;
+  height: 35px;
+  background: #fff;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid #9aa8bc;
+  cursor: pointer;
+}
+
+.global .project-name {
+  color: #728197;
   border-radius: 16px;
   border: 1px solid #9aa8bc;
   padding: 8px 16px;
   color: #728197;
   width: 100%;
+  text-transform: capitalize;
 }
 
 .search-input {
@@ -83,7 +97,7 @@ label:not(.visibly-hidden) {
   border: 1px solid #eff1f4;
   padding: 8px 16px;
   color: #728197;
-  width: 90%;
+  width: 100%;
   box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
   margin-bottom: 10px;
 }
@@ -97,10 +111,38 @@ label:not(.visibly-hidden) {
   outline: 1px solid #4a72ff;
 }
 
+.message-container {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 35%;
+  z-index: 1000;
+  padding: 20px;
+  text-align: center;
+}
+
+.alert-success {
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1.5px solid #2b641e;
+  background-color: #84d65a;
+  color: #2b641e;
+  border-radius: 10px;
+}
+
+.alert-error {
+  padding: 10px;
+  border: 1.5px solid #71192f;
+  background-color: #fce8db;
+  color: #71192f;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
 .dropdown-list-item {
-  width: 90%;
+  width: 100%;
   height: 200px;
-  /* border: 1px solid red; */
   overflow-y: auto;
   margin-right: 5px;
 }
@@ -168,7 +210,6 @@ label:not(.visibly-hidden) {
 .name {
   font-size: 14px;
   color: #344054;
-  /* font-weight: bold; */
 }
 
 .position {
@@ -179,9 +220,13 @@ label:not(.visibly-hidden) {
 .button {
   padding: 8px 12px;
   border-radius: 16px;
-  /* border: 1px solid #9aa8bc; */
   width: 100px;
   cursor: pointer;
+
+  &[disabled] {
+    background: #d0d2ff8a;
+    cursor: not-allowed;
+  }
 }
 
 .buttons-wrapper {
@@ -233,4 +278,11 @@ label:not(.visibly-hidden) {
   50% {
     transform: translateY(-10px);
   }
+}
+
+.validation-error-msg {
+  color: red;
+  position: absolute;
+  font-size: 12px;
+  top: 0;
 }

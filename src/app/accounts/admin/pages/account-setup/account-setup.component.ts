@@ -7,7 +7,7 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import {
   UserPasswordState,
@@ -18,7 +18,7 @@ import { Subscription } from 'rxjs';
 import { UpdatePasswordService } from '../../../../auth/services/update-password.service';
 
 @Component({
-  selector: 'admin-account-setup',
+  selector: 'app-admin-account-setup',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, LoginSideIllustrationComponent],
   templateUrl: './account-setup.component.html',
@@ -44,6 +44,11 @@ export class AccountSetupComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.resetPassForm();
+    this.storeSub();
+  }
+
+  public resetPassForm() {
     this.resetPasswordForm = new FormGroup({
       old_password: new FormControl('', [
         Validators.required,
@@ -54,7 +59,9 @@ export class AccountSetupComponent implements OnInit, OnDestroy {
         Validators.minLength(8),
       ]),
     });
+  }
 
+  public storeSub() {
     const storeSubscription = this.store
       .select(selectUpdateUserPassword)
       .subscribe({
@@ -126,8 +133,7 @@ export class AccountSetupComponent implements OnInit, OnDestroy {
     };
   }
 
-  submitForm(event: Event) {
-    event.preventDefault();
+  submitForm() {
     const credentials = this.resetPasswordForm.value;
     const email = this.email;
     if (this.resetPasswordForm.valid) {

@@ -1,0 +1,280 @@
+.modal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: auto;
+  background-color: white;
+  border-radius: 12px;
+  padding: 24px;
+  z-index: 21;
+  opacity: 1;
+
+  &.closed,
+  &.opening {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+* {
+  transition: all 0.3s ease-in-out;
+}
+
+.profile-picture {
+  width: 70px;
+  height: 70px;
+}
+
+.message-container {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 35%;
+  z-index: 1000;
+  padding: 20px;
+  text-align: center;
+}
+
+.alert-success {
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1.5px solid #2b641e;
+  background-color: #84d65a;
+  color: #2b641e;
+  border-radius: 10px;
+}
+
+.alert-error {
+  padding: 10px;
+  border: 1.5px solid #71192f;
+  background-color: #fce8db;
+  color: #71192f;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.backdrop {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(203, 212, 225, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+
+  &.closed,
+  &.opening {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+header {
+  display: block;
+}
+
+span {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.input-fields,
+.name-field {
+  margin-top: 8px;
+}
+
+main > div:last-of-type {
+  min-height: 294px;
+}
+
+h2 {
+  font-size: 1.1rem;
+  margin-top: -5px;
+  color: #3d4a5c;
+  font-family: 'LexendSemiBold';
+}
+
+label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+
+.profile-picture img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-top: 10px;
+}
+
+input[type='file'] {
+  opacity: 0;
+  z-index: 5;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 15%;
+  pointer-events: all;
+}
+
+/* .profile-picture,
+.name-fields {
+  display: inline-block;
+  vertical-align: top;
+} */
+
+.name-fields {
+  margin-left: 85px;
+}
+
+.name-field {
+  display: block;
+  width: 100%;
+  font-size: 14px;
+  height: 35px;
+  background: #fff;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid #9aa8bc;
+  cursor: pointer;
+}
+
+.section-bookable {
+  display: flex;
+}
+
+.input-fields {
+  display: block;
+  width: 100%;
+  font-size: 14px;
+  height: 35px;
+  background: #fff;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid #9aa8bc;
+  cursor: pointer;
+}
+
+.key {
+  font-size: 14px;
+}
+
+button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid #9aa8bc;
+}
+
+.buttons-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.dropdown-container {
+  position: absolute;
+  right: 4px;
+  background: #fff;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.16);
+  width: 123px;
+  height: 85px;
+  border-radius: 8px 8px 0px 0px;
+  cursor: pointer;
+}
+
+ul {
+  list-style: none;
+  width: 133px;
+}
+li {
+  padding: 0.625rem;
+  font-size: 12px;
+  &.dropdown-details-container {
+    cursor: pointer;
+  }
+  .dropdown-subject {
+    margin-bottom: 0.25rem;
+    font-size: 14px;
+    color: #3d4a5c;
+  }
+}
+
+li:hover {
+  background: #4a72ff;
+  color: #fff;
+}
+
+.dropdown-sign {
+  position: absolute;
+  top: 200px;
+  right: 40px;
+  transform: translateY(-50%);
+  width: 14px;
+}
+
+.custom-dropdown input:focus {
+  outline: 1px solid #4a72ff;
+}
+
+@media only screen and (max-height: 700px) {
+  .modal {
+    width: 400px;
+    height: auto;
+    padding: 16px;
+  }
+
+  .profile-picture {
+    width: 50px;
+    height: 50px;
+  }
+
+  input[type='file'] {
+    height: 40%;
+  }
+
+  .name-fields {
+    margin-left: 115px;
+  }
+  .dropdown-sign {
+    position: absolute;
+    top: 178px;
+    right: 28px;
+    transform: translateY(-50%);
+    width: 14px;
+  }
+
+  .name-field,
+  .input-fields {
+    height: 30px;
+  }
+
+  h2 {
+    font-size: 1rem;
+  }
+
+  .buttons-wrapper {
+    margin-top: 10px;
+  }
+}

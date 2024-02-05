@@ -27,7 +27,7 @@ import { selectResponse } from '../../store/reset-password/ResetReducers';
 import { NgOtpInputModule } from 'ng-otp-input';
 
 @Component({
-  selector: 'otp-form',
+  selector: 'app-otp-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, NgOtpInputModule, FormsModule],
   templateUrl: './otp-form.component.html',
@@ -43,6 +43,7 @@ export class OtpFormComponent implements OnDestroy {
   otpValues: string[] = [];
   errorMessage: string = '';
   successMessage: string = '';
+
   otp: FormControl = new FormControl('', [
     Validators.required,
     Validators.minLength(6),

@@ -10,17 +10,10 @@
       (click)="changeField($event, 'password')">
       Password
     </h3>
-    <h3
-      [class]="settingsField === 'work specialization' ? 'active' : ''"
-      (click)="changeField($event, 'work specialization')">
-      Work Specialization
-    </h3>
   </div>
   @if (settingsField === 'profile') {
-  <user-profile></user-profile>
+  <app-admin-profile></app-admin-profile>
   } @else if (settingsField === 'password') {
-  <user-password></user-password>
-  } @else if (settingsField === 'work specialization') {
-  <adm-work-specialization></adm-work-specialization>
+  <app-user-password></app-user-password>
   }
 </div>

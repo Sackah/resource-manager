@@ -2,10 +2,6 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { selectCurrentUser } from '../../auth/store/authorization/AuthReducers';
 
-/**
- * @class RoleService
- * @description a service for getting the user role from state
- */
 @Injectable({
   providedIn: 'root',
 })
@@ -23,9 +19,6 @@ export class RoleService implements OnDestroy {
     },
   });
 
-  /**
-   * @method get - returns the role of the user
-   */
   get() {
     return this.role;
   }

@@ -6,7 +6,7 @@ import { ManagerUsercreationService } from '../../../admin/services/manager-user
 import { ManagerUsercreationComponent } from '../../../manager/pages/manager-usercreation/manager-usercreation.component';
 
 @Component({
-  selector: 'button-new',
+  selector: 'app-button-new',
   standalone: true,
   imports: [CommonModule, UsercreationComponent, ManagerUsercreationComponent],
   templateUrl: './button-new.component.html',

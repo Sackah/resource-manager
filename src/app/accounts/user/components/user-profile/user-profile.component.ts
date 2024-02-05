@@ -20,7 +20,7 @@ import {
 } from '../../../../shared/types/types';
 
 @Component({
-  selector: 'user-profile',
+  selector: 'app-user-profile',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './user-profile.component.html',
@@ -46,6 +46,24 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   constructor(private store: Store, private settingsService: SettingsService) {}
 
   ngOnInit(): void {
+    this.userProfile();
+    this.storeSubscription();
+  }
+
+  public storeSubscription() {
+    const storeSub = this.store.select(selectCurrentUser).subscribe({
+      next: user => {
+        if (user) {
+          this.user = user;
+        }
+        this.setValues();
+      },
+    });
+
+    this.subscriptions.push(storeSub);
+  }
+
+  public userProfile() {
     this.userDetails = new FormGroup({
       userId: new FormControl('', [Validators.required]),
       profilePicture: new FormControl(null),
@@ -63,17 +81,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       ]),
       phoneNumber: new FormControl('', [Validators.required, validPhoneNumber]),
     });
-
-    const storeSub = this.store.select(selectCurrentUser).subscribe({
-      next: user => {
-        if (user) {
-          this.user = user;
-        }
-        this.setValues();
-      },
-    });
-
-    this.subscriptions.push(storeSub);
   }
 
   getEmailErrors(): string {
@@ -89,7 +96,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  // write types for the names and call it here
   getNameErrors(name: 'firstName' | 'lastName') {
     const control = this.userDetails.get(name);
     if (control?.invalid && (control.dirty || control.touched)) {
@@ -116,11 +122,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  /**
-   * This method is used to change the image url when the user selects a file
-   * @param event
-   * @returns {void}
-   */
   onFileChange(event: any) {
     if (event.target?.files.length > 0) {
       let reader = new FileReader();
@@ -151,11 +152,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     return val;
   }
 
-  /**
-   * The form is submitted here
-   * @param event
-   * @returns {void}
-   */
   submitForm(event: Event) {
     event.preventDefault();
     this.settingsSig.set({
@@ -165,7 +161,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     });
 
     if (!this.user) {
-      console.error('User details not available.');
       return;
     }
 

@@ -4,7 +4,6 @@ import {
   Inject,
   Injectable,
   Injector,
-  TemplateRef,
   ViewContainerRef,
 } from '@angular/core';
 import { ViewModalComponent } from './view-modal.component';
@@ -41,9 +40,6 @@ export class ViewModalService {
   }
 
   closeModal(modalComponentRef: ComponentRef<ViewModalComponent>) {
-    /**
-     * This timer is to make the modal fade out before destroying it
-     */
     setTimeout(() => {
       modalComponentRef.destroy();
     }, 400);

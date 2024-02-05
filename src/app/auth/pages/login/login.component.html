@@ -12,7 +12,6 @@
       }
 
       <h2>Login</h2>
-      <div class="validation-success-message backend">{{ successMessage }}</div>
       <p>
         Welcome back, Enter your details to open your account. Don't have an
         account yet,
@@ -21,19 +20,7 @@
       <form (submit)="submitForm($event)" [formGroup]="loginForm">
         <label for="email" class="form-label">Email</label>
 
-        <global-input
-          [id]="'email'"
-          [control]="loginForm.get('email')"
-          [placeholder]="'something@example.com'"
-          [type]="'email'"
-          [errorMessage]="'Email field is required'" />
-        @if(getEmailErrors()){
-        <div class="validation-error-message">
-          {{ getEmailErrors() }}
-        </div>
-        }
-
-        <!-- <input
+        <input
           id="email"
           type="email"
           class="global-input-auth {{ getEmailErrors() ? 'error' : '' }}"
@@ -43,10 +30,10 @@
         <div class="validation-error-message">
           {{ getEmailErrors() }}
         </div>
-        } -->
+        }
         <label for="password" class="form-label">Password</label>
         <div class="password-input">
-          <global-input
+          <app-global-input
             [id]="'password'"
             [type]="showPassword ? 'text' : passwordField"
             class="global-input-auth {{ getPasswordErrors() ? 'error' : '' }}"

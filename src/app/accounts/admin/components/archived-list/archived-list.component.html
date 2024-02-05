@@ -1,15 +1,18 @@
-<div
-  *ngIf="successMessage"
-  class="validation-success-message backend"
-  style="font-size: 14px">
-  {{ successMessage }}
+<p class="total-archived-users">
+  <span>{{ totalArchivedUsers }}</span>
+</p>
+<div class="message-container">
+  <div class="alert-error" *ngIf="errorMessage">
+    <span class="closebtn"></span>
+    {{ errorMessage }}
+  </div>
+
+  <div class="alert-success" *ngIf="successMessage">
+    <span class="closebtn"></span>
+    {{ successMessage }}
+  </div>
 </div>
 
-<div *ngIf="errorMessage" class="validation-error-message backend">
-  {{ errorMessage }}
-</div>
-
-<!-- <p>{{ totalUsers }}</p> -->
 <ng-container *ngIf="loading; else userListOrNoUsers">
   <div class="spinner-dots">
     <div class="custom-spinner">
@@ -81,7 +84,7 @@
                 *ngIf="showDropdownForUser === archiveduser">
                 <ul class="dropdown-details-container">
                   <li (click)="restoreUser(archiveduser.email)">Restore</li>
-                  <li>Delete</li>
+                  <li (click)="openDeleteUserModal(archiveduser)">Delete</li>
                 </ul>
               </div>
 
@@ -100,7 +103,7 @@
     <ng-template #noUsersInArchive>
       <div class="no-user-container">
         <div class="no-user">
-          <p>
+          <p class="nuf">
             No User<br />
             Added Yet.
           </p>

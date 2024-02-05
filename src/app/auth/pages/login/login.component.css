@@ -81,7 +81,6 @@ input[type='checkbox'] {
   border-radius: 16px;
 }
 
-/* SMALLER DESKTOP */
 @media only screen and (max-height: 700px) {
   .password-input img {
     top: 4px;

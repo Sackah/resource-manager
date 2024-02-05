@@ -5,9 +5,8 @@ import {
   AbstractControl,
   FormControl,
 } from '@angular/forms';
-
 @Component({
-  selector: 'global-input',
+  selector: 'app-global-input',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './global-input.component.html',
@@ -23,7 +22,6 @@ export class GlobalInputComponent implements OnInit {
   @Input() control: FormControl | AbstractControl | any;
   @Input() label: string = '';
   @Input() required: boolean = false;
-  // @Input() disabled: boolean = false;
   @Input() class: string = '';
   @Input() onClick: () => void = () => {};
   @Input() errorType: string = 'required';
@@ -55,18 +53,4 @@ export class GlobalInputComponent implements OnInit {
     }
     return '';
   }
-
-  // getEmailErrors(): string {
-  //   const control = this.control;
-
-  //   if (control?.invalid && (control.dirty || control.touched)) {
-  //     if (control.hasError('required')) {
-  //       return 'This field is required';
-  //     } else if (control.hasError('email')) {
-  //       return 'Please enter a valid email address';
-  //     }
-  //   }
-
-  //   return this.errorMessage;
-  // }
 }

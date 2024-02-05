@@ -33,6 +33,10 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
   constructor(private resetToggleService: ResetToggleService) {}
 
   ngOnInit(): void {
+    this.toggleSubscription();
+  }
+
+  public toggleSubscription() {
     const toggSubscription = this.resetToggleService.data.subscribe({
       next: data => {
         this.formField = data;
@@ -41,7 +45,6 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(toggSubscription);
   }
-
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }

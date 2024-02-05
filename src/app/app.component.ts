@@ -15,6 +15,8 @@ import { CdkMenuModule } from '@angular/cdk/menu';
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit, OnDestroy {
+  isFetching: boolean = false;
+
   constructor(
     private tokenService: AccesstokenService,
     private store: Store,

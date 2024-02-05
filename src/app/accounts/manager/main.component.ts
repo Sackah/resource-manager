@@ -9,8 +9,8 @@ import { SideNavComponent } from '../../shared/components/side-nav/side-nav.comp
   standalone: true,
   imports: [CommonModule, RouterOutlet, HeaderComponent, SideNavComponent],
   template: `<div>
-    <side-nav userRole="manager"></side-nav>
-    <rm-header></rm-header>
+    <app-side-nav userRole="manager"></app-side-nav>
+    <app-header></app-header>
 
     <router-outlet></router-outlet>
   </div>`,

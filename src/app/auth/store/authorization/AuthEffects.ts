@@ -11,9 +11,6 @@ import { CurrentUserService } from '../../services/current-user.service';
 import { UpdatePasswordService } from '../../services/update-password.service';
 import { AccountSetupService } from '../../../accounts/user/services/account-setup.service';
 
-/**
- * Effect for logging in users
- */
 export const loginEffect = createEffect(
   (
     actions$ = inject(Actions),
@@ -47,9 +44,6 @@ export const loginEffect = createEffect(
   { functional: true }
 );
 
-/**
- * Effect for redirecting users based on role after logging in
- */
 export const redirectAfterLogin = createEffect(
   (action$ = inject(Actions), router = inject(Router)) => {
     return action$.pipe(
@@ -81,9 +75,6 @@ export const redirectAfterLogin = createEffect(
   { functional: true, dispatch: false }
 );
 
-/**
- * Effect for relogging in a user
- */
 export const relogInUserEffect = createEffect(
   (
     action$ = inject(Actions),
@@ -119,9 +110,6 @@ export const relogInUserEffect = createEffect(
   { functional: true }
 );
 
-/**
- * Effect for redirecting users after relog in
- */
 export const redirectAfterReLogin = createEffect(
   (
     action$ = inject(Actions),
@@ -159,9 +147,6 @@ export const redirectAfterReLogin = createEffect(
   { functional: true, dispatch: false }
 );
 
-/**
- * Effect for updating user password on initial login
- */
 export const updateUserPassword = createEffect(
   (
     action$ = inject(Actions),
@@ -194,11 +179,6 @@ export const updateUserPassword = createEffect(
   { functional: true }
 );
 
-/**
- * Effect for toggling account setup form field after
- * update password success
- */
-
 export const toggleFormOrRedirect = createEffect(
   (
     action$ = inject(Actions),
@@ -219,9 +199,6 @@ export const toggleFormOrRedirect = createEffect(
   { functional: true, dispatch: false }
 );
 
-/**
- * Effect for updating user details
- */
 export const updateUserDetailsEffect = createEffect(
   (
     action$ = inject(Actions),

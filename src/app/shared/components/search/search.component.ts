@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'search',
+  selector: 'app-search',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './search.component.html',

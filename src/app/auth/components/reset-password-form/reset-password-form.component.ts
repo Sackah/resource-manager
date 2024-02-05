@@ -12,7 +12,6 @@ import {
   ResetToggleService,
 } from '../../services/reset-toggle.service';
 import { passwordMatchValidator } from '../../validators/passwordmismatch';
-import { passwordStrength } from '../../validators/passwordstrength';
 import { Store } from '@ngrx/store';
 import {
   ResetPasswordResponse,
@@ -31,7 +30,7 @@ import { Subscription } from 'rxjs';
 import { GlobalInputComponent } from '../../../shared/components/global-input/global-input.component';
 
 @Component({
-  selector: 'reset-password-form',
+  selector: 'app-reset-password-form',
   standalone: true,
   imports: [
     CommonModule,
@@ -60,6 +59,11 @@ export class ResetPasswordFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.passwordResetForm();
+    this.storeSubscription();
+  }
+
+  public passwordResetForm() {
     this.resetPasswordForm = new FormGroup(
       {
         password: new FormControl('', [
@@ -76,7 +80,9 @@ export class ResetPasswordFormComponent implements OnInit, OnDestroy {
         validators: passwordMatchValidator('password', 'password_confirmation'),
       }
     );
+  }
 
+  public storeSubscription() {
     const storeSubscription$ = this.store.select(selectResponse).subscribe({
       next: res => {
         if ((res as ResetPasswordResponse).accessToken) {

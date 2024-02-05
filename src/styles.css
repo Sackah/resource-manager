@@ -89,7 +89,7 @@ h6 {
 
 .page {
   min-height: 100vh;
-  padding: 10vh 40px 0px calc(16% + 40px);
+  padding: 10vh 40px 40px calc(16% + 40px);
 }
 
 @tailwind base;

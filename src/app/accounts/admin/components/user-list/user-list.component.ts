@@ -4,74 +4,142 @@ import {
   OnDestroy,
   ViewContainerRef,
   ComponentRef,
+  EventEmitter,
+  Output,
+  Input,
+  ViewChild,
 } from '@angular/core';
-import { GenericResponse, User } from '../../../../shared/types/types';
+import { User, GenericResponse } from '../../../../shared/types/types';
 import { Subscription } from 'rxjs';
 import { UsersService } from '../../services/users.service';
 import { CommonModule } from '@angular/common';
 import { ViewModalComponent } from '../../../../shared/components/modals/view-modal/view-modal.component';
-// import { DeleteModalComponent } from '../../../../shared/components/modals/delete-modal/delete-modal.component';
 import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
 import { AssignModalComponent } from '../../../../shared/components/modals/assign-modal/assign-modal.component';
 import { AssignModalService } from '../../../../shared/components/modals/assign-modal/assign.service';
-import { DropdownService } from '../../../../shared/components/dropdown/dropdown.service';
-import { DropdownComponent } from '../../../../shared/components/dropdown/dropdown.component';
-
+import { ViewModalService } from '../../../../shared/components/modals/view-modal/view-modal.service';
+import { GeneralAssignModalService } from '../../../../shared/components/modals/general-assign-modal/general-assign-modal.service';
+import { GeneralAssignModalComponent } from '../../../../shared/components/modals/general-assign-modal/general-assign-modal.component';
+import { ButtonAssignComponent } from '../../../user/components/button-assign/button-assign.component';
+import { EditUserModalComponent } from '../../../../shared/components/modals/edit-user-modal/edit-user-modal.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { UpdateUserDetails } from '../../../../auth/types/auth-types';
+import { EditUserModalService } from '../../../../shared/components/modals/edit-user-modal/edit-user.service';
+import { UserListService } from './user-list.service';
 @Component({
-  selector: 'user-list',
+  selector: 'app-user-list',
   standalone: true,
   imports: [
     CommonModule,
     ViewModalComponent,
     PaginationComponent,
-    // DeleteModalComponent,
     AssignModalComponent,
+    ButtonAssignComponent,
   ],
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.css'],
 })
 export class UserListComponent implements OnInit, OnDestroy {
-  users: User[] = [];
-  currentPage: number = 1;
-  itemsPerPage: number = 10;
-  totalPages: number = 0;
-  loading: boolean = false;
-  showDropdownForUser: User | null = null;
-  successMessage: string | null = null;
-  errorMessage: string | null = null;
-  totalUsers: number = 0;
-  // selectedUsers: Set<User> = new Set<User>();
+  public users: User[] = [];
+  @Input() user: User[] = [];
+  newDetails!: UpdateUserDetails;
+  public currentPage: number = 1;
+  public itemsPerPage: number = 10;
+  public totalPages: number = 0;
+  public loading = false;
+  public showDropdownForUser: User | null = null;
+  public successMessage: string | null = null;
+  public errorMessage: string | null = null;
+  public totalUsers: number = 0;
   selectedUsers: User[] = [];
+  @Output() selectedUsersEvent = new EventEmitter<User[]>();
 
   private dataSubscription: Subscription | undefined;
   private viewModalRef?: ComponentRef<ViewModalComponent>;
-  private assignModalRef?: ComponentRef<AssignModalComponent>;
-  private dropdownRef?: ComponentRef<DropdownComponent>;
+  private assignModalRef?: ComponentRef<GeneralAssignModalComponent>;
+  private editModalRef?: ComponentRef<EditUserModalComponent>;
 
   constructor(
     private usersService: UsersService,
-    private dropdownService: DropdownService,
     private viewContainerRef: ViewContainerRef,
-    private assignModalService: AssignModalService
+    private assignModalService: AssignModalService,
+    private viewModalService: ViewModalService,
+    private generalAssignModalService: GeneralAssignModalService,
+    private modalService: NgbModal,
+    private editModalService: EditUserModalService,
+    private userListService: UserListService
   ) {}
 
   ngOnInit(): void {
-    this.fetchUsers();
+    this.dataSubscription = this.userListService.refreshUsers$.subscribe(() => {
+      this.fetchUsers();
+    });
+  }
+  public toggleDropdown(user: User): void {
+    this.showDropdownForUser = this.showDropdownForUser === user ? null : user;
   }
 
-  openDropdown(event: MouseEvent, user: User) {
-    const position = {
-      top: event.clientY + 20,
-      left: event.clientX - 100,
-    };
-    this.dropdownRef = this.dropdownService.open(
-      this.viewContainerRef,
+  public openViewModal(user: User) {
+    this.viewModalRef = this.viewModalService.open(this.viewContainerRef, {
       user,
-      position
+    });
+  }
+
+  public openEditUserModal(user: User) {
+    this.editModalRef = this.editModalService.open(this.viewContainerRef, {
+      user,
+    });
+    this.editModalRef.instance.closeEvent.subscribe(() => {
+      this.userListService.refreshUsers();
+    });
+  }
+
+  public editUser(user: User): void {
+    if (!user) {
+      return;
+    }
+
+    this.usersService.updateDetails(this.newDetails).subscribe({
+      next: updatedUser => {
+        updatedUser;
+        setTimeout(() => {
+          this.successMessage = null;
+        }, 3000);
+      },
+      error: () => {
+        this.errorMessage =
+          'Server Error: Could not edit user, please try again later.';
+        setTimeout(() => {
+          this.errorMessage = null;
+        }, 3000);
+      },
+    });
+  }
+
+  public openGeneralAssignModal() {
+    this.assignModalRef = this.generalAssignModalService.open(
+      this.viewContainerRef,
+      {
+        users: this.selectedUsers,
+      }
     );
   }
 
-  onPageChange(page: number): void {
+  public toggleUserSelection(user: User): void {
+    if (this.isSelected(user)) {
+      this.selectedUsers = this.selectedUsers.filter(u => u !== user);
+    } else {
+      this.selectedUsers.push(user);
+    }
+
+    this.selectedUsersEvent.emit(this.selectedUsers);
+  }
+
+  public isSelected(user: User): boolean {
+    return this.selectedUsers.includes(user);
+  }
+
+  public onPageChange(page: number): void {
     this.currentPage = page;
     this.fetchUsers();
   }
@@ -97,11 +165,10 @@ export class UserListComponent implements OnInit, OnDestroy {
           this.totalUsers = users.length;
           this.totalPages = Math.ceil(users.length / this.itemsPerPage);
         } else {
-          console.error('Invalid response format for users:', users);
         }
       },
       error: error => {
-        console.error('Error fetching users:', error);
+        error;
       },
       complete: () => {
         this.loading = false;
@@ -109,39 +176,23 @@ export class UserListComponent implements OnInit, OnDestroy {
     });
   }
 
-  toggleUserSelection(user: User): void {
-    if (this.isSelected(user)) {
-      this.selectedUsers = this.selectedUsers.filter(u => u !== user);
-    } else {
-      this.selectedUsers.push(user);
-    }
-  }
-
-  isSelected(user: User): boolean {
-    return this.selectedUsers.includes(user);
-  }
-
-  // archiveUser(user: User): void {
-  //   console.log(user);
-  //   this.archiveUserEvent.emit(user.email);
-  // }
-  archiveUser(email: string): void {
-    this.usersService.archiveUser(email).subscribe({
-      next: () => {
-        this.successMessage = 'User archived successfully.';
-        this.errorMessage = null;
+  public archiveUser(user: User): void {
+    this.loading = true;
+    this.usersService.archiveUser(user.email).subscribe({
+      next: (response: any) => {
+        this.successMessage = response.message;
         this.fetchUsers();
         setTimeout(() => {
           this.successMessage = null;
         }, 3000);
       },
-      error: (error: any) => {
-        this.errorMessage = 'Error archiving user.';
-        this.successMessage = null;
-        console.error('Error archiving user:', error);
-        setTimeout(() => {
-          this.errorMessage = null;
-        }, 3000);
+
+      error: () => {
+        (this.errorMessage =
+          'Server Error: Could not archive user, please try again later.'),
+          setTimeout(() => {
+            this.errorMessage = null;
+          }, 3000);
       },
     });
   }

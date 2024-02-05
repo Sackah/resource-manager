@@ -4,10 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { SearchComponent } from '../search/search.component';
 import { CdkMenuModule } from '@angular/cdk/menu';
 import { NotificationsService } from '../../services/notifications.service';
-import { UserNotifications, CurrentUser } from '../../types/types';
+import { UserNotifications, User } from '../../types/types';
 import { CurrentUserService } from '../../../auth/services/current-user.service';
 @Component({
-  selector: 'rm-header',
+  selector: 'app-header',
   standalone: true,
   imports: [CommonModule, FormsModule, SearchComponent, CdkMenuModule],
   templateUrl: './header.component.html',
@@ -18,6 +18,8 @@ export class HeaderComponent implements OnInit {
   notifications: UserNotifications[] = [];
   isOnline: boolean = navigator.onLine;
   hasNewNotifications: boolean = false;
+  userName: string = '';
+  userEmail: string = '';
 
   constructor(
     private notificationService: NotificationsService,
@@ -28,10 +30,26 @@ export class HeaderComponent implements OnInit {
     window.addEventListener('online', () => this.updateOnlineStatus(true));
     window.addEventListener('offline', () => this.updateOnlineStatus(false));
     this.fetchNotifications();
+    this.fetchUserName();
   }
+
   private updateOnlineStatus(online: boolean) {
     this.isOnline = online;
   }
+
+  private fetchUserName() {
+    this.currentUserService.get().subscribe(
+      (response: any) => {
+        const currentUser = response.user;
+        this.userName = `${currentUser.firstName} ${currentUser.lastName}`;
+        this.userEmail = `${currentUser.email}`;
+      },
+      error => {
+        error;
+      }
+    );
+  }
+
   performSearch() {}
 
   private fetchNotifications() {

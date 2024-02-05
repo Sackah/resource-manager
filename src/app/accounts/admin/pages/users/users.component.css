@@ -27,10 +27,10 @@ h1 {
     padding: 16px 18px 16px 18px;
     cursor: pointer;
     border-radius: 16px 16px 0px 0px;
+    color: #5e718d;
 
     &.active {
       color: #0f3cd9;
-      /* background: #e8edff; */
       border-bottom: 3px solid #0f3cd9;
     }
   }

@@ -1,0 +1,75 @@
+<div class="message-container">
+  <div class="alert-error" *ngIf="errorMessage">
+    <span class="closebtn"></span>
+    {{ errorMessage }}
+  </div>
+
+  <div class="alert-success" *ngIf="successMessage">
+    <span class="closebtn"></span>
+    {{ successMessage }}
+  </div>
+</div>
+
+<div [class]="modalClasses">
+  <header>
+    <h2>Assign Resources</h2>
+    <span (click)="close()">
+      <img src="assets/images/user/x-close.svg" alt="close icon" />
+    </span>
+  </header>
+  <div>
+    <div [formGroup]="projectForm">
+      <label for="projectName">Project</label>
+      <select
+        id="name"
+        name="name"
+        class="project-input"
+        formControlName="name"
+        [(ngModel)]="selectedProject">
+        <option value="" disabled selected>Select a project</option>
+        <option *ngFor="let project of projects" [value]="project.name">
+          {{ project.name }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="selected-users-container">
+    <div class="dropdown-list-item" *ngFor="let selectedUser of users">
+      <div class="group-item">
+        <img
+          src="assets/images/user/avatar.svg"
+          class="profile-picture"
+          alt="profile" />
+        <div>
+          <p class="name">
+            {{ selectedUser.firstName }} {{ selectedUser.lastName }}
+          </p>
+          <p class="position">
+            <span
+              *ngFor="
+                let specialization of selectedUser.specializations[0] | keyvalue
+              ">
+              {{ specialization.value }}
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="buttons-wrapper">
+    <button
+      type="reset"
+      class="button border border-[#9AA8BC] bg-[#FFFFFF] text-[#022F54] hover:bg-[#e6e6e6]">
+      Cancel
+    </button>
+    <button
+      type="submit"
+      (click)="submit()"
+      class="button bg-[#1F26A8] text-white hover:bg-[#353cb1]">
+      Assign
+    </button>
+  </div>
+</div>
+
+<div [class]="backdropClasses" (click)="close()"></div>

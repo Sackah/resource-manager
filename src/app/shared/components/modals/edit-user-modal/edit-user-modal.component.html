@@ -1,0 +1,178 @@
+<div class="message-container">
+  <div class="alert-error" *ngIf="errorMessage">
+    <span class="closebtn"></span>
+    {{ errorMessage }}
+  </div>
+
+  <div class="alert-success" *ngIf="successMessage">
+    <span class="closebtn"></span>
+    {{ successMessage }}
+  </div>
+</div>
+
+<div [class]="modalClasses">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h2>Edit User</h2>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="userDetails">
+        <!-- <div class="profile-picture">
+          <img [src]="imgUrl" alt="profile picture" />
+          <input
+            type="file"
+            id="image"
+            name="image"
+            (change)="onFileChange($event)"
+            accept=".jpg,.jpeg,.png" />
+        </div> -->
+        <!-- <div class="name-fields"> -->
+        <div class="form-group">
+          <label for="firstName" class="form-label">First Name</label>
+          <input
+            id="firstName"
+            type="text"
+            class="input-fields {{ getNameErrors('firstName') ? 'error' : '' }}"
+            placeholder="Enter FirstName"
+            formControlName="firstName" />
+          @if(getNameErrors('firstName')){
+          <div class="validation-error-message">
+            {{ getNameErrors('firstName') }}
+          </div>
+          }
+
+          <div class="form-group">
+            <label for="lastName" class="form-label">Last Name</label>
+            <input
+              id="lastName"
+              type="text"
+              class="name-field {{ getNameErrors('lastName') ? 'error' : '' }}"
+              placeholder="Enter LastName"
+              formControlName="lastName" />
+            @if(getNameErrors('lastName')){
+            <div class="validation-error-message">
+              {{ getNameErrors('lastName') }}
+            </div>
+            }
+          </div>
+
+          <label for="roles" class="form-label">Set Permissions</label>
+          <div class="custom-dropdown" [class.active]="rolesDropdownOpen">
+            <input
+              formControlName="roles"
+              id="roles"
+              name="roles"
+              class="name-field"
+              placeholder="Select a role"
+              readonly
+              (click)="toggleRolesDropdown()" />
+            <span class="dropdown-sign"
+              ><img src="../../../../../assets/images/admin/Chevron Down.svg"
+            /></span>
+            <ul class="dropdown-container" *ngIf="rolesDropdownOpen">
+              <li value="basic_user" (click)="selectRole('Basic User')">
+                Basic User
+              </li>
+              <li value="manager" (click)="selectRole('Administrator')">
+                Administrator
+              </li>
+            </ul>
+          </div>
+          <label for="email" class="form-label">Email</label>
+          <input
+            id="email"
+            type="'email'"
+            class="input-fields{{ getEmailErrors() ? 'error' : '' }}"
+            placeholder="something@example.com"
+            formControlName="email" />
+          @if(getEmailErrors()){
+          <div class="validation-error-message">
+            {{ getEmailErrors() }}
+          </div>
+          }
+          <label for="bookable" class="form-label"> Bookable </label>
+          <div class="section-bookable">
+            <div class="flex justify-start items-start w-full">
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  formControlName="bookable"
+                  value="on"
+                  name="bookable"
+                  class="sr-only peer"
+                  checked />
+                <div
+                  class="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+              </label>
+            </div>
+
+            <div class="text-slate-700 text-xs leading-5">
+              <p>Normal Availability</p>
+              <p class="key">Weekly total: 40h</p>
+            </div>
+          </div>
+          <label for="department" class="form-label">Department</label>
+
+          <input
+            id="department"
+            class="input-fields"
+            placeholder="Enter department"
+            formControlName="department" />
+
+          @if(getDepartmentErrors()) {
+          <div class="validation-error-message">
+            {{ getDepartmentErrors() }}
+          </div>
+          }
+          <div
+            class="form-group"
+            *ngIf="user.specializations && user.specializations.length > 0">
+            <label for="specialization" class="form-label"
+              >Specialization</label
+            >
+
+            <div
+              *ngFor="let specialization of user.specializations[0] | keyvalue">
+              <input
+                id="specialization"
+                class="input-fields"
+                placeholder="Enter specialization"
+                formControlName="specialization" />
+            </div>
+
+            @if(getSpecializationErrors()) {
+            <div class="validation-error-message">
+              {{ getSpecializationErrors() }}
+            </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="skills">Skills</label>
+            <!-- *ngFor="let skill of user.skills[0] | keyvalue" -->
+
+            <input
+              type="text"
+              id="skills"
+              class="input-fields"
+              placeholder="enter skill"
+              formControlName="skills" />
+          </div>
+
+          <div class="buttons-wrapper">
+            <button
+              class="button border border-[#9AA8BC] bg-[#FFFFFF] text-[#022F54] hover:bg-[#e6e6e6]">
+              cancel
+            </button>
+            <button
+              (click)="submitForm()"
+              class="btn-add bg-[#1F26A8] text-[#fff]">
+              Update
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div [class]="backdropClasses" (click)="close()"></div>

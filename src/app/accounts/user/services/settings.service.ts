@@ -13,20 +13,11 @@ import {
   Departments,
   Specializations,
   Skills,
+  GenericResponse,
 } from '../../../shared/types/types';
 
 export type SettingsFields = 'profile' | 'password' | 'work specialization';
 
-/**
- * Service for managing user settings.
- * @example
- * ```
- *  const settingsService = inject(SettingsService);
- *  settingsService.toggle('password'); //to change the field to a password field
- *  settingsService.updateDetails(newDetails); //to update the user details
- *  settingsService.updatePassword(newPassword); //to update the user password
- * ```
- */
 @Injectable({
   providedIn: 'root',
 })
@@ -36,19 +27,10 @@ export class SettingsService {
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Toggles the settings data to profile or password.
-   * @param data The new settings data.
-   */
   toggle(data: SettingsFields) {
     this.dataSource.next(data);
   }
 
-  /**
-   * Updates the user details on their profile.
-   * @param newDetails The new user details.
-   * @returns An observable of @see{@link UpdateUserDetailsResponse}
-   */
   updateDetails(
     newDetails: UpdateUserDetails
   ): Observable<UpdateUserDetailsResponse> {
@@ -60,11 +42,6 @@ export class SettingsService {
       .pipe(catchError((error: HttpErrorResponse) => this.onError(error)));
   }
 
-  /**
-   * Updates the user password.
-   * @param newPassword The new user password.
-   * @returns An observable of @see{@link UpdateUserPasswordResponse}
-   */
   updatePassword(newPassword: string): Observable<UpdateUserPasswordResponse> {
     return this.http
       .put<UpdateUserPasswordResponse>(
@@ -74,20 +51,29 @@ export class SettingsService {
       .pipe(catchError((error: HttpErrorResponse) => this.onError(error)));
   }
 
-  updateAdminSpecialization(
+  updateSpecialization(
     userSpecializationForm: UpdateUserDetails
   ): Observable<UpdateUserDetailsResponse> {
     return this.http
       .put<UpdateUserDetailsResponse>(
-        `${BASE_URL}/users/settings/admin/update/work/specialization`,
+        `${BASE_URL}/users/settings/update/work/specialization`,
         userSpecializationForm
       )
       .pipe(catchError((error: HttpErrorResponse) => this.onError(error)));
   }
-  /**
-   * Gets available specializations for display purposes
-   * @returns An observable of @see{@link Specializations}
-   */
+
+  deleteSkill(skill: string): Observable<GenericResponse> {
+    return this.http.delete<GenericResponse>(`${BASE_URL}/skills/delete`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'skip-browser-warning',
+      },
+      params: {
+        skill,
+      },
+    });
+  }
+
   getSpecializations(): Observable<Specializations[]> {
     return this.http
       .get<{ specializations: [{ id: number; name: Specializations }] }>(
@@ -107,7 +93,7 @@ export class SettingsService {
   getUserSkills(): Observable<Skills[]> {
     return this.http
       .get<{ skills: [{ id: number; name: Skills }] }>(
-        `${BASE_URL}/skills/fetch`,
+        `${BASE_URL}/skills/fetch/by/auth`,
         this.headers
       )
       .pipe(
@@ -119,10 +105,34 @@ export class SettingsService {
         catchError((error: HttpErrorResponse) => this.onError(error))
       );
   }
-  /**
-   * Gets available departments for display purposes
-   * @returns An observable of @see{@link Departments}
-   */
+
+  addUserSkills(
+    skill: string,
+    userId: string
+    // rating: any
+  ): Observable<Skills[]> {
+    const requestBody = {
+      name: skill,
+      userId: userId,
+      // rating: rating,
+    };
+
+    return this.http
+      .post<{ skills: [{ id: number; name: Skills }] }>(
+        `${BASE_URL}/skills/store`,
+        requestBody,
+        this.headers
+      )
+      .pipe(
+        map(res => {
+          const temp: Skills[] = [];
+          res.skills.forEach(skill => temp.push(skill.name));
+          return temp;
+        }),
+        catchError((error: HttpErrorResponse) => this.onError(error))
+      );
+  }
+
   getDepartments(): Observable<Departments[]> {
     return this.http
       .get<{ departments: [{ id: number; name: Departments }] }>(
@@ -139,10 +149,6 @@ export class SettingsService {
       );
   }
 
-  /**
-   * Returns standard headers like ngrok skip warnings and content type
-   * @returns {HttpHeaders}
-   */
   private get headers() {
     return {
       headers: new HttpHeaders({
@@ -152,19 +158,12 @@ export class SettingsService {
     };
   }
 
-  /**
-   * Handles the HTTP error response.
-   * @param error The HTTP error response.
-   * @returns An observable of the error.
-   */
   private onError(error: HttpErrorResponse) {
     if (error.status === 0) {
-      console.error(error.error);
       return throwError(
         () => new Error('Cannot connect to the server please try again')
       );
     } else {
-      console.error(error.error);
       return throwError(() => new Error(`${error.error.message}`));
     }
   }

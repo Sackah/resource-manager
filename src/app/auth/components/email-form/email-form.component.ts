@@ -19,7 +19,7 @@ import {
 import { GlobalInputComponent } from '../../../shared/components/global-input/global-input.component';
 
 @Component({
-  selector: 'email-form',
+  selector: 'app-email-form',
   standalone: true,
   imports: [
     CommonModule,
@@ -48,10 +48,17 @@ export class EmailFormComponent implements OnInit, OnDestroy {
   constructor(private store: Store) {}
 
   ngOnInit(): void {
+    this.emailFormValidation();
+    this.storeSubscription();
+  }
+
+  public emailFormValidation() {
     this.emailForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
     });
+  }
 
+  public storeSubscription() {
     const storeSubscription = this.storeData$.subscribe({
       next: res => {
         if (res.error) {

@@ -55,7 +55,7 @@ const authFeature = createFeature({
         error: payload,
       },
     })),
-    on(AuthActions.updateUserPassword, (state, payload) => ({
+    on(AuthActions.updateUserPassword, state => ({
       ...state,
       updateUserPassword: {
         ...state.updateUserPassword,
@@ -80,7 +80,7 @@ const authFeature = createFeature({
         error: payload,
       },
     })),
-    on(AuthActions.updateUserDetails, (state, payload) => ({
+    on(AuthActions.updateUserDetails, state => ({
       ...state,
       updateUserDetails: {
         ...state.updateUserDetails,

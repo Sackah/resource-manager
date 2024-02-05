@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, NgZone } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { Store } from '@ngrx/store';
 import {
@@ -7,36 +7,33 @@ import {
   FormGroup,
   Validators,
   FormControl,
-  FormArray,
-  AbstractControl,
-  FormBuilder,
 } from '@angular/forms';
-import { SettingsService } from '../../services/settings.service';
+import { ChangeDetectionStrategy } from '@angular/core';
+import { SettingsService } from '../../../user/services/settings.service';
 import { selectCurrentUser } from '../../../../auth/store/authorization/AuthReducers';
 import {
   CurrentUser,
   Departments,
   InitialSig,
   Specializations,
-  Skills,
 } from '../../../../shared/types/types';
-
+import { StarRatingComponent } from '../../../../shared/components/star-rating/star-rating.component';
 @Component({
-  selector: 'work-specialization',
+  selector: 'app-work-specialization',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [CommonModule, ReactiveFormsModule, StarRatingComponent],
   templateUrl: './work-specialization.component.html',
-  styleUrls: [
-    './work-specialization.component.css',
-    '../../pages/setting/setting.component.css',
-  ],
+  styleUrl: './work-specialization.component.css',
 })
 export class WorkSpecializationComponent implements OnInit, OnDestroy {
   userSpecializationForm!: FormGroup;
   subscriptions: Subscription[] = [];
   specializations!: Specializations[];
   departments!: Departments[];
-  userSkills: Skills[] = [];
+  skills: string[] = [];
+  loading = false;
+  enteredSkills: string[] = [];
   user!: CurrentUser;
   settingsSig = signal<InitialSig>({
     success: null,
@@ -44,39 +41,33 @@ export class WorkSpecializationComponent implements OnInit, OnDestroy {
     pending: false,
   });
 
-  constructor(
-    private store: Store,
-    private settingsService: SettingsService,
-    private fb: FormBuilder
-  ) {}
+  constructor(private store: Store, private settingsService: SettingsService) {}
 
   ngOnInit(): void {
-    this.userSpecializationForm = this.fb.group({
-      department: ['', Validators.required],
-      specialization: ['', Validators.required],
-      skills: this.fb.array([
-        this.fb.control('', Validators.required),
-        this.fb.control('', Validators.required),
-        this.fb.control('', Validators.required),
-      ]),
-    });
+    this.specializationForm();
+    this.storeSubscription();
+    this.initializeEnteredSkills();
+    this.disableControls();
+  }
 
+  public specializationForm() {
+    this.userSpecializationForm = new FormGroup({
+      department: new FormControl('', [Validators.required]),
+      specialization: new FormControl('', [Validators.required]),
+      skills: new FormControl('', [Validators.required]),
+    });
+  }
+
+  public storeSubscription() {
     const specSub = this.settingsService.getSpecializations().subscribe({
-      next: res => {
+      next: (res: any) => {
         this.specializations = res;
       },
     });
 
     const departmentSub = this.settingsService.getDepartments().subscribe({
-      next: res => {
+      next: (res: any) => {
         this.departments = res;
-      },
-    });
-
-    const skillsSub = this.settingsService.getUserSkills().subscribe({
-      next: (res: Skills[]) => {
-        this.userSkills = res;
-        this.updateSkillsFormArray();
       },
     });
 
@@ -89,7 +80,23 @@ export class WorkSpecializationComponent implements OnInit, OnDestroy {
       },
     });
 
-    this.subscriptions.push(specSub, departmentSub, storeSub, skillsSub);
+    this.subscriptions.push(storeSub, specSub, departmentSub);
+  }
+
+  private disableControls() {
+    this.userSpecializationForm.get('department')?.disable();
+
+    this.userSpecializationForm.get('specialization')?.disable();
+  }
+
+  private initializeEnteredSkills() {
+    const skillsSub = this.settingsService.getUserSkills().subscribe({
+      next: res => {
+        this.enteredSkills = res.map(skill => skill);
+      },
+    });
+
+    this.subscriptions.push(skillsSub);
   }
 
   getSpecializationErrors(): string {
@@ -113,36 +120,47 @@ export class WorkSpecializationComponent implements OnInit, OnDestroy {
   }
 
   setValues() {
-    if (this.user) {
+    if (this.user && this.user.specializations[0]) {
       this.userSpecializationForm.patchValue({
         department: this.user.department || '',
-        specialization: this.user.specializations[0] || '',
-        skills: this.user.skills || '',
+        specialization: this.user.specializations[0].name || '',
+        skills: '',
       });
     }
-  }
-
-  getSkillsFormArray(): FormArray {
-    return this.userSpecializationForm.get('skills') as FormArray;
-  }
-
-  updateSkillsFormArray() {
-    const skillControls = this.userSkills.map(skill =>
-      this.fb.control(skill, Validators.required)
-    );
-    this.userSpecializationForm.setControl(
-      'skills',
-      this.fb.array(skillControls)
-    );
-  }
-
-  addSkill() {
-    this.getSkillsFormArray().push(this.fb.control('', Validators.required));
   }
 
   get signalValues() {
     const val = this.settingsSig();
     return val;
+  }
+
+  addSkill(): void {
+    const enteredSkill = this.userSpecializationForm.get('skills')?.value;
+
+    if (enteredSkill) {
+      this.enteredSkills.push(enteredSkill);
+      this.userSpecializationForm.get('skills')?.reset();
+    }
+  }
+
+  removeSkill(skill: string): void {
+    const index = this.enteredSkills.indexOf(skill);
+    if (index !== -1) {
+      // Remove skill from the enteredSkills array
+      this.enteredSkills.splice(index, 1);
+
+      // Call the deleteSkill service to remove the skill
+      this.settingsService.deleteSkill(skill).subscribe({
+        next: response => {
+          // Handle the response if needed
+          console.log(response);
+        },
+        error: error => {
+          // Handle the error if needed
+          console.error(error);
+        },
+      });
+    }
   }
 
   submitForm(event: Event) {
@@ -159,46 +177,50 @@ export class WorkSpecializationComponent implements OnInit, OnDestroy {
 
     const reqBody = {
       userId: this.user.userId,
-      department: this.user.department,
-      specialization: this.user.specializations[0],
-      skills: this.user.skills,
+      department: this.userSpecializationForm.get('department')?.value || '',
+      specialization:
+        this.userSpecializationForm.get('specialization')?.value || '',
+      skills: this.enteredSkills,
     };
 
-    if (this.userSpecializationForm.valid) {
-      this.settingsService.updateDetails(reqBody).subscribe({
-        next: response => {
-          if (response && response.message) {
-            this.settingsSig.set({
-              success: response,
-              error: null,
-              pending: false,
-            });
-            setTimeout(() => {
-              this.settingsSig.set({
-                success: null,
-                error: null,
-                pending: false,
-              });
-            }, 3000);
-          }
-        },
-        error: error => {
+    this.settingsService.updateSpecialization(reqBody).subscribe({
+      next: response => {
+        if (response && response.message) {
           this.settingsSig.set({
-            success: null,
-            error: error.errors,
+            success: response,
+            error: null,
             pending: false,
           });
-
           setTimeout(() => {
             this.settingsSig.set({
               success: null,
               error: null,
               pending: false,
             });
+            this.loading = false;
           }, 3000);
-        },
-      });
-    }
+        }
+      },
+      error: error => {
+        this.settingsSig.set({
+          success: null,
+          error: error.errors,
+          pending: false,
+        });
+
+        setTimeout(() => {
+          this.settingsSig.set({
+            success: null,
+            error: null,
+            pending: false,
+          });
+          this.loading = false;
+        }, 3000);
+      },
+      complete: () => {
+        this.loading = false;
+      },
+    });
   }
 
   ngOnDestroy(): void {

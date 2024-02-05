@@ -1,10 +1,9 @@
-/**********  Modal **********/
 .modal {
   position: fixed;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 500px;
+  width: 460px;
   height: auto;
   background-color: white;
   border-radius: 12px;
@@ -62,7 +61,6 @@ main > div:last-of-type {
   min-height: 294px;
 }
 
-/**********  User Details **********/
 h2 {
   font-size: 1.375rem;
   margin-top: -20px;
@@ -85,15 +83,6 @@ div.user-details {
       font-size: 0.875rem;
       color: #5e718d;
     }
-    /* .availability {
-      width: 200px;
-      height: 40px;
-      background: #11a75c;
-      color: #fff;
-      border-radius: 6px;
-      font-size: 12px;
-      text-align: center;
-    } */
   }
 
   & > div {
@@ -118,7 +107,6 @@ div.user-details {
   }
 }
 
-/**********  General **********/
 .d-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -135,6 +123,10 @@ div.user-details {
   & > .value {
     color: #5e718d;
   }
+}
+
+.valuee {
+  color: red;
 }
 
 .toggles {
@@ -156,8 +148,13 @@ div.user-details {
   }
 }
 
-/**********  Normal Availability **********/
 h5 {
   font-size: 1rem;
   color: #3d4a5c;
+}
+
+.container {
+  display: flex;
+  overflow: hidden;
+  max-width: 300px;
 }

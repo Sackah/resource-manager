@@ -1,6 +1,5 @@
 import { CurrentUser } from '../../shared/types/types';
 
-//Initial state of the Auth slice of state
 export type AuthState = {
   isSubmitting: boolean;
   login: {
@@ -49,6 +48,7 @@ export type UpdateUserDetails = {
   phoneNumber?: string;
   qualification?: string;
   department?: string;
+  skill?: string;
 };
 
 export type ProfileState = {

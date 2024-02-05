@@ -5,6 +5,49 @@
   overflow: hidden;
 }
 
+.message-container {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 35%;
+  z-index: 1000;
+  padding: 20px;
+  text-align: center;
+}
+
+.alert-success {
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1.5px solid #2b641e;
+  background-color: #84d65a;
+  color: #2b641e;
+  border-radius: 10px;
+}
+
+.alert-error {
+  padding: 10px;
+  border: 1.5px solid #71192f;
+  background-color: #fce8db;
+  color: #71192f;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.total-archived-users {
+  font-size: 12px;
+  margin-top: -38px;
+  padding-bottom: 20px;
+  color: #fff;
+  margin-left: 150px;
+}
+
+.total-archived-users span {
+  background: #0f3cd9;
+  padding: 0px 8px;
+  border-radius: 12px;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -98,33 +141,6 @@ tbody tr td img {
   cursor: pointer;
 }
 
-/* .overlay-dropdown {
-    background: #fff;
-    border-radius: 5px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.16);
-    margin-top: 20%;
-    ul {
-      list-style: none;
-      width: 123px;
-    }
-    li {
-      padding: 1rem;
-  
-      &.dropdown-details-container {
-        cursor: pointer;
-      }
-      .dropdown-subject {
-        margin-bottom: 0.25rem;
-        font-size: 14px;
-        color: #3d4a5c;
-      }
-  
-      &:hover {
-        background: #4a72ff;
-      }
-    }
-  } */
-
 .dropdown-container {
   position: absolute;
   right: 170px;
@@ -217,7 +233,6 @@ main.visible > .backdrop {
   gap: 40px;
   justify-content: center;
   align-items: center;
-  /* border-bottom: 1px solid var(--Colors-Primary-Slate-100, #e9eff6); */
   margin-top: -20px;
 }
 
@@ -231,16 +246,19 @@ main.visible > .backdrop {
   gap: 200px;
 }
 
+.nuf {
+  font-family: 'LexendBold';
+}
+
 .no-user p {
   font-size: 32px;
   display: block;
-  /* font-size: 16px; */
-  /* font-weight: 600; */
+
   color: #1a212b;
 }
 
 .image-illustration img {
-  width: 300px;
+  width: 360px;
   height: auto;
   margin-top: 20px;
 }
@@ -432,6 +450,10 @@ main.visible > .backdrop {
     text-align: center;
     margin: 8% auto;
     gap: 200px;
+  }
+
+  .nuf {
+    font-family: 'LexendBold';
   }
 
   .no-user p {

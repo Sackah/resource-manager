@@ -2,24 +2,31 @@
   <header>
     <h1>Users</h1>
     <div class="buttons-wrapper">
-      <button-assign></button-assign>
-      <button-new (click)="openUserCreationModal()"></button-new>
+      <app-button-new (click)="openUserCreationModal()"></app-button-new>
       <app-usercreation [isOpen]="userCreationModalOpen"></app-usercreation>
     </div>
   </header>
   <div class="toggles">
-    <h3
-      [class]="display === 'all' ? 'active' : ''"
-      (click)="toggleDisplay('all')">
+    <h3 [class.active]="display === 'all'" (click)="toggleDisplay('all')">
       All
     </h3>
+    <h3 [class.active]="display === 'active'" (click)="toggleDisplay('active')">
+      Active
+    </h3>
     <h3
-      [class]="display !== 'all' ? 'active' : ''"
+      [class.active]="display === 'inactive'"
+      (click)="toggleDisplay('inactive')">
+      Inactive
+    </h3>
+    <h3
+      [class.active]="display === 'archives'"
       (click)="toggleDisplay('archives')">
       Archives
     </h3>
   </div>
-  @if (display === 'all') { <user-list></user-list>
 
-  } @else if (display === 'archives') { <archived-list></archived-list> }
+  @if (display === 'all') { <app-user-list></app-user-list>
+
+  } @else if (display === 'archives') {
+  <app-archived-list></app-archived-list> }
 </div>

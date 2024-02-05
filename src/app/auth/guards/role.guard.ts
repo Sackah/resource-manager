@@ -2,9 +2,6 @@ import { inject } from '@angular/core';
 import { RoleService } from '../../shared/services/role.service';
 import { Router } from '@angular/router';
 
-/**
- * Validates various roles with role service
- */
 export const AdminGuard = () => {
   const roleService = inject(RoleService);
   const router = inject(Router);
@@ -32,15 +29,15 @@ export const UserGuard = () => {
 };
 
 export const ManagerGuard = () => {
-  // const roleService = inject(RoleService);
-  // const router = inject(Router);
-  // const role = roleService.get();
-  // if (role === 'manager') {
-  //   return true;
-  // } else {
-  //   router.navigateByUrl('/login');
-  //   return false;
-  // }
+  const roleService = inject(RoleService);
+  const router = inject(Router);
+  const role = roleService.get();
+  if (role === 'Manager') {
+    return true;
+  } else {
+    router.navigateByUrl('/login');
+    return false;
+  }
 
   return true;
 };

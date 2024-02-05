@@ -14,7 +14,7 @@ import { AccesstokenService } from '../../services/accesstoken.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'side-nav',
+  selector: 'app-side-nav',
   standalone: true,
   imports: [
     CommonModule,
@@ -65,7 +65,7 @@ export class SideNavComponent implements OnInit, OnDestroy {
         this.loggingOut = false;
       },
       error: err => {
-        console.error(err);
+        err;
         this.loggingOut = false;
       },
     });

@@ -14,7 +14,7 @@ import { CurrentUser, InitialSig } from '../../../../shared/types/types';
 import { Store } from '@ngrx/store';
 
 @Component({
-  selector: 'user-password',
+  selector: 'app-user-password',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './user-password.component.html',
@@ -24,12 +24,29 @@ import { Store } from '@ngrx/store';
   ],
 })
 export class UserPasswordComponent implements OnInit, OnDestroy {
-  subscriptions: Subscription[] = [];
-  showPassword: boolean = false;
-  showConfirmPassword: boolean = false;
-  userPasswordForm!: FormGroup;
-  user!: CurrentUser;
-  settingsSig = signal<InitialSig>({
+  private subscriptions: Subscription[] = [];
+  private showPassword = false;
+  private showConfirmPassword = false;
+  public userPasswordForm: FormGroup = new FormGroup(
+    {
+      current_password: new FormControl('', [Validators.required]),
+      password: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/),
+      ]),
+      password_confirmation: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/),
+      ]),
+    },
+    {
+      validators: passwordMatchValidator('password', 'password_confirmation'),
+    }
+  );
+  private user: CurrentUser | null = null;
+  private settingsSig = signal<InitialSig>({
     success: null,
     error: null,
     pending: false,
@@ -38,25 +55,10 @@ export class UserPasswordComponent implements OnInit, OnDestroy {
   constructor(private settingsService: SettingsService, private store: Store) {}
 
   ngOnInit() {
-    this.userPasswordForm = new FormGroup(
-      {
-        current_password: new FormControl('', [Validators.required]),
-        password: new FormControl('', [
-          Validators.required,
-          Validators.minLength(8),
-          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/),
-        ]),
-        password_confirmation: new FormControl('', [
-          Validators.required,
-          Validators.minLength(8),
-          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/),
-        ]),
-      },
-      {
-        validators: passwordMatchValidator('password', 'password_confirmation'),
-      }
-    );
+    this.storeSubscription();
+  }
 
+  private storeSubscription() {
     const storeSubscription = this.store.select(selectCurrentUser).subscribe({
       next: user => {
         if (user) {
@@ -114,12 +116,7 @@ export class UserPasswordComponent implements OnInit, OnDestroy {
     return val;
   }
 
-  /**
-   * The form is submitted here.
-   * @param event
-   */
-  submitForm(event: Event) {
-    event.preventDefault();
+  submitForm() {
     this.settingsSig.set({
       success: null,
       error: null,

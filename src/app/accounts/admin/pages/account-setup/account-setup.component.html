@@ -12,7 +12,7 @@
       }
       <h2>Set a new password</h2>
       <p>Must be at least 8 characters</p>
-      <form (submit)="submitForm($event)" [formGroup]="resetPasswordForm">
+      <form (submit)="submitForm()" [formGroup]="resetPasswordForm">
         <label for="old_password" class="form-label">Old Password</label>
         <div class="password-input">
           <input

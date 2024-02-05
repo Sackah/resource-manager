@@ -1,11 +1,15 @@
-<div [class]="modalClasses">
-  <div *ngIf="successMessage" class="success-message">
-    {{ successMessage }}
-  </div>
-
-  <div *ngIf="errorMessage" class="error-message">
+<div class="message-container">
+  <div class="alert-error" *ngIf="errorMessage">
+    <span class="closebtn" (click)="closeErrorMessage()"></span>
     {{ errorMessage }}
   </div>
+
+  <div class="alert-success" *ngIf="successMessage">
+    <span class="closebtn" (click)="closeSuccessMessage()"></span>
+    {{ successMessage }}
+  </div>
+</div>
+<div [class]="modalClasses">
   <header>
     <h2>Assign Resources</h2>
     <span (click)="close()">
@@ -15,17 +19,7 @@
   <div>
     <div>
       <label for="projectName">Project</label>
-      <select
-        #projectNameInput
-        id="name"
-        name="name"
-        class="project-input"
-        [(ngModel)]="selectedProject">
-        <option value="" disabled selected>Select a project</option>
-        <option *ngFor="let project of projects" [value]="project.id">
-          {{ project.name }}
-        </option>
-      </select>
+      <div class="project-name">{{ project.name }}</div>
     </div>
   </div>
   <input
@@ -69,9 +63,12 @@
             </span>
           </p>
         </div>
+
         <input
           type="checkbox"
           name="userId[]"
+          [checked]="checkedUsers[user.userId]"
+          (change)="handleCheck(user)"
           value="{{ user.userId }}"
           [(ngModel)]="user.selected" />
       </div>
@@ -93,9 +90,10 @@
     </button>
     <button
       type="submit"
+      [disabled]="isSubmitting"
       (click)="submit()"
       class="button bg-[#1F26A8] text-white hover:bg-[#353cb1]">
-      Assign
+      {{ isSubmitting ? 'Assigning...' : 'Assign' }}
     </button>
   </div>
 </div>

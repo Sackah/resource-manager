@@ -1,11 +1,15 @@
-export type Specializations =
-  | 'Frontend Developer'
-  | 'Backend Developer'
-  | 'UI/UX Designer'
-  | 'DevOps'
-  | 'Data Scientist'
-  | 'Software Tester'
-  | 'Operations';
+// export type Specializations =
+//   | 'Frontend Developer'
+//   | 'Backend Developer'
+//   | 'UI/UX Designer'
+//   | 'DevOps'
+//   | 'Data Scientist'
+//   | 'Software Tester'
+//   | 'Operations';
+
+export type Specializations = {
+  name: string;
+};
 
 export type Roles = 'Basic User' | 'Administrator' | 'Manager';
 
@@ -29,46 +33,69 @@ export type CurrentUser = {
   bookable: boolean;
   created_at: string;
   selected?: boolean;
+  client: string;
+  timeZone: string;
+  project: string;
+  location: string;
 };
 
-export type AdminUser = Pick<CurrentUser, 'email' | 'department' | 'roles' > & {
+export type AdminUser = Pick<CurrentUser, 'email' | 'department' | 'roles'> & {
   skills: string;
   department: string;
-  specializations : string;
+  specializations: string;
 };
 
-/**
- * @description
- * Yes CurrentUser is the same as User, but it may be used in different contexts where typing an object
- * as User is more appropriate than typing it as CurrentUser
- */
 export interface User extends CurrentUser {}
 
 export type GenericResponse = {
   success: boolean;
   message: string;
+  status: number;
 };
 
 export type ClientDetails = {
   name: string;
   clientId: string;
   details: string;
-  employees: string[];
+  projects: Projects[];
+  employees: EmployeeDetails[];
   totalProjects: number;
-
-}
-export type ProjectDetails = Pick<ClientDetails, 'name' | 'details' > & {
-  date: Date;
+  created_at: Date;
+  client: ClientDetails;
+  projectName: string;
+};
+export type ProjectDetails = Pick<ClientDetails, 'name' | 'details'> & {
   client: string;
   projectCode: string;
   projectName: string;
-  billable: Boolean;
-  }
-
+  billable: boolean;
+  projectType: string;
+  date: Date;
+  employees: EmployeeDetails[];
+  startDate: Date | undefined;
+  endDate: Date | undefined;
+  projectId: string;
+  clientId: string;
+};
+export interface EmployeeDetails {
+  name: string;
+  picture: string;
+}
 export interface UserNotifications {
   created_by: string;
   time: string;
   message: string;
+}
+export interface FormDataValue {
+  details: string;
+  name: string;
+  clientId: string;
+  date: Date;
+  startDate: Date;
+  endDate: Date;
+  projectType: string;
+  billable: boolean;
+  projectId: string;
 }
 
 export type Permisions = {
@@ -84,10 +111,6 @@ export type Permisions = {
   can_update_user_role: boolean;
 };
 
-/**
- * @description This type can be used as a type argument for any signal where we are tracking
- * success, error and pending states
- */
 export type InitialSig = {
   success: { user?: CurrentUser; message: string } | null;
   error: { message: string } | null;

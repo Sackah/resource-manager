@@ -1,0 +1,10 @@
+*,
+*::before,
+*::after {
+  transition: all 0.3s ease;
+}
+
+svg.active path {
+  fill: #fcd53f;
+  display: flex;
+}

@@ -12,13 +12,23 @@
   justify-content: space-between;
 }
 
+.user-details {
+  margin-right: 7%;
+  color: #3d4a5c;
+}
+
+.user-email {
+  color: #5e718d;
+  font-family: 'LexendSemiBold';
+}
+
 .circle-indicator {
   width: 13px;
   height: 13px;
   border-radius: 50%;
   position: absolute;
   top: 50px;
-  right: 35px;
+  right: 420px;
   background: #12b569;
   border: 2px solid #fff;
 
@@ -62,7 +72,7 @@
 }
 
 .alarm-icon {
-  margin: 0 10px;
+  margin: 0 300px;
 }
 
 .profile-container {
@@ -71,13 +81,30 @@
 }
 
 .avatar {
-  margin-right: 30px;
+  position: absolute;
+  right: 26%;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  margin-right: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background: #eaecf0;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: #fff;
 }
 
 .overlay-notification {
+  width: 100%;
+  height: 300px;
+  overflow-y: auto;
   background: #fff;
-  border-radius: 5px;
-  border-bottom: 0.5px solid #d7dfe9;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
   ul {
     list-style: none;
@@ -106,7 +133,6 @@
     &.notification-message-container {
       cursor: pointer;
       display: flex;
-      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.16);
     }
 
     .notification-subject {
@@ -199,6 +225,11 @@
     border: 2px solid #fff;
   }
 
+  /* .avatar {
+    position: absolute;
+    right: 35%;
+  } */
+
   @keyframes pulse-animation {
     0% {
       box-shadow: 0 0 0 0 rgb(18, 181, 105);
@@ -206,5 +237,37 @@
     100% {
       box-shadow: 0 0 0 13px rgb(192, 249, 222);
     }
+  }
+
+  /* .circle-indicator {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    position: absolute;
+    top: 36px;
+    right: 374px;
+    background: #12b569;
+    border: 2px solid #fff;
+
+    &.pulse {
+      animation: pulse-animation 1.2s 3;
+    }
+  }
+
+  .circle-indicator.offline {
+    background: #ccc;
+    border: 2px solid #fff;
+  }
+
+  @keyframes pulse-animation {
+    0% {
+      box-shadow: 0 0 0 0 rgb(18, 181, 105);
+    }
+    100% {
+      box-shadow: 0 0 0 13px rgb(192, 249, 222);
+    }
+  } */
+  .alarm-icon {
+    margin: 0 20px;
   }
 }

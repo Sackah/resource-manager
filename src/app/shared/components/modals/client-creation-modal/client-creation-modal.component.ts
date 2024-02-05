@@ -1,5 +1,4 @@
-import { Component,  OnInit, Input  } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
 import {
   FormGroup,
 
@@ -7,35 +6,42 @@ import {
   FormBuilder,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
-
-import { NgbModal, } from '@ng-bootstrap/ng-bootstrap';
 import { finalize } from 'rxjs/operators';
 import { ClientCreationModalService } from '../../../../accounts/admin/services/client-creation-modal.service';
+import { ClientDetails } from '../../../types/types';
+import { ProjectCreationModalComponent } from '../project-creation-modal/project-creation-modal.component';
 
 @Component({
   selector: 'app-client-creation-modal',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule,],
+  imports: [CommonModule, ReactiveFormsModule, ProjectCreationModalComponent],
   templateUrl: './client-creation-modal.component.html',
   styleUrl: './client-creation-modal.component.css'
 })
-export class ClientCreationModalComponent implements OnInit{
+export class ClientCreationModalComponent implements OnInit {
   @Input() isOpen = true;
+  @Output() clientCreated: EventEmitter<ClientDetails> = new EventEmitter()
+
+
+
   formData: FormGroup;
   loading = false;
   success = false;
   error = false;
-  errorMessages: { roles?: string; email?: string } = {};
+  errorMessage: string = '';
+  successMessage: string = '';
+  nullFormControlMessage: string = '';
+  formInvalidMessage: string = '';
 
   constructor(
-    private router: Router,
+
     private clientcreationService: ClientCreationModalService,
 
     private fb: FormBuilder,
-    private modalService: NgbModal,
 
-  ){
+
+
+  ) {
     this.formData = this.fb.group({
       details: [''],
       name: [''],
@@ -43,46 +49,64 @@ export class ClientCreationModalComponent implements OnInit{
     });
   }
 
-  OnCreateClient(){
+  clearErrorMessagesAfterDelay() {
+    setTimeout(() => {
+      this.errorMessage = '';
+      this.formInvalidMessage = '';
+      this.nullFormControlMessage = '';
+    }, 3000);
+  }
+
+  onCreateClient() {
     this.loading = false;
     this.success = false;
     this.error = false;
-    this.errorMessages = {};
+
     if (this.formData.valid) {
-      // this.loading = true;
+      this.loading = true;
 
       this.clientcreationService
         .addNewClient(this.formData.value)
         .pipe(
           finalize(() => {
-            // this.loading = false;
+            this.loading = false;
           })
         )
         .subscribe(
-          response => {
-            console.log('Post request successful', response);
-
-            // this.success = true;
+          updatedClients => {
+            this.success = true;
+            this.successMessage = 'Client created successfully!';
+            this.clientCreated.emit(updatedClients.client);
+            this.formData.reset();
           },
           error => {
-            console.error('Error in post request', error);
-
             this.error = true;
-
-            if (error.error && typeof error.error === 'object') {
-              this.errorMessages = error.error;
+            if (error.status >= 500) {
+              this.errorMessage =
+                'Server Error" Something went wrong on the server.';
+            } else {
+              if (error.error && error.error.message) {
+                this.errorMessage = error.error.message;
+              } else {
+                this.errorMessage = 'An unexpected error occured.';
+              }
             }
+            this.clearErrorMessagesAfterDelay();
           }
         );
     } else {
-      console.error('Form is not valid');
+      this.formInvalidMessage = 'Please complete the form or enter valid inputs';
+      this.clearErrorMessagesAfterDelay();
     }
   }
-  closeUsercreationModal() {
+
+
+
+  closeClientcreationModal() {
     this.isOpen = false;
 
   }
-  
+
   ngOnInit(): void {
 
   }

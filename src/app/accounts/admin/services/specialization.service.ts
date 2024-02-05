@@ -1,4 +1,3 @@
-// specialization.service.ts
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -13,47 +12,41 @@ import { specializationResponse } from '../interfaces';
   providedIn: 'root',
 })
 export class SpecializationService {
-   private _specializations: BehaviorSubject<string[]> = new BehaviorSubject<
+  private _specializations: BehaviorSubject<string[]> = new BehaviorSubject<
     string[]
   >([]);
   specializations$ = this._specializations.asObservable();
 
-  constructor(private http: HttpClient, private specializationService: NgbModal) {
+  constructor(
+    private http: HttpClient,
+    private specializationService: NgbModal
+  ) {
     this._specializations.next([]);
   }
 
   openSpecializationModal(): NgbModalRef {
+    const modalRef = this.specializationService.open(
+      SpecializationModalComponent,
+      {
+        centered: true,
+        backdrop: 'static',
+      }
+    );
 
-    const modalRef = this.specializationService.open(SpecializationModalComponent, {
-      centered: true,
-      backdrop: 'static', 
-
-    });
-    
-    modalRef.result.finally(() => {
-     
-    });
+    modalRef.result.finally(() => {});
 
     return modalRef;
-
-
   }
-    
-  
 
-  addSpecialization(specialization: string): Observable<specializationResponse> {
+  addSpecialization(
+    specialization: string
+  ): Observable<specializationResponse> {
     const currentSpecializations = this._specializations.getValue();
-    // const updatedSpecializations = [...currentSpecializations, specialization];
-    // console.log('Updated Specializations:', updatedSpecializations);
-    // this._specializations.next(updatedSpecializations);
 
     return this.http
       .post<any>(`${BASE_URL}/specialization/store`, { name: specialization })
       .pipe(
         catchError(error => {
-          
-          console.error('Error adding specialization to the backend:', error);
-          
           this._specializations.next(currentSpecializations);
 
           return throwError(error);
@@ -72,8 +65,7 @@ export class SpecializationService {
 
       .pipe(
         catchError(error => {
-          console.error('Error fetching specializations:', error);
-          return throwError(error); 
+          return throwError(error);
         })
       );
   }

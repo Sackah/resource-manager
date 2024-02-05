@@ -1,11 +1,5 @@
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 
-/**
- * Custom Validation for checking if a phone number is exactly 10 digits long
- * @param control Base class for FormControl, FormGroup and FormArray
- * @returns {ValidationErrors | null} invalidPhoneNumber if there is an error
- */
-
 export function validPhoneNumber(
   control: AbstractControl
 ): ValidationErrors | null {

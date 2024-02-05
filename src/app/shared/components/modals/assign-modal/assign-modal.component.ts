@@ -3,20 +3,17 @@ import {
   Component,
   EventEmitter,
   Input,
-  OnInit,
   Output,
-  ViewChild,
   AfterViewInit,
-  ElementRef,
 } from '@angular/core';
-import { Projects, User } from '../../../types/types';
+
+import { User, ProjectDetails } from '../../../types/types';
 import { UsersService } from '../../../../accounts/admin/services/users.service';
 import { ChangeDetectorRef } from '@angular/core';
-import { ProjectsService } from '../../../../accounts/admin/services/projects.service';
 import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'assign-modal',
+  selector: 'app-assign-modal',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './assign-modal.component.html',
@@ -25,6 +22,7 @@ import { FormsModule } from '@angular/forms';
 export class AssignModalComponent implements AfterViewInit {
   @Input() user!: User;
   @Input() users: User[] = [];
+  @Input() project!: ProjectDetails;
   opening: boolean = false;
   closed: boolean = false;
   loading: boolean = false;
@@ -33,117 +31,114 @@ export class AssignModalComponent implements AfterViewInit {
   query: string = '';
   successMessage: string | null = null;
   errorMessage: string | null = null;
-  selectedProject: string = '';
-  projects: Projects[] = [];
+  response: string | null = null;
+  isSubmitting: boolean = false;
+  checkedUsers: { [userId: string]: boolean } = {};
 
-  @Output() closeAssignEvent = new EventEmitter<void>();
+  @Output() closeEvent = new EventEmitter<void>();
   @Output() submitEvent = new EventEmitter<void>();
-  @ViewChild('projectNameInput', { static: false })
-  @Output()
   selectedUsersEvent = new EventEmitter<User[]>();
-  projectNameInput!: ElementRef<HTMLInputElement>;
-  selectedUsers: any;
+  selectedUsers: User[] = [];
 
   constructor(
     private usersService: UsersService,
-    private cdr: ChangeDetectorRef,
-    private projectsService: ProjectsService
+    private cdr: ChangeDetectorRef
   ) {}
+
+  closeErrorMessage(): void {
+    this.errorMessage = null;
+  }
+
+  closeSuccessMessage(): void {
+    this.successMessage = null;
+  }
 
   close() {
     this.closed = true;
-    this.closeAssignEvent.emit();
+    this.closeEvent.emit();
   }
 
   edit() {}
 
+  handleCheck(user: User): void {
+    this.checkedUsers[user.userId] = !this.checkedUsers[user.userId];
+  }
+
   submit(): void {
-    this.submitEvent.emit();
-    this.assignUsersToProject();
-    this.close();
-    this.selectedUsersEvent.emit(
-      this.bookableUsers.filter(user => user.selected)
-    );
+    this.usersService
+      .assignUser(
+        this.project.name,
+        this.bookableUsers
+          .filter(user => user.selected)
+          .map(user => user.userId)
+      )
+      .subscribe({
+        next: (response: any) => {
+          this.successMessage = response.message;
+          setTimeout(() => {
+            this.successMessage = null;
+          }, 3000);
+        },
+        error: (error: any) => {
+          if (error.status >= 500) {
+            this.errorMessage =
+              'Server Error" Something went wrong on the server.';
+          } else {
+            if (error.error && error.error.message) {
+              this.errorMessage = error.error.message;
+            } else {
+              this.errorMessage = 'An unexpected error occured.';
+            }
+          }
+
+          setTimeout(() => {
+            this.errorMessage = null;
+          }, 3000);
+        },
+        complete: () => {
+          this.close();
+          this.isSubmitting = false;
+        },
+      });
   }
 
   ngOnInit(): void {
     setTimeout(() => {
       this.opening = false;
     }, 100);
-    console.log(this.user);
 
-    // this.fetchBookableUsers(this.query);
-    this.fetchProjects();
+    this.fetchBookableUsers(this.query);
   }
 
   ngAfterViewInit(): void {
-    console.log('View has been initialized');
-    // this.fetchBookableUsers(this.query);
+    this.fetchBookableUsers(this.query);
   }
 
   onSearchChange(event: Event): void {
     const query = (event.target as HTMLInputElement).value;
-    // this.fetchBookableUsers(query);
+    this.fetchBookableUsers(query);
   }
 
-  // fetchBookableUsers(query: string): void {
-  //   this.loading = true;
-  //   this.usersService.getBookableUsers(query).subscribe({
-  //     next: (response: any) => {
-  //       const bookableUsers = response.users || response.data;
-  //       if (Array.isArray(bookableUsers)) {
-  //         this.bookableUsers = bookableUsers as User[];
-  //       } else {
-  //         console.log('Invalid bookable users format:', bookableUsers);
-  //       }
-  //     },
-  //     error: error => {
-  //       console.log('Error fetching users:', error);
-  //     },
-  //     complete: () => {
-  //       this.loading = false;
-  //       this.cdr.detectChanges();
-  //     },
-  //   });
-  // }
-
-  private fetchProjects(): void {
-    this.projectsService.fetchProjects().subscribe({
+  fetchBookableUsers(query: string): void {
+    this.loading = true;
+    this.usersService.getBookableUsers(query).subscribe({
       next: (response: any) => {
-        this.projects = response.projects || [];
-        console.log('Fetched projects:', this.projects);
+        const bookableUsers = response.users || response.data;
+        if (Array.isArray(bookableUsers)) {
+          this.bookableUsers = bookableUsers as User[];
+
+          this.bookableUsers.forEach(user => {
+            user.selected = this.checkedUsers[user.userId] || false;
+          });
+        } else {
+        }
       },
       error: error => {
-        console.error('Error fetching projects:', error);
-      },
-      complete: () => {},
-    });
-  }
-
-  private assignUsersToProject(): void {
-    if (!this.projectNameInput || !this.projectNameInput.nativeElement) {
-      console.error('ProjectNameInput is not yet initialized.');
-      return;
-    }
-
-    const projectName = this.projectNameInput.nativeElement.value;
-    const selectedUserId = this.bookableUsers
-      .filter(user => user.selected)
-      .map(user => user.userId);
-
-    this.usersService.assignUser(projectName, selectedUserId).subscribe({
-      next: (response: any) => {
-        this.successMessage = response.message;
-        console.log('Users assigned successfully:', response);
-      },
-      error: (error: any) => {
-        this.errorMessage = error.message;
-        console.error('Error assigning users:', error);
+        error;
       },
       complete: () => {
-        this.selectedUsersEvent.emit(
-          this.bookableUsers.filter(user => user.selected)
-        );
+        this.loading = false;
+        this.cdr.detectChanges();
       },
     });
   }

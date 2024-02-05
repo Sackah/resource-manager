@@ -6,11 +6,12 @@
   <div class="global-formfield-right">
     <div class="global-forms-auth">
       @if (setupProgress === 'password') {
-      <new-password-form [userDetails]="userDetails"></new-password-form>
+      <app-new-password-form
+        [userDetails]="userDetails"></app-new-password-form>
       } @else if (setupProgress === 'details') {
-      <account-setup-form
+      <app-account-setup-form
         [email]="userDetails.email"
-        [userId]="userDetails.userId"></account-setup-form>
+        [userId]="userDetails.userId"></app-account-setup-form>
       }
     </div>
   </div>

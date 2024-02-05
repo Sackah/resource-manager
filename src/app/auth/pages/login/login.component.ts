@@ -18,7 +18,7 @@ import { Subscription } from 'rxjs';
 import { GlobalInputComponent } from '../../../shared/components/global-input/global-input.component';
 
 @Component({
-  selector: 'login',
+  selector: 'app-login',
   standalone: true,
   imports: [
     LoginSideIllustrationComponent,
@@ -40,11 +40,18 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(private store: Store, private router: Router) {}
 
   ngOnInit(): void {
+    this.userLoginForm();
+    this.storeSubscription();
+  }
+
+  public userLoginForm() {
     this.loginForm = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [Validators.required]),
     });
+  }
 
+  public storeSubscription() {
     const storeSubscription = this.store.select(selectLogin).subscribe({
       next: res => {
         this.storeData = res;
