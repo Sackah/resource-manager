@@ -7,6 +7,7 @@ import {
   FormGroup,
   Validators,
   FormControl,
+  FormsModule,
 } from '@angular/forms';
 import { ChangeDetectionStrategy } from '@angular/core';
 import { SettingsService } from '../../../user/services/settings.service';
@@ -15,9 +16,13 @@ import {
   CurrentUser,
   Departments,
   InitialSig,
+  Skills,
   Specializations,
 } from '../../../../shared/types/types';
 import { StarRatingComponent } from '../../../../shared/components/star-rating/star-rating.component';
+import { AuthActions } from '../../../../auth/store/authorization/AuthActions';
+import { AccesstokenService } from '../../../../shared/services/accesstoken.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-work-specialization',
   standalone: true,
@@ -33,7 +38,7 @@ export class WorkSpecializationComponent implements OnInit, OnDestroy {
   departments!: Departments[];
   skills: string[] = [];
   loading = false;
-  enteredSkills: string[] = [];
+  enteredSkills: typeof this.user.skills = [];
   user!: CurrentUser;
   settingsSig = signal<InitialSig>({
     success: null,
@@ -41,20 +46,26 @@ export class WorkSpecializationComponent implements OnInit, OnDestroy {
     pending: false,
   });
 
-  constructor(private store: Store, private settingsService: SettingsService) {}
+  constructor(
+    private store: Store,
+    private settingsService: SettingsService,
+    private tokenService: AccesstokenService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.specializationForm();
     this.storeSubscription();
     this.initializeEnteredSkills();
     this.disableControls();
+    console.log(this.user);
   }
 
   public specializationForm() {
     this.userSpecializationForm = new FormGroup({
       department: new FormControl('', [Validators.required]),
       specialization: new FormControl('', [Validators.required]),
-      skills: new FormControl('', [Validators.required]),
+      skill: new FormControl('', [Validators.required]),
     });
   }
 
@@ -90,13 +101,7 @@ export class WorkSpecializationComponent implements OnInit, OnDestroy {
   }
 
   private initializeEnteredSkills() {
-    const skillsSub = this.settingsService.getUserSkills().subscribe({
-      next: res => {
-        this.enteredSkills = res.map(skill => skill);
-      },
-    });
-
-    this.subscriptions.push(skillsSub);
+    this.enteredSkills = [...this.user.skills];
   }
 
   getSpecializationErrors(): string {
@@ -134,33 +139,25 @@ export class WorkSpecializationComponent implements OnInit, OnDestroy {
     return val;
   }
 
-  addSkill(): void {
-    const enteredSkill = this.userSpecializationForm.get('skills')?.value;
-
-    if (enteredSkill) {
-      this.enteredSkills.push(enteredSkill);
-      this.userSpecializationForm.get('skills')?.reset();
-    }
+  public refetchSkills() {
+    this.tokenService.set(this.router.url, 'lastRoute');
+    this.store.dispatch(AuthActions.fetchCurrentUser());
+    this.initializeEnteredSkills();
+    this.userSpecializationForm.get('skill')?.reset();
   }
 
-  removeSkill(skill: string): void {
-    const index = this.enteredSkills.indexOf(skill);
-    if (index !== -1) {
-      // Remove skill from the enteredSkills array
-      this.enteredSkills.splice(index, 1);
-
-      // Call the deleteSkill service to remove the skill
-      this.settingsService.deleteSkill(skill).subscribe({
-        next: response => {
-          // Handle the response if needed
-          console.log(response);
-        },
-        error: error => {
-          // Handle the error if needed
-          console.error(error);
-        },
-      });
-    }
+  removeSkill(skill: { name: Skills; id: number }): void {
+    this.settingsService.deleteSkill(skill.id).subscribe({
+      next: response => {
+        this.refetchSkills();
+        console.log(response);
+      },
+      error: error => {
+        this.refetchSkills();
+        // Handle the error if needed
+        console.error(error);
+      },
+    });
   }
 
   submitForm(event: Event) {
@@ -180,11 +177,12 @@ export class WorkSpecializationComponent implements OnInit, OnDestroy {
       department: this.userSpecializationForm.get('department')?.value || '',
       specialization:
         this.userSpecializationForm.get('specialization')?.value || '',
-      skills: this.enteredSkills,
+      skills: [this.userSpecializationForm.get('skill')?.value] || [],
     };
 
     this.settingsService.updateSpecialization(reqBody).subscribe({
       next: response => {
+        this.refetchSkills();
         if (response && response.message) {
           this.settingsSig.set({
             success: response,
@@ -202,6 +200,7 @@ export class WorkSpecializationComponent implements OnInit, OnDestroy {
         }
       },
       error: error => {
+        this.refetchSkills();
         this.settingsSig.set({
           success: null,
           error: error.errors,

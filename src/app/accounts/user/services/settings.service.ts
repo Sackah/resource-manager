@@ -62,14 +62,15 @@ export class SettingsService {
       .pipe(catchError((error: HttpErrorResponse) => this.onError(error)));
   }
 
-  deleteSkill(skill: string): Observable<GenericResponse> {
+  deleteSkill(skillId: number): Observable<GenericResponse> {
+    console.log(skillId);
     return this.http.delete<GenericResponse>(`${BASE_URL}/skills/delete`, {
       headers: {
         'Content-Type': 'application/json',
         'ngrok-skip-browser-warning': 'skip-browser-warning',
       },
-      params: {
-        skill,
+      body: {
+        skills_id: skillId,
       },
     });
   }

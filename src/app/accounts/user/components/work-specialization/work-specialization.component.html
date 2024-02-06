@@ -47,10 +47,10 @@
         <div class="skills-container">
           <input
             class="input-settings"
-            formControlName="skills"
+            formControlName="skill"
             placeholder="Enter skill, rate and add" />
 
-          <button (click)="addSkill()">Add</button>
+          <button type="submit">Add</button>
         </div>
       </div>
     </div>
@@ -58,8 +58,8 @@
   <div class="separator"></div>
   <label class="text-added-skill">Added skills </label>
   <div class="skill-cards-container">
-    <div class="skill-card" *ngFor="let skill of enteredSkills">
-      {{ skill }}
+    <div class="skill-card" *ngFor="let skill of user.skills">
+      {{ skill.name }}
 
       <input type="hidden" name="skills[]" value="{{ skill }}" />
       <button (click)="removeSkill(skill)">

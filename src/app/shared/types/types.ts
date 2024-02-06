@@ -29,7 +29,10 @@ export type CurrentUser = {
   permissions?: Permisions;
   department: Departments;
   specializations: Specializations[];
-  skills: Skills[];
+  skills: {
+    name: Skills;
+    id: number;
+  }[];
   bookable: boolean;
   created_at: string;
   selected?: boolean;
