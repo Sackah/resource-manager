@@ -3,14 +3,17 @@ h4 {
   font-size: 1rem;
   font-weight: 400;
   margin-bottom: 6px;
+  margin-left: 20px;
 }
 
 p {
   margin-bottom: 12px;
+  margin-left: 20px;
 }
 
 label {
   margin-bottom: 4px;
+  margin-left: 20px;
 }
 
 p,
@@ -83,7 +86,6 @@ label:not(.visibly-hidden) {
 .message-container {
   position: fixed;
   top: 20%;
-  /* left: 80%; */
   right: -2%;
   transform: translate(-50%, -50%);
   text-align: center;

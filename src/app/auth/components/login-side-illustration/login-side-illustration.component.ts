@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'login-side-illustration',
+  selector: 'app-login-side-illustration',
   standalone: true,
   imports: [],
   templateUrl: './login-side-illustration.component.html',

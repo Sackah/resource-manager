@@ -8,11 +8,11 @@ import { SideNavComponent } from '../../shared/components/side-nav/side-nav.comp
   selector: 'app-main',
   standalone: true,
   imports: [CommonModule, RouterOutlet, HeaderComponent, SideNavComponent],
-  template: `<div>
+  template: `
     <app-side-nav userRole="user"></app-side-nav>
     <app-header></app-header>
 
     <router-outlet></router-outlet>
-  </div>`,
+  `,
 })
 export class MainComponent {}

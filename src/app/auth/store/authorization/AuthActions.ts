@@ -1,15 +1,14 @@
 import { createActionGroup, props, emptyProps } from '@ngrx/store';
-import { CurrentUser } from '../../../shared/types/types';
 import {
   AuthErrorResponse,
   LoginUserDetails,
   LoginUserResponse,
-  UpdateUserDetails,
   UpdateUserDetailsError,
   UpdateUserDetailsResponse,
   UpdateUserPasswordDetails,
   UpdateUserPasswordError,
   UpdateUserPasswordResponse,
+  UpdateUserDetails,
 } from '../../types/auth-types';
 
 export const AuthActions = createActionGroup({

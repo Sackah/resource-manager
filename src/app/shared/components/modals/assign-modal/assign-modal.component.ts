@@ -5,39 +5,72 @@ import {
   Input,
   Output,
   AfterViewInit,
+  ChangeDetectorRef,
 } from '@angular/core';
-
-import { User, ProjectDetails } from '../../../types/types';
+import {
+  FormControl,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+  FormsModule,
+} from '@angular/forms';
+import { User, ProjectDetails, UsersResponse } from '../../../types/types';
 import { UsersService } from '../../../../accounts/admin/services/users.service';
-import { ChangeDetectorRef } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-assign-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './assign-modal.component.html',
   styleUrl: './assign-modal.component.css',
 })
 export class AssignModalComponent implements AfterViewInit {
   @Input() user!: User;
+
   @Input() users: User[] = [];
+
+  assignForm: FormGroup = new FormGroup({
+    workHours: new FormControl('', [Validators.required]),
+  });
+
   @Input() project!: ProjectDetails;
-  opening: boolean = false;
-  closed: boolean = false;
-  loading: boolean = false;
-  bookableUsers: User[] = [];
-  searchQuery: string = '';
-  query: string = '';
-  successMessage: string | null = null;
-  errorMessage: string | null = null;
-  response: string | null = null;
-  isSubmitting: boolean = false;
-  checkedUsers: { [userId: string]: boolean } = {};
+
+  private opening = false;
+
+  private closed = false;
+
+  public loading = false;
+
+  public bookableUsers: User[] = [];
+
+  public searchQuery = '';
+
+  public hoursDropDownOpen = false;
+
+  public selectedHours = '';
+
+  public query = '';
+
+  public successMessage: string | null = null;
+
+  public errorMessage: string | null = null;
+
+  public response: string | null = null;
+
+  public isSubmitting = false;
+
+  public workHours = 0;
+
+  public workDay: Date = new Date();
+
+  checkedUsers: { [refId: string]: boolean } = {};
 
   @Output() closeEvent = new EventEmitter<void>();
+
   @Output() submitEvent = new EventEmitter<void>();
+
   selectedUsersEvent = new EventEmitter<User[]>();
+
   selectedUsers: User[] = [];
 
   constructor(
@@ -45,11 +78,11 @@ export class AssignModalComponent implements AfterViewInit {
     private cdr: ChangeDetectorRef
   ) {}
 
-  closeErrorMessage(): void {
+  public closeErrorMessage(): void {
     this.errorMessage = null;
   }
 
-  closeSuccessMessage(): void {
+  public closeSuccessMessage(): void {
     this.successMessage = null;
   }
 
@@ -58,79 +91,89 @@ export class AssignModalComponent implements AfterViewInit {
     this.closeEvent.emit();
   }
 
-  edit() {}
+  public handleCheck(user: User): void {
+    this.checkedUsers[user.refId] = !this.checkedUsers[user.refId];
+  }
 
-  handleCheck(user: User): void {
-    this.checkedUsers[user.userId] = !this.checkedUsers[user.userId];
+  public toggleHoursDropdown() {
+    this.hoursDropDownOpen = !this.hoursDropDownOpen;
+  }
+
+  public hoursDropdown() {
+    this.hoursDropDownOpen = false;
+  }
+
+  public selectHour(hour: string) {
+    const workHoursControl = this.assignForm.get('workHours');
+    if (workHoursControl) {
+      workHoursControl.setValue(hour);
+      this.selectedHours = hour;
+      this.hoursDropdown;
+    }
   }
 
   submit(): void {
-    this.usersService
-      .assignUser(
-        this.project.name,
-        this.bookableUsers
-          .filter(user => user.selected)
-          .map(user => user.userId)
-      )
-      .subscribe({
-        next: (response: any) => {
-          this.successMessage = response.message;
-          setTimeout(() => {
-            this.successMessage = null;
-          }, 3000);
-        },
-        error: (error: any) => {
-          if (error.status >= 500) {
-            this.errorMessage =
-              'Server Error" Something went wrong on the server.';
-          } else {
-            if (error.error && error.error.message) {
+    if (this.assignForm.valid) {
+      const workHours = this.assignForm.get('workHours')?.value;
+      this.usersService
+        .assignUser(
+          this.project.name,
+          this.bookableUsers
+            .filter(user => user.selected)
+            .map(user => user.refId),
+          workHours
+        )
+        .subscribe({
+          next: response => {
+            this.successMessage = response.message;
+            setTimeout(() => {
+              this.successMessage = null;
+            }, 3000);
+          },
+          error: error => {
+            if (error.status >= 500) {
+              this.errorMessage =
+                'Server Error" Something went wrong on the server.';
+            } else if (error.error && error.error.message) {
               this.errorMessage = error.error.message;
             } else {
               this.errorMessage = 'An unexpected error occured.';
             }
-          }
 
-          setTimeout(() => {
-            this.errorMessage = null;
-          }, 3000);
-        },
-        complete: () => {
-          this.close();
-          this.isSubmitting = false;
-        },
-      });
-  }
-
-  ngOnInit(): void {
-    setTimeout(() => {
-      this.opening = false;
-    }, 100);
-
-    this.fetchBookableUsers(this.query);
+            setTimeout(() => {
+              this.errorMessage = null;
+            }, 3000);
+          },
+          complete: () => {
+            this.close();
+            this.isSubmitting = false;
+          },
+        });
+    }
   }
 
   ngAfterViewInit(): void {
     this.fetchBookableUsers(this.query);
   }
 
-  onSearchChange(event: Event): void {
+  public onSearchChange(event: Event): void {
     const query = (event.target as HTMLInputElement).value;
     this.fetchBookableUsers(query);
   }
 
-  fetchBookableUsers(query: string): void {
+  private fetchBookableUsers(query: string): void {
     this.loading = true;
     this.usersService.getBookableUsers(query).subscribe({
-      next: (response: any) => {
-        const bookableUsers = response.users || response.data;
+      next: (response: UsersResponse) => {
+        const bookableUsers = response.users || [];
         if (Array.isArray(bookableUsers)) {
           this.bookableUsers = bookableUsers as User[];
 
           this.bookableUsers.forEach(user => {
-            user.selected = this.checkedUsers[user.userId] || false;
+            user.selected = this.checkedUsers[user.refId] || false;
           });
         } else {
+          this.errorMessage = 'Error retrieving users. Please try again later.';
         }
       },
       error: error => {
@@ -145,17 +188,17 @@ export class AssignModalComponent implements AfterViewInit {
 
   get modalClasses() {
     return {
-      [`modal`]: true,
-      [`opening`]: this.opening,
-      [`closed`]: this.closed,
+      modal: true,
+      opening: this.opening,
+      closed: this.closed,
     };
   }
 
   get backdropClasses() {
     return {
-      [`backdrop`]: true,
-      [`opening`]: this.opening,
-      [`closed`]: this.closed,
+      backdrop: true,
+      opening: this.opening,
+      closed: this.closed,
     };
   }
 }

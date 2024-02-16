@@ -8,10 +8,9 @@ describe('SpecializationModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SpecializationModalComponent]
-    })
-    .compileComponents();
-    
+      imports: [SpecializationModalComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(SpecializationModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

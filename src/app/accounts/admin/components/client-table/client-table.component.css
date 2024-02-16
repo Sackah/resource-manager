@@ -18,6 +18,20 @@
   border-radius: 10px;
 }
 
+.border {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  margin-top: -11px;
+  justify-content: center;
+  align-items: center;
+}
+
+.actions-btn {
+  margin-top: -40px;
+  margin-left: 5px;
+}
+
 .alert-error {
   padding: 10px;
   border: 1.5px solid #71192f;

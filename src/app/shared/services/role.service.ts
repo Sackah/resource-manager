@@ -7,6 +7,7 @@ import { selectCurrentUser } from '../../auth/store/authorization/AuthReducers';
 })
 export class RoleService implements OnDestroy {
   private role!: 'Basic User' | 'Administrator' | 'Manager';
+
   userDetail$ = this.store.select(selectCurrentUser);
 
   constructor(private store: Store) {}
@@ -14,7 +15,7 @@ export class RoleService implements OnDestroy {
   userSubscription = this.userDetail$.subscribe({
     next: userDetails => {
       if (userDetails) {
-        this.role = userDetails.roles;
+        this.role = userDetails.role;
       }
     },
   });

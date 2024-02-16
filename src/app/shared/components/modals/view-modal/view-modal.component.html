@@ -12,7 +12,6 @@
           <p>{{ user.email }}</p>
         </section>
       </div>
-      <p>Edit</p>
     </div>
   </header>
   <hr />
@@ -39,26 +38,21 @@
         {{ specialization.value }}
       </div>
       <div class="key">User Role</div>
-      <div class="value">{{ user.roles }}</div>
+      <div class="value">{{ user.role }}</div>
       <div class="key">Phone Number</div>
       <div class="value">{{ user.phoneNumber }}</div>
-      <div class="key">Skill</div>
 
-      <div class="value" *ngFor="let skill of user.skills[0] | keyvalue">
-        {{ skill.value }}
-      </div>
       <div class="key">Bookable</div>
       <div class="value" style="text-transform: capitalize">
         {{ user.bookable }}
       </div>
       <div class="key">Assigned Project</div>
-      <div
-        class="value"
-        *ngFor="let assignProject of user.project[0] | keyvalue">
+      <div class="value" *ngFor="let assignProject of user.project | keyvalue">
         {{ assignProject.value }}
       </div>
+
       <div class="key">Assigned Client</div>
-      <div class="value" *ngFor="let assignClient of user.client[0] | keyvalue">
+      <div class="value" *ngFor="let assignClient of user.client | keyvalue">
         {{ assignClient.value }}
       </div>
       <div class="key">Location</div>
@@ -67,11 +61,71 @@
       <div class="value">{{ user.timeZone }}</div>
       <div class="key">Created At</div>
       <div class="value">{{ user.created_at }}</div>
+      <div class="key">
+        Skill
+        <div class="card" *ngFor="let skill of user.skills[0] | keyvalue">
+          <p>{{ skill.value }}</p>
+        </div>
+      </div>
     </div>
     } @else if (display === 'normal-avaliability') {
-    <div>
-      <h5>Weeky total: 168h</h5>
+    <div
+      *ngIf="user.workHours && user.workHours.length > 0; else noAvailability">
+      <div>
+        <h5>Total work hours {{ getTotalHours() }}h</h5>
+      </div>
+      <div class="project-list">
+        <div *ngFor="let project of user.project; index as i">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 10px;
+              margin-top: 10px;
+              color: #3d4a5c;
+            ">
+            <h1>{{ project.name }}</h1>
+            <p class="badge" (click)="openEditAvailabilityModal(user, project)">
+              Edit
+            </p>
+          </div>
+          <table>
+            <thead
+              style="
+                background: #f9fafb;
+                font-size: 12px;
+                color: #3d4a5c;
+                border-right: 0.712px solid #d7dfe9;
+              ">
+              <tr>
+                <th>MON</th>
+                <th>TUE</th>
+                <th>WED</th>
+                <th>THURS</th>
+                <th>FRI</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background: #d7dfe9">
+                <td colspan="5">{{ user.workHours[i].hour }} HOURS/DAY</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
+    <ng-template #noAvailability>
+      <div
+        style="
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100%;
+        ">
+        No normal availability for this user
+      </div>
+    </ng-template>
     }
   </main>
 </div>

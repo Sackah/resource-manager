@@ -7,12 +7,12 @@ import { Router } from '@angular/router';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './main.component.html',
-  styleUrl: './main.component.css'
+  styleUrl: './main.component.css',
 })
 export class MainComponent {
   constructor(private router: Router) {}
+
   openUserCreationForm() {
     this.router.navigate(['/admin/create-user']);
   }
-
 }

@@ -7,27 +7,25 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { passwordMatchValidator } from '@app/auth/validators/passwordmismatch';
+import { ResetActions } from '@app/auth/store/reset-password/ResetActions';
+import { GlobalInputComponent } from '@app/shared/components/global-input/global-input.component';
 import {
   InputFields,
   ResetToggleService,
 } from '../../services/reset-toggle.service';
-import { passwordMatchValidator } from '../../validators/passwordmismatch';
-import { Store } from '@ngrx/store';
 import {
   ResetPasswordResponse,
   SendOtpResponse,
+  ResetPasswordRequest,
+  ResetPasswordError,
 } from '../../types/reset-types';
 import {
   selectError,
   selectResponse,
 } from '../../store/reset-password/ResetReducers';
-import { ResetActions } from '../../store/reset-password/ResetActions';
-import {
-  ResetPasswordRequest,
-  ResetPasswordError,
-} from '../../types/reset-types';
-import { Subscription } from 'rxjs';
-import { GlobalInputComponent } from '../../../shared/components/global-input/global-input.component';
 
 @Component({
   selector: 'app-reset-password-form',
@@ -42,14 +40,35 @@ import { GlobalInputComponent } from '../../../shared/components/global-input/gl
   styleUrls: ['./reset-password-form.component.css', '../../styles/styles.css'],
 })
 export class ResetPasswordFormComponent implements OnInit, OnDestroy {
-  resetPasswordForm!: FormGroup;
+  resetPasswordForm: FormGroup = new FormGroup(
+    {
+      password: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/),
+      ]),
+      password_confirmation: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8),
+      ]),
+    },
+    {
+      validators: passwordMatchValidator('password', 'password_confirmation'),
+    }
+  );
+
   subscriptions: Subscription[] = [];
+
   nextFormField!: InputFields;
-  showPassword: boolean = false;
+
+  showPassword = false;
+
   showConfirmPassword: boolean = false;
-  passwordStrength!: 'weak' | 'medium' | 'strong' | '';
+
   resBody!: ResetPasswordResponse | SendOtpResponse | null;
+
   successMessage!: string | undefined;
+
   errors!: ResetPasswordError;
 
   constructor(
@@ -59,27 +78,7 @@ export class ResetPasswordFormComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.passwordResetForm();
     this.storeSubscription();
-  }
-
-  public passwordResetForm() {
-    this.resetPasswordForm = new FormGroup(
-      {
-        password: new FormControl('', [
-          Validators.required,
-          Validators.minLength(8),
-          Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/),
-        ]),
-        password_confirmation: new FormControl('', [
-          Validators.required,
-          Validators.minLength(8),
-        ]),
-      },
-      {
-        validators: passwordMatchValidator('password', 'password_confirmation'),
-      }
-    );
   }
 
   public storeSubscription() {
@@ -112,21 +111,23 @@ export class ResetPasswordFormComponent implements OnInit, OnDestroy {
     return this.showConfirmPassword ? 'text' : 'password';
   }
 
-  getPasswordErrors() {
+  public getPasswordErrors() {
     const control = this.resetPasswordForm.get('password');
     if (control?.invalid && (control.dirty || control.touched)) {
       if (control.hasError('required')) {
         return "Password can't be empty";
-      } else if (control.hasError('pattern')) {
+      }
+      if (control.hasError('pattern')) {
         return 'Password must have at least one uppercase, one lowercase and a number';
-      } else if (control.hasError('minlength')) {
+      }
+      if (control.hasError('minlength')) {
         return 'Password must be at least 8 characters';
       }
     }
     return '';
   }
 
-  getConfirmPasswordErrors() {
+  public getConfirmPasswordErrors() {
     const control = this.resetPasswordForm;
     if (control?.invalid && (control.dirty || control.touched)) {
       if (control.hasError('passwordMismatch')) {
@@ -147,24 +148,7 @@ export class ResetPasswordFormComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  updatePasswordStrength() {
-    const passwordControl = this.resetPasswordForm.get('password');
-    if (passwordControl?.errors?.['passwordStrength']) {
-      this.passwordStrength = passwordControl.errors['passwordStrength'];
-    } else {
-      this.passwordStrength = 'strong';
-    }
-  }
-
-  get cssClasses() {
-    return {
-      weak: this.passwordStrength === 'weak',
-      medium: this.passwordStrength === 'medium',
-      strong: this.passwordStrength === 'strong',
-    };
-  }
-
-  toggleShowPassword() {
+  public toggleShowPassword() {
     this.showPassword = !this.showPassword;
   }
 
@@ -172,7 +156,7 @@ export class ResetPasswordFormComponent implements OnInit, OnDestroy {
     event.preventDefault();
     const credentials = this.resetPasswordForm.value;
     const otp = (this.resBody as SendOtpResponse).OTP;
-    const email = (this.resBody as SendOtpResponse).user.email;
+    const { email } = (this.resBody as SendOtpResponse).user;
 
     const requestBody: ResetPasswordRequest = {
       ...credentials,

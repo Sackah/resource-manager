@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router } from '@angular/router';
-import { AccesstokenService } from './shared/services/accesstoken.service';
-import { CurrentUserService } from './auth/services/current-user.service';
-import { AuthActions } from './auth/store/authorization/AuthActions';
 import { Store } from '@ngrx/store';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CdkMenuModule } from '@angular/cdk/menu';
+import { AuthActions } from './auth/store/authorization/AuthActions';
+import { AccesstokenService } from './shared/services/accesstoken.service';
 
 @Component({
   selector: 'app-root',
@@ -15,7 +14,7 @@ import { CdkMenuModule } from '@angular/cdk/menu';
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit, OnDestroy {
-  isFetching: boolean = false;
+  title = 'resource-manager';
 
   constructor(
     private tokenService: AccesstokenService,

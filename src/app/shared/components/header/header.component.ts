@@ -1,11 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SearchComponent } from '../search/search.component';
 import { CdkMenuModule } from '@angular/cdk/menu';
+import { SearchComponent } from '../search/search.component';
 import { NotificationsService } from '../../services/notifications.service';
-import { UserNotifications, User } from '../../types/types';
+import { UserNotifications } from '../../types/types';
 import { CurrentUserService } from '../../../auth/services/current-user.service';
+
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -15,10 +16,15 @@ import { CurrentUserService } from '../../../auth/services/current-user.service'
 })
 export class HeaderComponent implements OnInit {
   query: string = '';
+
   notifications: UserNotifications[] = [];
+
   isOnline: boolean = navigator.onLine;
+
   hasNewNotifications: boolean = false;
+
   userName: string = '';
+
   userEmail: string = '';
 
   constructor(
@@ -39,7 +45,7 @@ export class HeaderComponent implements OnInit {
 
   private fetchUserName() {
     this.currentUserService.get().subscribe(
-      (response: any) => {
+      response => {
         const currentUser = response.user;
         this.userName = `${currentUser.firstName} ${currentUser.lastName}`;
         this.userEmail = `${currentUser.email}`;
@@ -50,11 +56,9 @@ export class HeaderComponent implements OnInit {
     );
   }
 
-  performSearch() {}
-
   private fetchNotifications() {
-    this.notificationService.getNotifications().subscribe(
-      (response: any) => {
+    this.notificationService.getNotifications().subscribe({
+      next: (response: any) => {
         const notifications = response.notifications || response.data;
         if (Array.isArray(notifications)) {
           this.notifications = notifications as UserNotifications[];
@@ -62,18 +66,18 @@ export class HeaderComponent implements OnInit {
           notifications;
         }
       },
-      error => {
+      error: error => {
         error;
-      }
-    );
+      },
+    });
   }
 
   markAllAsRead() {
     this.currentUserService.get().subscribe(
-      (response: any) => {
+      response => {
         const currentUser = response.user;
         this.notificationService.markAllAsRead(currentUser.email).subscribe(
-          (markAsReadResponse: any) => {
+          markAsReadResponse => {
             markAsReadResponse;
 
             this.fetchNotifications();

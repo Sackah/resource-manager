@@ -4,8 +4,6 @@ import { Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class AccesstokenService {
-  constructor() {}
-
   get(key: string = 'accessToken'): unknown {
     try {
       const item = localStorage.getItem(key);
@@ -18,12 +16,16 @@ export class AccesstokenService {
   set(data: unknown, key: string = 'accessToken') {
     try {
       localStorage.setItem(key, JSON.stringify(data));
-    } catch (error) {}
+    } catch (error) {
+      error;
+    }
   }
 
   clear(key: string = 'accessToken') {
     try {
       localStorage.removeItem(key);
-    } catch (error) {}
+    } catch (error) {
+      error;
+    }
   }
 }

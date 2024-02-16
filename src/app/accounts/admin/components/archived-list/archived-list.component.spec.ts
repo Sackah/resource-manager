@@ -8,10 +8,8 @@ describe('ArchivedListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ArchivedListComponent]
-    })
-    .compileComponents();
-    
+      imports: [ArchivedListComponent],
+    }).compileComponents();
     fixture = TestBed.createComponent(ArchivedListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

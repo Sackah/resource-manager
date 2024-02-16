@@ -76,25 +76,26 @@
               class="dropdown-container"
               *ngIf="showDropdownForClient === client">
               <ul class="dropdown-details-container">
-                <li>Edit</li>
+                <li (click)="openEditClientModal(client)">Edit</li>
                 <li (click)="openClientsDetails(client)">View</li>
                 <li (click)="archiveClient(client)">Archive</li>
                 <li>Assign</li>
               </ul>
             </div>
-
-            <button class="actions-btn" (click)="toggleDropdown(client)">
-              <div class="actions-dot">
-                <img src="assets/images/user/dots-v.svg" alt="dots" />
-              </div>
-            </button>
+            <div class="border">
+              <button class="actions-btn" (click)="toggleDropdown(client)">
+                <div class="actions-dot">
+                  <img src="assets/images/user/dots-v.svg" alt="dots" />
+                </div>
+              </button>
+            </div>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
-  <pagination
+  <app-pagination
     [currentPage]="currentPage"
     [totalPages]="totalPages"
-    (pageChange)="onPageChange($event)"></pagination>
+    (pageChange)="onPageChange($event)"></app-pagination>
 </ng-template>

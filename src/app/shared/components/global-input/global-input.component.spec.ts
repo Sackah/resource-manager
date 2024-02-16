@@ -8,10 +8,9 @@ describe('GlobalInputComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GlobalInputComponent]
-    })
-    .compileComponents();
-    
+      imports: [GlobalInputComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(GlobalInputComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

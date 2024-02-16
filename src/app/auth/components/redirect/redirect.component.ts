@@ -1,24 +1,25 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { selectCurrentUser } from '../../store/authorization/AuthReducers';
 import { Subscription } from 'rxjs';
+import { selectCurrentUser } from '@app/auth/store/authorization/AuthReducers';
 
 @Component({
   selector: 'app-redirect',
   standalone: true,
   imports: [],
-  template: ``,
+  template: '',
 })
 export class RedirectComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
+
   constructor(private router: Router, private store: Store) {}
 
   ngOnInit(): void {
     const storeSub = this.store.select(selectCurrentUser).subscribe({
       next: user => {
         if (user) {
-          switch (user.roles) {
+          switch (user.role) {
             case 'Basic User':
               this.router.navigateByUrl('/user/dashboard');
               break;

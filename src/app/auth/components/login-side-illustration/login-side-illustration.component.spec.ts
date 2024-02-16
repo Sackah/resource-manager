@@ -8,10 +8,9 @@ describe('LoginSideIllustrationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LoginSideIllustrationComponent]
-    })
-    .compileComponents();
-    
+      imports: [LoginSideIllustrationComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(LoginSideIllustrationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

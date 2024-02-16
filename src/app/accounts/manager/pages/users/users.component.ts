@@ -1,5 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
+import { ActiveUsersComponent } from '@app/accounts/admin/components/active-users/active-users.component';
+import { InactiveUsersComponent } from '@app/accounts/admin/components/inactive-users/inactive-users.component';
+import { PendingUsersComponent } from '@app/accounts/admin/components/pending-users/pending-users.component';
 import { UserListComponent } from '../../../admin/components/user-list/user-list.component';
 import { ButtonAssignComponent } from '../../../user/components/button-assign/button-assign.component';
 import { ButtonNewComponent } from '../../../user/components/button-new/button-new.component';
@@ -17,33 +20,65 @@ import { ArchivedListComponent } from '../../../admin/components/archived-list/a
     ButtonNewComponent,
     ManagerUsercreationComponent,
     ArchivedListComponent,
+    ActiveUsersComponent,
+    InactiveUsersComponent,
+    PendingUsersComponent,
   ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',
 })
-export class UsersComponent {
+export class UsersComponent implements AfterViewInit {
   managerUserCreationModalOpen = false;
-  display: 'all' | 'archives' = 'all';
-  closed: boolean = false;
-  opening: boolean = true;
 
-  openManagerUserCreationModal() {
-    this.managerUserCreationModalOpen = true;
-  }
+  public display: 'all' | 'active' | 'inactive' | 'archives' | 'pending' =
+    'all';
 
-  toggleDisplay(view: 'all' | 'archives'): void {
+  private closed: boolean = false;
+
+  private opening = true;
+
+  public toggleDisplay(
+    view: 'all' | 'active' | 'inactive' | 'archives' | 'pending'
+  ): void {
     this.display = view;
   }
 
-  handleAssignModal(selectedUsers: User[]): void {
+  @ViewChild(UserListComponent) UserListComponent?: UserListComponent;
+
+  successMessage: string | null = null;
+
+  ngAfterViewInit(): void {
+    if (this.UserListComponent) {
+      this.UserListComponent.fetchUsers();
+    }
+  }
+
+  public updateUsers(): void {
+    if (this.UserListComponent) {
+      this.UserListComponent.fetchUsers();
+      this.successMessage = 'User created successfully!';
+
+      this.managerUserCreationModalOpen = false;
+
+      setTimeout(() => {
+        this.successMessage = null;
+      }, 3000);
+    }
+  }
+
+  public openManagerUserCreationModal() {
+    this.managerUserCreationModalOpen = true;
+  }
+
+  static handleAssignModal(selectedUsers: User[]): void {
     selectedUsers;
   }
 
   get toggleClasses() {
     return {
-      [`currentview`]: true,
-      [`opening`]: this.opening,
-      [`closed`]: this.closed,
+      currentview: true,
+      opening: this.opening,
+      closed: this.closed,
     };
   }
 }

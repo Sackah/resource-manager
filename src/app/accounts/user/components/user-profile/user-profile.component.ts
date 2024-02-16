@@ -7,17 +7,17 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
-import { SettingsService } from '../../services/settings.service';
-import { Router } from '@angular/router';
-import { validPhoneNumber } from '../../../../auth/validators/invalidphonenumber';
-import { selectCurrentUser } from '../../../../auth/store/authorization/AuthReducers';
 import { Store } from '@ngrx/store';
+import { selectCurrentUser } from '@app/auth/store/authorization/AuthReducers';
+import { validPhoneNumber } from '@app/auth/validators/invalidphonenumber';
 import {
   CurrentUser,
   Departments,
   InitialSig,
   Specializations,
-} from '../../../../shared/types/types';
+  NameType,
+} from '@app/shared/types/types';
+import { SettingsService } from '../../services/settings.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -31,22 +31,44 @@ import {
 })
 export class UserProfileComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
-  userDetails!: FormGroup;
+
+  userDetails: FormGroup = new FormGroup({
+    refId: new FormControl('', [Validators.required]),
+    profilePicture: new FormControl(null),
+    email: new FormControl({ value: '', disabled: true }, [
+      Validators.required,
+      Validators.email,
+    ]),
+    firstName: new FormControl('', [
+      Validators.required,
+      Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
+    ]),
+    lastName: new FormControl('', [
+      Validators.required,
+      Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
+    ]),
+    phoneNumber: new FormControl('', [Validators.required, validPhoneNumber]),
+  });
+
   imgUrl = '../../../../../assets/images/user/profile-container-2.svg';
+
   user!: CurrentUser;
-  disable: boolean = false;
+
+  disable = false;
+
   settingsSig = signal<InitialSig>({
     success: null,
     error: null,
     pending: false,
   });
+
   specializations!: Specializations[];
+
   departments!: Departments[];
 
   constructor(private store: Store, private settingsService: SettingsService) {}
 
   ngOnInit(): void {
-    this.userProfile();
     this.storeSubscription();
   }
 
@@ -63,73 +85,53 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     this.subscriptions.push(storeSub);
   }
 
-  public userProfile() {
-    this.userDetails = new FormGroup({
-      userId: new FormControl('', [Validators.required]),
-      profilePicture: new FormControl(null),
-      email: new FormControl({ value: '', disabled: true }, [
-        Validators.required,
-        Validators.email,
-      ]),
-      firstName: new FormControl('', [
-        Validators.required,
-        Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
-      ]),
-      lastName: new FormControl('', [
-        Validators.required,
-        Validators.pattern('^[a-zA-Z]+( [a-zA-Z]+)*$'),
-      ]),
-      phoneNumber: new FormControl('', [Validators.required, validPhoneNumber]),
-    });
-  }
-
   getEmailErrors(): string {
     const control = this.userDetails.get('email');
-    if (control?.invalid && (control.dirty || control.touched)) {
-      if (control.hasError('required')) {
-        return 'This field is required';
-      } else if (control.hasError('email')) {
-        return 'Please enter a valid email address';
-      }
-    }
-
-    return '';
+    return control?.invalid && (control.dirty || control.touched)
+      ? control.hasError('required')
+        ? 'This field is required'
+        : control.hasError('email')
+        ? 'Please enter a valid email address'
+        : ''
+      : '';
   }
 
-  getNameErrors(name: 'firstName' | 'lastName') {
+  getNameErrors(name: NameType) {
     const control = this.userDetails.get(name);
-    if (control?.invalid && (control.dirty || control.touched)) {
-      if (control.hasError('required')) {
-        return 'This field is required';
-      } else if (control.hasError('pattern')) {
-        return 'Name can only contain letters and one space per word';
-      }
-    }
-
-    return '';
+    return control?.invalid && (control.dirty || control.touched)
+      ? control.hasError('required')
+        ? 'This field is required'
+        : control.hasError('pattern')
+        ? 'Name can only contain letters and one space per word'
+        : ''
+      : '';
   }
 
   getNumberErrors() {
     const control = this.userDetails.get('phoneNumber');
-    if (control?.invalid && (control.dirty || control.touched)) {
-      if (control.hasError('required')) {
-        return 'This field is required';
-      } else if (control.hasError('invalidPhoneNumber')) {
-        return 'Number should be exactly 10 digits without country code';
-      }
-    }
-
-    return '';
+    return control?.invalid && (control.dirty || control.touched)
+      ? control.hasError('required')
+        ? 'This field is required'
+        : control.hasError('invalidPhoneNumber')
+        ? 'The number field should be a valid phone number'
+        : ''
+      : '';
   }
 
-  onFileChange(event: any) {
-    if (event.target?.files.length > 0) {
-      let reader = new FileReader();
-      const file = event.target.files[0];
+  onFileChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) {
+      const reader = new FileReader();
 
-      reader.readAsDataURL(event.target.files[0]);
-      reader.onload = (event: any) => {
-        this.imgUrl = event.target.result;
+      reader.readAsDataURL(target.files[0]);
+      reader.onload = (loadEvent: ProgressEvent<FileReader>) => {
+        if (loadEvent.target?.result) {
+          this.imgUrl = loadEvent.target.result as string;
+          this.userDetails.patchValue({
+            profilePicture: loadEvent.target.result,
+          });
+          this.imgUrl = loadEvent.target.result as string;
+        }
       };
     }
   }
@@ -137,7 +139,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   setValues() {
     if (this.user) {
       this.userDetails.patchValue({
-        userId: this.user.userId,
+        refId: this.user.refId,
         email: this.user.email,
         firstName: this.user.firstName,
         lastName: this.user.lastName,
@@ -164,12 +166,15 @@ export class UserProfileComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const { firstName, lastName, phoneNumber } = this.userDetails.value;
+    const { firstName, lastName, phoneNumber, profilePicture } =
+      this.userDetails.value;
     const reqBody = {
-      userId: this.user.userId,
-      firstName: firstName,
-      lastName: lastName,
-      phoneNumber: phoneNumber,
+      refId: this.user.refId,
+      firstName,
+      lastName,
+      phoneNumber,
+      profilePicture,
+      email: this.user.email,
     };
 
     if (this.userDetails.valid) {

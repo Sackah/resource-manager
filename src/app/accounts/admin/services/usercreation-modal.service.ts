@@ -3,26 +3,17 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { UsercreationComponent } from '../pages/usercreation/usercreation.component';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UsercreationModalService {
-
   constructor(private usercreationmodalService: NgbModal) {}
 
   openUserCreationModal(): NgbModalRef {
-
     const modalRef = this.usercreationmodalService.open(UsercreationComponent, {
       centered: true,
-      backdrop: 'static', 
-
-    });
-    
-    modalRef.result.finally(() => {
-     
+      backdrop: 'static',
     });
 
     return modalRef;
-
-
   }
 }

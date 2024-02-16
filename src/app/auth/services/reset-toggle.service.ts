@@ -8,9 +8,8 @@ export type InputFields = 'email' | 'otp' | 'changePassword';
 })
 export class ResetToggleService {
   private dataSource = new BehaviorSubject<InputFields>('email');
-  data = this.dataSource.asObservable();
 
-  constructor() {}
+  data = this.dataSource.asObservable();
 
   public toggle(data: InputFields) {
     this.dataSource.next(data);

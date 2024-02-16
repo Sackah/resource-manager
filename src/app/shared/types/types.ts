@@ -1,30 +1,23 @@
-// export type Specializations =
-//   | 'Frontend Developer'
-//   | 'Backend Developer'
-//   | 'UI/UX Designer'
-//   | 'DevOps'
-//   | 'Data Scientist'
-//   | 'Software Tester'
-//   | 'Operations';
-
 export type Specializations = {
   name: string;
 };
 
-export type Roles = 'Basic User' | 'Administrator' | 'Manager';
+export type Role = 'Basic User' | 'Administrator' | 'Manager';
 
 export type Departments = 'Service Center' | 'Training Center' | 'Operations';
 
 export type Skills = 'JavaScript' | 'Java' | 'MySQL';
 
+export type NameType = 'firstName' | 'lastName';
+
 export type CurrentUser = {
   email: string;
-  userId: string;
+  refId: string;
   firstName: string;
   lastName: string;
   profilePicture: string;
   phoneNumber: string;
-  roles: Roles;
+  role: Role;
   changePassword: boolean;
   permissions?: Permisions;
   department: Departments;
@@ -32,23 +25,51 @@ export type CurrentUser = {
   skills: {
     name: Skills;
     id: number;
+    rating: number;
   }[];
   bookable: boolean;
+  workHours: {
+    scheduleId: number;
+    hour: number;
+  }[];
+  workDay?: string;
   created_at: string;
   selected?: boolean;
   client: string;
   timeZone: string;
-  project: string;
+  project: { name: string; workHours: number; scheduleId: number }[];
   location: string;
 };
 
-export type AdminUser = Pick<CurrentUser, 'email' | 'department' | 'roles'> & {
+export interface User extends CurrentUser {}
+
+export type ArchivedUsersResponse = {
+  archives: User[];
+};
+
+export type ArchivedProjectsResponse = {
+  archives: ProjectDetails[];
+};
+
+export type UsersResponse = {
+  users: User[];
+};
+
+export interface IPDataResponse {
+  ip: string;
+  city: string;
+  region: string;
+  country_name: string;
+  time_zone: {
+    name: string;
+  };
+}
+
+export type AdminUser = Pick<CurrentUser, 'email' | 'department' | 'role'> & {
   skills: string;
   department: string;
   specializations: string;
 };
-
-export interface User extends CurrentUser {}
 
 export type GenericResponse = {
   success: boolean;
@@ -88,17 +109,6 @@ export interface UserNotifications {
   created_by: string;
   time: string;
   message: string;
-}
-export interface FormDataValue {
-  details: string;
-  name: string;
-  clientId: string;
-  date: Date;
-  startDate: Date;
-  endDate: Date;
-  projectType: string;
-  billable: boolean;
-  projectId: string;
 }
 
 export type Permisions = {

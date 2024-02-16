@@ -1,19 +1,25 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
-import { BASE_URL } from '../../../../environment/config';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { DepartmentModalComponent } from '../../../shared/components/modals/department-modal/department-modal.component';
-import { GenericResponse } from '../../../shared/types/types';
+import { GenericResponse } from '@app/shared/types/types';
+import { DepartmentModalComponent } from '@app/shared/components/modals/department-modal/department-modal.component';
+import { BASE_URL } from 'src/environment/config';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DepartmentService {
+  private headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+    'ngrok-skip-browser-warning': 'skip-browser-warning',
+  });
+
   private _departments: BehaviorSubject<string[]> = new BehaviorSubject<
     string[]
   >([]);
+
   departments$ = this._departments.asObservable();
 
   constructor(private http: HttpClient, private departmentService: NgbModal) {
@@ -26,8 +32,6 @@ export class DepartmentService {
       backdrop: 'static',
     });
 
-    modalRef.result.finally(() => {});
-
     return modalRef;
   }
 
@@ -35,7 +39,9 @@ export class DepartmentService {
     const currentDepartments = this._departments.getValue();
 
     return this.http
-      .post<any>(`${BASE_URL}/department/store`, { name: department })
+      .post<GenericResponse>(`${BASE_URL}/department/store`, {
+        name: department,
+      })
       .pipe(
         catchError(error => {
           this._departments.next(currentDepartments);
@@ -47,16 +53,9 @@ export class DepartmentService {
   getDepartments(): Observable<string[]> {
     return this.http
       .get<string[]>(`${BASE_URL}/department/fetch`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'skip-browser-warning',
-        },
+        headers: this.headers,
       })
-      .pipe(
-        catchError(error => {
-          return throwError(error);
-        })
-      );
+      .pipe(catchError(error => throwError(error)));
   }
 
   setDepartments(departments: string[]) {

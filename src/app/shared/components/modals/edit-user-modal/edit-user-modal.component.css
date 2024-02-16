@@ -64,8 +64,8 @@
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   top: 0;
-  left: 0;
   right: 0;
+  left: 0;
   bottom: 0;
   z-index: 20;
   display: flex;
@@ -113,6 +113,7 @@ h2 {
 
 label {
   display: block;
+  margin-top: 5px;
   margin-bottom: 4px;
   font-size: 12px;
 }
@@ -136,16 +137,6 @@ input[type='file'] {
   pointer-events: all;
 }
 
-/* .profile-picture,
-.name-fields {
-  display: inline-block;
-  vertical-align: top;
-} */
-
-.name-fields {
-  margin-left: 85px;
-}
-
 .name-field {
   display: block;
   width: 100%;
@@ -166,7 +157,7 @@ input[type='file'] {
   display: block;
   width: 100%;
   font-size: 14px;
-  height: 35px;
+  height: 37px;
   background: #fff;
   padding: 10px;
   border-radius: 12px;
@@ -228,7 +219,7 @@ li:hover {
 
 .dropdown-sign {
   position: absolute;
-  top: 200px;
+  top: 240px;
   right: 40px;
   transform: translateY(-50%);
   width: 14px;

@@ -8,10 +8,9 @@ describe('OtpFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [OtpFormComponent]
-    })
-    .compileComponents();
-    
+      imports: [OtpFormComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(OtpFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -8,10 +8,9 @@ describe('ManagerUsercreationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ManagerUsercreationComponent]
-    })
-    .compileComponents();
-    
+      imports: [ManagerUsercreationComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(ManagerUsercreationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

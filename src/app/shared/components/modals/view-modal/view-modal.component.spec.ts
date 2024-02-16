@@ -8,10 +8,9 @@ describe('ViewModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ViewModalComponent]
-    })
-    .compileComponents();
-    
+      imports: [ViewModalComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(ViewModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

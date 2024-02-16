@@ -5,45 +5,55 @@ import {
   OnChanges,
   SimpleChanges,
   ChangeDetectorRef,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 import { FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ProjectCreationModalService } from '../../../../accounts/admin/services/project-creation-modal.service';
-import { ClientCreationModalService } from '../../../../accounts/admin/services/client-creation-modal.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ClientDetails, ProjectDetails } from '../../../types/types';
-import { GlobalInputComponent } from '../../global-input/global-input.component';
 import { debounceTime, distinctUntilChanged, finalize } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
+import { ClientDetails, ProjectDetails } from '../../../types/types';
+import { ClientCreationModalService } from '../../../../accounts/admin/services/client-creation-modal.service';
+import { ProjectCreationModalService } from '../../../../accounts/admin/services/project-creation-modal.service';
 import { ClientCreationModalComponent } from '../client-creation-modal/client-creation-modal.component';
 
 @Component({
   selector: 'app-edit-project-modal',
   standalone: true,
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    ClientCreationModalComponent,
-    GlobalInputComponent,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, ClientCreationModalComponent],
   templateUrl: './edit-project-modal.component.html',
   styleUrls: ['./edit-project-modal.component.css'],
 })
 export class EditProjectModalComponent implements OnInit, OnChanges {
+  @Output() projectEdited: EventEmitter<void> = new EventEmitter<void>();
+
   @Input() isOpen = true;
+
   @Input() project!: ProjectDetails;
 
   clientCreationModalOpen = false;
+
   showClientDropdown = false;
+
   formData: FormGroup;
-  loading = false;
-  success = false;
-  error = false;
-  errorMessages: { serverError?: string } = {};
-  successMessage: string = '';
-  clients: ClientDetails[] = [];
-  filteredClients: ClientDetails[] = [];
-  date: Date | undefined;
-  newClientDetails: ClientDetails = {} as ClientDetails;
+
+  public loading = false;
+
+  public success = false;
+
+  public error = false;
+
+  public errorMessages: { serverError?: string } = {};
+
+  public successMessage = '';
+
+  public clients: ClientDetails[] = [];
+
+  public filteredClients: ClientDetails[] = [];
+
+  public date: Date | undefined;
+
+  public newClientDetails: ClientDetails = {} as ClientDetails;
 
   constructor(
     private projectcreationService: ProjectCreationModalService,
@@ -69,25 +79,21 @@ export class EditProjectModalComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.populateForm();
     this.fetchClients();
-    this.form();
 
-    this.cdr.detectChanges();
-  }
-
-  form() {
     this.formData
       .get('clientSearch')
       ?.valueChanges.pipe(debounceTime(300), distinctUntilChanged())
-      .subscribe(value => this.filterClients());
+      .subscribe(() => this.filterClients());
+    this.cdr.detectChanges();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['project'] && !changes['project'].firstChange) {
+    if (changes.project && !changes.project.firstChange) {
       this.populateForm();
     }
   }
 
-  populateForm(): void {
+  private populateForm(): void {
     if (this.project) {
       this.formData.patchValue({
         details: this.project.details,
@@ -108,7 +114,7 @@ export class EditProjectModalComponent implements OnInit, OnChanges {
     }
   }
 
-  OnEditProject(): void {
+  public OnEditProject(): void {
     this.loading = true;
     this.success = false;
     this.error = false;
@@ -117,23 +123,23 @@ export class EditProjectModalComponent implements OnInit, OnChanges {
     if (this.formData.valid) {
       const formDataValue = this.formData.value;
 
-      const startDate = formDataValue['startDate'];
-      const endDate = formDataValue['endDate'];
+      const { startDate } = formDataValue;
+      const { endDate } = formDataValue;
       const projectStatus = formDataValue['project-status'];
-      const billable = formDataValue['billable'];
+      const { billable } = formDataValue;
 
       const isBillable = billable === true;
 
       this.loading = true;
 
       const projectData = {
-        details: formDataValue['details'],
-        name: formDataValue['name'],
-        client: formDataValue['client'],
-        date: formDataValue['date'],
-        startDate: startDate,
-        endDate: endDate,
-        projectStatus: projectStatus,
+        details: formDataValue.details,
+        name: formDataValue.name,
+        client: formDataValue.client,
+        date: formDataValue.date,
+        startDate,
+        endDate,
+        projectStatus,
         billable: isBillable,
       };
 
@@ -145,23 +151,22 @@ export class EditProjectModalComponent implements OnInit, OnChanges {
           })
         )
         .subscribe(
-          response => {
+          () => {
             this.formData.reset();
             this.success = true;
             this.successMessage = 'Project edited successfully!';
             this.closeEditProjectModal();
+            this.projectEdited.emit();
           },
           error => {
             this.error = true;
             if (error.status >= 500) {
               this.errorMessages.serverError =
                 'Server Error" Something went wrong on the server.';
+            } else if (error.error && error.error.message) {
+              this.errorMessages.serverError = error.error.message;
             } else {
-              if (error.error && error.error.message) {
-                this.errorMessages.serverError = error.error.message;
-              } else {
-                this.errorMessages.serverError = 'An unexpected error occured.';
-              }
+              this.errorMessages.serverError = 'An unexpected error occured.';
             }
             this.formData.markAsTouched();
           }
@@ -180,7 +185,14 @@ export class EditProjectModalComponent implements OnInit, OnChanges {
     this.clientService.openClientCreationModal();
   }
 
-  fetchClients(): void {
+  clearErrorMessagesAfterDelay() {
+    setTimeout(() => {
+      this.successMessage;
+      this.errorMessages.serverError;
+    }, 2500);
+  }
+
+  private fetchClients(): void {
     this.clientService
       .getClients()
       .subscribe((response: { clients: ClientDetails[] }) => {
@@ -206,7 +218,7 @@ export class EditProjectModalComponent implements OnInit, OnChanges {
     this.errorMessages.serverError = errorMessage;
   }
 
-  filterClients(): void {
+  public filterClients(): void {
     const searchTerm = this.formData.get('clientSearch')!.value;
     if (this.clients && Array.isArray(this.clients)) {
       this.filteredClients = this.clients.filter(
@@ -219,7 +231,7 @@ export class EditProjectModalComponent implements OnInit, OnChanges {
     }
   }
 
-  selectClient(client: ClientDetails): void {
+  public selectClient(client: ClientDetails): void {
     if (this.formData.get('clientSearch')) {
       this.formData.get('clientId')!.setValue(client.clientId);
       this.formData.get('clientSearch')!.setValue(client.name);
@@ -227,7 +239,7 @@ export class EditProjectModalComponent implements OnInit, OnChanges {
     }
   }
 
-  handleClientCreated(updatedData: { client: ClientDetails }): void {
+  public handleClientCreated(updatedData: { client: ClientDetails }): void {
     this.clients.push(updatedData.client);
 
     this.filterClients();

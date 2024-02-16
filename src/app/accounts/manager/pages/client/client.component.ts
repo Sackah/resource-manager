@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { ClientCreationModalComponent } from '../../../../shared/components/modals/client-creation-modal/client-creation-modal.component';
-import { ClientTableComponent } from '../../../admin/components/client-table/client-table.component';
-import { ButtonNewComponent } from '../../../user/components/button-new/button-new.component';
-import { ArchivedClientsListComponent } from '../../../admin/components/archived-clients-list/archived-clients-list.component';
+import { ArchivedClientsListComponent } from '@app/accounts/admin/components/archived-clients-list/archived-clients-list.component';
+import { ButtonNewComponent } from '@app/accounts/user/components/button-new/button-new.component';
+import { ClientCreationModalComponent } from '@app/shared/components/modals/client-creation-modal/client-creation-modal.component';
+import { ClientTableComponent } from '@app/accounts/admin/components/client-table/client-table.component';
 
 @Component({
   selector: 'app-client',
@@ -20,9 +20,12 @@ import { ArchivedClientsListComponent } from '../../../admin/components/archived
 })
 export class ClientComponent {
   clientCreationModalOpen = false;
-  display: 'all' | 'archives' = 'all';
-  closed: boolean = false;
-  opening: boolean = true;
+
+  public display: 'all' | 'archives' = 'all';
+
+  public closed = false;
+
+  public opening = true;
 
   toggleDisplay(view: 'all' | 'archives'): void {
     this.display = view;

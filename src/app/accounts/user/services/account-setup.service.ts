@@ -11,8 +11,6 @@ export class AccountSetupService {
 
   data = this.dataSource.asObservable();
 
-  constructor() {}
-
   toggle(data: SetupProgress) {
     this.dataSource.next(data);
   }

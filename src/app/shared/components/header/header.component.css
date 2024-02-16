@@ -71,18 +71,20 @@
   border-radius: 50%;
 }
 
-.alarm-icon {
-  margin: 0 300px;
-}
-
 .profile-container {
   display: flex;
   gap: 20px;
 }
 
-.avatar {
-  position: absolute;
-  right: 26%;
+.icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.profile-container {
+  display: flex;
+  align-items: center;
 }
 
 ::-webkit-scrollbar {

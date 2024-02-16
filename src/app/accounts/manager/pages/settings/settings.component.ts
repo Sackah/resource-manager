@@ -1,15 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy } from '@angular/core';
-import { SideNavComponent } from '../../../../shared/components/side-nav/side-nav.component';
-import { HeaderComponent } from '../../../../shared/components/header/header.component';
+import { Subscription } from 'rxjs';
+import { WorkSpecializationComponent } from '@app/accounts/user/components/work-specialization/work-specialization.component';
+import { UserPasswordComponent } from '@app/accounts/user/components/user-password/user-password.component';
+import { UserProfileComponent } from '@app/accounts/user/components/user-profile/user-profile.component';
+import { HeaderComponent } from '@app/shared/components/header/header.component';
+import { SideNavComponent } from '@app/shared/components/side-nav/side-nav.component';
 import {
   SettingsFields,
   SettingsService,
 } from '../../../user/services/settings.service';
-import { UserProfileComponent } from '../../../user/components/user-profile/user-profile.component';
-import { UserPasswordComponent } from '../../../user/components/user-password/user-password.component';
-import { Subscription } from 'rxjs';
-import { WorkSpecializationComponent } from '../../../user/components/work-specialization/work-specialization.component';
 
 @Component({
   selector: 'app-settings',
@@ -26,8 +26,9 @@ import { WorkSpecializationComponent } from '../../../user/components/work-speci
   styleUrl: './settings.component.css',
 })
 export class SettingsComponent implements OnDestroy {
-  subscriptions: Subscription[] = [];
-  settingsField: SettingsFields = 'profile';
+  public subscriptions: Subscription[] = [];
+
+  public settingsField: SettingsFields = 'profile';
 
   constructor(private settingsService: SettingsService) {
     const settingsSub = this.settingsService.data.subscribe({
@@ -38,7 +39,7 @@ export class SettingsComponent implements OnDestroy {
     this.subscriptions.push(settingsSub);
   }
 
-  changeField($event: Event, field: SettingsFields) {
+  public changeField($event: Event, field: SettingsFields) {
     this.settingsService.toggle(field);
   }
 

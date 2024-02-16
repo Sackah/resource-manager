@@ -7,11 +7,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { Subscription } from 'rxjs';
-import { selectCurrentUser } from '../../../../auth/store/authorization/AuthReducers';
-import { passwordMatchValidator } from '../../../../auth/validators/passwordmismatch';
-import { SettingsService } from '../../services/settings.service';
-import { CurrentUser, InitialSig } from '../../../../shared/types/types';
 import { Store } from '@ngrx/store';
+import { selectCurrentUser } from '@app/auth/store/authorization/AuthReducers';
+import { passwordMatchValidator } from '@app/auth/validators/passwordmismatch';
+import { CurrentUser, InitialSig } from '@app/shared/types/types';
+import { SettingsService } from '../../services/settings.service';
 
 @Component({
   selector: 'app-user-password',
@@ -25,8 +25,11 @@ import { Store } from '@ngrx/store';
 })
 export class UserPasswordComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
+
   private showPassword = false;
+
   private showConfirmPassword = false;
+
   public userPasswordForm: FormGroup = new FormGroup(
     {
       current_password: new FormControl('', [Validators.required]),
@@ -45,7 +48,9 @@ export class UserPasswordComponent implements OnInit, OnDestroy {
       validators: passwordMatchValidator('password', 'password_confirmation'),
     }
   );
+
   private user: CurrentUser | null = null;
+
   private settingsSig = signal<InitialSig>({
     success: null,
     error: null,
@@ -82,9 +87,11 @@ export class UserPasswordComponent implements OnInit, OnDestroy {
     if (control?.invalid && (control.dirty || control.touched)) {
       if (control.hasError('required')) {
         return "Password can't be empty";
-      } else if (control.hasError('pattern')) {
+      }
+      if (control.hasError('pattern')) {
         return 'Password must have at least one uppercase, one lowercase and a number';
-      } else if (control.hasError('minlength')) {
+      }
+      if (control.hasError('minlength')) {
         return 'Password must be at least 8 characters';
       }
     }
@@ -152,7 +159,7 @@ export class UserPasswordComponent implements OnInit, OnDestroy {
       error: error => {
         this.settingsSig.set({
           success: null,
-          error: error,
+          error,
           pending: false,
         });
         setTimeout(() => {

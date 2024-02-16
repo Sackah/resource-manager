@@ -1,20 +1,26 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, throwError, of } from 'rxjs';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { BASE_URL } from '../../../../environment/config';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { SpecializationModalComponent } from '../../../shared/components/modals/specialization-modal/specialization-modal.component';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { BASE_URL } from 'src/environment/config';
+import { SpecializationModalComponent } from '@app/shared/components/modals/specialization-modal/specialization-modal.component';
 
-import { HttpClient } from '@angular/common/http';
 import { specializationResponse } from '../interfaces';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SpecializationService {
+  private headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+    'ngrok-skip-browser-warning': 'skip-browser-warning',
+  });
+
   private _specializations: BehaviorSubject<string[]> = new BehaviorSubject<
     string[]
   >([]);
+
   specializations$ = this._specializations.asObservable();
 
   constructor(
@@ -32,8 +38,6 @@ export class SpecializationService {
         backdrop: 'static',
       }
     );
-
-    modalRef.result.finally(() => {});
 
     return modalRef;
   }
@@ -57,17 +61,10 @@ export class SpecializationService {
   getSpecializations(): Observable<string[]> {
     return this.http
       .get<string[]>(`${BASE_URL}/specialization/fetch`, {
-        headers: {
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'skip-browser-warning',
-        },
+        headers: this.headers,
       })
 
-      .pipe(
-        catchError(error => {
-          return throwError(error);
-        })
-      );
+      .pipe(catchError(error => throwError(error)));
   }
 
   setSpecializations(specializations: string[]) {

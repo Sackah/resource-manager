@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ProjectCreationModalComponent } from '@app/shared/components/modals/project-creation-modal/project-creation-modal.component';
 import { ButtonNewComponent } from '../../../user/components/button-new/button-new.component';
-import { ProjectCreationModalComponent } from '../../../../shared/components/modals/project-creation-modal/project-creation-modal.component';
 import { ProjectTableComponent } from '../../components/project-table/project-table.component';
 import { ArchivedProjectsComponent } from '../../components/archived-projects/archived-projects.component';
+
 @Component({
   selector: 'app-project',
   standalone: true,
@@ -11,29 +13,57 @@ import { ArchivedProjectsComponent } from '../../components/archived-projects/ar
     ProjectCreationModalComponent,
     ProjectTableComponent,
     ArchivedProjectsComponent,
+    CommonModule,
   ],
   templateUrl: './project.component.html',
   styleUrl: './project.component.css',
 })
-export class ProjectComponent {
-  projectCreationModalOpen = false;
-  display: 'all' | 'archives' = 'all';
-  closed: boolean = false;
-  opening: boolean = true;
+export class ProjectComponent implements AfterViewInit {
+  @ViewChild(ProjectTableComponent)
+  projectTableComponent?: ProjectTableComponent;
 
-  toggleDisplay(view: 'all' | 'archives'): void {
+  successMessage: string | null = null;
+
+  ngAfterViewInit(): void {
+    if (this.projectTableComponent) {
+      this.projectTableComponent.fetchProjects();
+    }
+  }
+
+  public updateProjects(): void {
+    if (this.projectTableComponent) {
+      this.projectTableComponent.fetchProjects();
+      this.successMessage = 'Project created successfully!';
+
+      this.projectCreationModalOpen = false;
+
+      setTimeout(() => {
+        this.successMessage = null;
+      }, 3000);
+    }
+  }
+
+  public projectCreationModalOpen = false;
+
+  public display: 'all' | 'archives' = 'all';
+
+  private closed = false;
+
+  private opening = true;
+
+  public toggleDisplay(view: 'all' | 'archives'): void {
     this.display = view;
   }
 
-  openProjectCreationModal() {
+  public openProjectCreationModal() {
     this.projectCreationModalOpen = true;
   }
 
   get toggleClasses() {
     return {
-      [`currentview`]: true,
-      [`opening`]: this.opening,
-      [`closed`]: this.closed,
+      currentview: true,
+      opening: this.opening,
+      closed: this.closed,
     };
   }
 }

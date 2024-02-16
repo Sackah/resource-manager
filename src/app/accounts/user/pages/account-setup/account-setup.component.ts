@@ -1,15 +1,15 @@
 import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LoginSideIllustrationComponent } from '../../../../auth/components/login-side-illustration/login-side-illustration.component';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { LoginSideIllustrationComponent } from '@app/auth/components/login-side-illustration/login-side-illustration.component';
+import { AccesstokenService } from '@app/shared/services/accesstoken.service';
 import { AccountSetupFormComponent } from '../../components/account-setup-form/account-setup-form.component';
 import {
   AccountSetupService,
   SetupProgress,
 } from '../../services/account-setup.service';
 import { NewPasswordFormComponent } from '../../components/new-password-form/new-password-form.component';
-import { ActivatedRoute } from '@angular/router';
-import { AccesstokenService } from '../../../../shared/services/accesstoken.service';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-account-setup',
@@ -28,11 +28,13 @@ import { Subscription } from 'rxjs';
 })
 export class AccountSetupComponent implements OnDestroy {
   subscriptions: Subscription[] = [];
+
   setupProgress: SetupProgress = 'password';
+
   userDetails = {
     accessToken: '',
     email: '',
-    userId: '',
+    refId: '',
   };
 
   constructor(
@@ -48,10 +50,10 @@ export class AccountSetupComponent implements OnDestroy {
     this.subscriptions.push(setupSub);
 
     this.route.params.subscribe(params => {
-      this.userDetails.accessToken = params['accesstoken'];
-      tokenService.set(params['accesstoken']);
-      this.userDetails.email = params['email'];
-      this.userDetails.userId = params['userId'];
+      this.userDetails.accessToken = params.accesstoken;
+      tokenService.set(params.accesstoken);
+      this.userDetails.email = params.email;
+      this.userDetails.refId = params.refId;
     });
   }
 

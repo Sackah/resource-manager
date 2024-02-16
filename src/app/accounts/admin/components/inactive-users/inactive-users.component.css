@@ -1,0 +1,45 @@
+.no-user-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin: 10% auto;
+  gap: 200px;
+}
+
+.nuf {
+  font-family: 'LexendBold';
+}
+
+.no-user p {
+  font-size: 32px;
+  display: block;
+
+  color: #1a212b;
+}
+
+.image-illustration img {
+  width: 360px;
+  height: auto;
+  margin-top: 20px;
+}
+
+.modal-content img {
+  width: 80px;
+  height: 80px;
+}
+
+.total-inactive-users {
+  font-size: 12px;
+  margin-top: -38px;
+  padding-bottom: 20px;
+  color: #fff;
+  margin-left: 248px;
+}
+
+.total-inactive-users span {
+  background: #0f3cd9;
+  padding: 0px 8px;
+  border-radius: 12px;
+}

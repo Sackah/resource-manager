@@ -7,25 +7,24 @@ import {
   EventEmitter,
   Output,
   Input,
-  ViewChild,
 } from '@angular/core';
-import { User, GenericResponse } from '../../../../shared/types/types';
 import { Subscription } from 'rxjs';
-import { UsersService } from '../../services/users.service';
 import { CommonModule } from '@angular/common';
-import { ViewModalComponent } from '../../../../shared/components/modals/view-modal/view-modal.component';
-import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
-import { AssignModalComponent } from '../../../../shared/components/modals/assign-modal/assign-modal.component';
-import { AssignModalService } from '../../../../shared/components/modals/assign-modal/assign.service';
-import { ViewModalService } from '../../../../shared/components/modals/view-modal/view-modal.service';
-import { GeneralAssignModalService } from '../../../../shared/components/modals/general-assign-modal/general-assign-modal.service';
-import { GeneralAssignModalComponent } from '../../../../shared/components/modals/general-assign-modal/general-assign-modal.component';
-import { ButtonAssignComponent } from '../../../user/components/button-assign/button-assign.component';
-import { EditUserModalComponent } from '../../../../shared/components/modals/edit-user-modal/edit-user-modal.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { UpdateUserDetails } from '../../../../auth/types/auth-types';
-import { EditUserModalService } from '../../../../shared/components/modals/edit-user-modal/edit-user.service';
+import { User, UsersResponse } from '@app/shared/types/types';
+import { ViewModalComponent } from '@app/shared/components/modals/view-modal/view-modal.component';
+import { PaginationComponent } from '@app/shared/components/pagination/pagination.component';
+import { AssignModalComponent } from '@app/shared/components/modals/assign-modal/assign-modal.component';
+import { AssignModalService } from '@app/shared/components/modals/assign-modal/assign.service';
+import { ViewModalService } from '@app/shared/components/modals/view-modal/view-modal.service';
+import { ButtonAssignComponent } from '@app/accounts/user/components/button-assign/button-assign.component';
+import { EditUserModalComponent } from '@app/shared/components/modals/edit-user-modal/edit-user-modal.component';
+import { UpdateUserDetails } from '@app/auth/types/auth-types';
+import { EditUserModalService } from '@app/shared/components/modals/edit-user-modal/edit-user.service';
+import { UsersService } from '../../services/users.service';
 import { UserListService } from './user-list.service';
+import { CustomSpinnerComponent } from '@app/shared/components/custom-spinner/custom-spinner.component';
+
 @Component({
   selector: 'app-user-list',
   standalone: true,
@@ -35,28 +34,43 @@ import { UserListService } from './user-list.service';
     PaginationComponent,
     AssignModalComponent,
     ButtonAssignComponent,
+    CustomSpinnerComponent,
   ],
   templateUrl: './user-list.component.html',
-  styleUrls: ['./user-list.component.css'],
+  styleUrls: [
+    './user-list.component.css',
+    '../../../../auth/styles/styles.css',
+  ],
 })
 export class UserListComponent implements OnInit, OnDestroy {
   public users: User[] = [];
-  @Input() user: User[] = [];
+
   newDetails!: UpdateUserDetails;
-  public currentPage: number = 1;
-  public itemsPerPage: number = 10;
-  public totalPages: number = 0;
+
+  public currentPage = 1;
+
+  public itemsPerPage = 10;
+
+  public totalPages = 0;
+
   public loading = false;
+
   public showDropdownForUser: User | null = null;
+
   public successMessage: string | null = null;
+
   public errorMessage: string | null = null;
-  public totalUsers: number = 0;
+
+  public totalUsers = 0;
+
   selectedUsers: User[] = [];
+
   @Output() selectedUsersEvent = new EventEmitter<User[]>();
 
   private dataSubscription: Subscription | undefined;
+
   private viewModalRef?: ComponentRef<ViewModalComponent>;
-  private assignModalRef?: ComponentRef<GeneralAssignModalComponent>;
+
   private editModalRef?: ComponentRef<EditUserModalComponent>;
 
   constructor(
@@ -64,7 +78,6 @@ export class UserListComponent implements OnInit, OnDestroy {
     private viewContainerRef: ViewContainerRef,
     private assignModalService: AssignModalService,
     private viewModalService: ViewModalService,
-    private generalAssignModalService: GeneralAssignModalService,
     private modalService: NgbModal,
     private editModalService: EditUserModalService,
     private userListService: UserListService
@@ -75,6 +88,11 @@ export class UserListComponent implements OnInit, OnDestroy {
       this.fetchUsers();
     });
   }
+
+  get isAnyUserSelected(): boolean {
+    return this.selectedUsers.length > 0;
+  }
+
   public toggleDropdown(user: User): void {
     this.showDropdownForUser = this.showDropdownForUser === user ? null : user;
   }
@@ -116,15 +134,6 @@ export class UserListComponent implements OnInit, OnDestroy {
     });
   }
 
-  public openGeneralAssignModal() {
-    this.assignModalRef = this.generalAssignModalService.open(
-      this.viewContainerRef,
-      {
-        users: this.selectedUsers,
-      }
-    );
-  }
-
   public toggleUserSelection(user: User): void {
     if (this.isSelected(user)) {
       this.selectedUsers = this.selectedUsers.filter(u => u !== user);
@@ -144,6 +153,71 @@ export class UserListComponent implements OnInit, OnDestroy {
     this.fetchUsers();
   }
 
+  public selectAll(): void {
+    this.selectedUsers = [...this.users];
+    this.selectedUsersEvent.emit(this.selectedUsers);
+  }
+
+  public deselectAll(): void {
+    this.selectedUsers = [];
+    this.selectedUsersEvent.emit(this.selectedUsers);
+  }
+
+  public deleteSelected(): void {
+    this.selectedUsers.forEach(user => {
+      this.usersService.deleteUser(user.refId).subscribe({
+        next: () => {
+          this.fetchUsers();
+        },
+        error: () => {
+          this.errorMessage =
+            'Server Error: Could not delete user, please try again later.';
+          setTimeout(() => {
+            this.errorMessage = null;
+          }, 3000);
+        },
+      });
+    });
+  }
+
+  public archiveSelected(): void {
+    this.selectedUsers.forEach(user => {
+      this.usersService.archiveUser(user.email).subscribe({
+        next: response => {
+          this.successMessage = response.message;
+          this.fetchUsers();
+          setTimeout(() => {
+            this.successMessage = null;
+          }, 3000);
+        },
+        error: () => {
+          this.errorMessage =
+            'Server Error: Could not archive user, please try again later.';
+          setTimeout(() => {
+            this.errorMessage = null;
+          }, 3000);
+        },
+      });
+    });
+  }
+
+  public restoreSelected(): void {
+    this.selectedUsers.forEach(user => {
+      this.usersService.restoreUser(user.refId).subscribe({
+        next: () => {
+          this.fetchUsers();
+        },
+        error: () => {
+          this.errorMessage =
+            'Server Error: Could not restore user, please try again later.';
+          setTimeout(() => {
+            this.errorMessage = null;
+          }, 3000);
+        },
+      });
+    });
+  }
+
   ngOnDestroy(): void {
     if (this.dataSubscription) {
       this.dataSubscription.unsubscribe();
@@ -158,17 +232,20 @@ export class UserListComponent implements OnInit, OnDestroy {
     const endIndex = startIndex + this.itemsPerPage;
 
     this.usersService.getUsers().subscribe({
-      next: (response: any) => {
-        const users = response.users || response.data;
+      next: (response: UsersResponse) => {
+        const users = response?.users || [];
         if (Array.isArray(users)) {
           this.users = users.slice(startIndex, endIndex) as User[];
+
           this.totalUsers = users.length;
           this.totalPages = Math.ceil(users.length / this.itemsPerPage);
         } else {
+          users;
         }
       },
       error: error => {
         error;
+        this.errorMessage = 'Error fetching users, please try again';
       },
       complete: () => {
         this.loading = false;
@@ -179,7 +256,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   public archiveUser(user: User): void {
     this.loading = true;
     this.usersService.archiveUser(user.email).subscribe({
-      next: (response: any) => {
+      next: response => {
         this.successMessage = response.message;
         this.fetchUsers();
         setTimeout(() => {
@@ -188,11 +265,11 @@ export class UserListComponent implements OnInit, OnDestroy {
       },
 
       error: () => {
-        (this.errorMessage =
-          'Server Error: Could not archive user, please try again later.'),
-          setTimeout(() => {
-            this.errorMessage = null;
-          }, 3000);
+        this.errorMessage =
+          'Server Error: Could not archive user, please try again later.';
+        setTimeout(() => {
+          this.errorMessage = null;
+        }, 3000);
       },
     });
   }

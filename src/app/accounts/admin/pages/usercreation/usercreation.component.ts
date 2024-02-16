@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import {
   FormGroup,
   Validators,
@@ -6,13 +6,13 @@ import {
   FormBuilder,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { finalize } from 'rxjs/operators';
+import { GenericResponse } from '@app/shared/types/types';
+import { DepartmentModalComponent } from '@app/shared/components/modals/department-modal/department-modal.component';
 import { AdminService } from '../../services/admin.service';
 import { SpecializationService } from '../../services/specialization.service';
 import { SpecializationModalComponent } from '../../../../shared/components/modals/specialization-modal/specialization-modal.component';
-import { DepartmentModalComponent } from '../../../../shared/components/modals/department-modal/department-modal.component';
 import { DepartmentService } from '../../services/department.service';
-import { finalize } from 'rxjs/operators';
-import { GenericResponse } from '../../../../shared/types/types';
 
 @Component({
   selector: 'app-usercreation',
@@ -26,50 +26,70 @@ import { GenericResponse } from '../../../../shared/types/types';
   templateUrl: './usercreation.component.html',
   styleUrl: './usercreation.component.css',
 })
-export class UsercreationComponent implements OnInit {
+export class UsercreationComponent {
   @Input() isOpen = true;
 
-  specializationModalOpen = false;
-  departmentModalOpen = false;
-  formInvalidMessage: string = '';
-  nullFormControlMessage: string = '';
-  formData: FormGroup;
-  loading = false;
-  success = false;
-  error = false;
-  errorMessagesForRolesandEmails: { roles?: string; email?: string } = {};
-  selectedDepartment: string = '';
-  selectedSpecialization: string = '';
-  selectedRoles: string = '';
-  errorMessage: string = '';
-  specializationsErrorMessage: string = '';
-  deparmentsErrorMessage: string = '';
-  successMessage: string = '';
+  @Output() userCreated: EventEmitter<void> = new EventEmitter<void>();
 
+  public specializationModalOpen = false;
 
-  specializationDropdownOpen = false;
-  rolesDropdownOpen = false;
-  departmentDropdownOpen = false;
-  specializations: string[] = [];
-  department: string[] = [];
-  roles: string[] = [];
+  public departmentModalOpen = false;
+
+  public formInvalidMessage = '';
+
+  public nullFormControlMessage = '';
+
+  formData: FormGroup = this.fb.group({
+    roles: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    specialization: ['', Validators.required],
+    department: ['', Validators.required],
+    role: [''],
+    skills: [''],
+    bookable: [false],
+  });
+
+  public loading = false;
+
+  public success = false;
+
+  public error = false;
+
+  public errorMessagesForRolesandEmails: { roles?: string; email?: string } =
+    {};
+
+  public selectedDepartment = '';
+
+  public selectedSpecialization = '';
+
+  public selectedRoles = '';
+
+  public errorMessage = '';
+
+  public specializationsErrorMessage = '';
+
+  public deparmentsErrorMessage = '';
+
+  public successMessage = '';
+
+  public specializationDropdownOpen = false;
+
+  public rolesDropdownOpen = false;
+
+  public departmentDropdownOpen = false;
+
+  public specializations: string[] = [];
+
+  public department = [];
+
+  public roles: string[] = [];
 
   constructor(
-    
     private adminService: AdminService,
     private specializationService: SpecializationService,
     private fb: FormBuilder,
     private departmentService: DepartmentService
   ) {
-    this.formData = this.fb.group({
-      roles: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      specialization: [''],
-      department: [''],
-      role: [''],
-      skills: [''],
-    });
-
     this.specializationService.specializations$.subscribe(
       (specializations: string[]) => {
         this.specializations = specializations;
@@ -77,7 +97,7 @@ export class UsercreationComponent implements OnInit {
     );
 
     this.departmentService.departments$.subscribe((departments: string[]) => {
-      this.department = departments;
+      // this.department = departments;
     });
   }
 
@@ -175,10 +195,7 @@ export class UsercreationComponent implements OnInit {
 
   private fetchSpecializations() {
     this.specializationService.getSpecializations().subscribe(
-      (specializations: string[]) => {
-   
-        specializations;
-      },
+      (specializations: string[]) => {},
       err => {
         this.handleSpecializationFetchError(err);
       }
@@ -219,14 +236,11 @@ export class UsercreationComponent implements OnInit {
 
   fetchDepartments() {
     this.departmentService.getDepartments().subscribe(
-      (departments: string[]) => {
-
-      },
+      (departments: string[]) => {},
       err => {
         this.handleDepartmentFetchError(err);
       }
     );
-
   }
 
   clearErrorMessagesAfterDelay() {
@@ -236,42 +250,35 @@ export class UsercreationComponent implements OnInit {
       this.deparmentsErrorMessage = '';
       this.formInvalidMessage = '';
       this.nullFormControlMessage = '';
-    }, 3000); 
+    }, 3000);
   }
 
   private handleDepartmentFetchError(error: GenericResponse) {
-
-
-    
     if (error.status === 404) {
-      
-      this.deparmentsErrorMessage = 'Unable to process new department added. Please try again';
+      this.deparmentsErrorMessage =
+        'Unable to process new department added. Please try again';
     } else {
-      
       this.deparmentsErrorMessage = 'Please try again or contact IT support';
     }
     this.clearErrorMessagesAfterDelay();
   }
 
   private handleSpecializationFetchError(error: GenericResponse) {
-
- 
     if (error.status === 404) {
-      
-      this.specializationsErrorMessage = 'Unable to process new specialization added. Please try again';
+      this.specializationsErrorMessage =
+        'Unable to process new specialization added. Please try again';
     } else {
-      
-      this.specializationsErrorMessage = 'Please try again or contact IT support';
+      this.specializationsErrorMessage =
+        'Please try again or contact IT support';
     }
     this.clearErrorMessagesAfterDelay();
   }
-
 
   onUserCreate() {
     this.loading = false;
     this.success = false;
     this.error = false;
-    this. errorMessagesForRolesandEmails = {};
+    this.errorMessagesForRolesandEmails = {};
 
     if (this.formData.valid) {
       this.loading = true;
@@ -285,23 +292,27 @@ export class UsercreationComponent implements OnInit {
         )
         .subscribe(
           response => {
-                 this.success = true;
-                 this.successMessage = 'User created successfully!';
+            this.success = true;
+            this.successMessage = 'User created successfully!';
+            this.userCreated.emit();
           },
           error => {
-                        this.error = true;
+            this.error = true;
 
             if (error.error && typeof error.error === 'object') {
-              this. errorMessagesForRolesandEmails = error.error;
+              this.errorMessagesForRolesandEmails = error.error;
             }
             if (error.status === 400) {
               this.errorMessage = '  User with this email already exists';
             } else if (error.status === 401) {
-              this.errorMessage = '  Unauthorized. Please log in as an Admin or Manager.';
+              this.errorMessage =
+                '  Unauthorized. Please log in as an Admin or Manager.';
             } else if (error.status === 403) {
-              this.errorMessage = '  You do not have the necessary permission to perfom this task.';
+              this.errorMessage =
+                '  You do not have the necessary permission to perfom this task.';
             } else if (error.status === 404) {
-              this.errorMessage = '  Resource not found, please contact IT support.';
+              this.errorMessage =
+                '  Resource not found, please contact IT support.';
             } else if (error.status >= 500) {
               this.errorMessage = '  Server error. Please try again later.';
             } else {
@@ -311,7 +322,8 @@ export class UsercreationComponent implements OnInit {
           }
         );
     } else {
-      this.formInvalidMessage = 'Please complete the form or enter valid inputs';
+      this.formInvalidMessage =
+        'Please complete the form or enter valid inputs';
       this.clearErrorMessagesAfterDelay();
     }
   }
@@ -319,6 +331,4 @@ export class UsercreationComponent implements OnInit {
   closeUsercreationModal() {
     this.isOpen = false;
   }
-
-  ngOnInit(): void {}
 }

@@ -8,10 +8,9 @@ describe('ResetPasswordFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ResetPasswordFormComponent]
-    })
-    .compileComponents();
-    
+      imports: [ResetPasswordFormComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(ResetPasswordFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

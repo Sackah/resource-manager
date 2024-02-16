@@ -9,8 +9,11 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 })
 export class StarRatingComponent implements OnInit {
   @Input() numberOfStars = 5;
+
   @Output() ratingchange = new EventEmitter<number>();
+
   rating = 0;
+
   hoverIndex = 0;
 
   stars: number[] = [];
@@ -24,7 +27,6 @@ export class StarRatingComponent implements OnInit {
   rate(rating: number) {
     this.rating = rating;
     this.ratingchange.emit(rating);
-    console.log(rating);
   }
 
   hover(index: number) {

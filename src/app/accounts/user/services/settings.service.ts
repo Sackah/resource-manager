@@ -1,14 +1,16 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import {
+  HttpClient,
+  HttpHeaders,
+  HttpErrorResponse,
+} from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, catchError, map } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, throwError } from 'rxjs';
+import { BASE_URL } from '../../../../environment/config';
 import {
   UpdateUserDetailsResponse,
   UpdateUserPasswordResponse,
+  UpdateUserDetails,
 } from '../../../auth/types/auth-types';
-import { BASE_URL } from '../../../../environment/config';
-import { UpdateUserDetails } from '../../../auth/types/auth-types';
-import { HttpErrorResponse } from '@angular/common/http';
-import { throwError } from 'rxjs';
 import {
   Departments,
   Specializations,
@@ -23,6 +25,7 @@ export type SettingsFields = 'profile' | 'password' | 'work specialization';
 })
 export class SettingsService {
   private dataSource = new BehaviorSubject<SettingsFields>('profile');
+
   data = this.dataSource.asObservable();
 
   constructor(private http: HttpClient) {}
@@ -36,7 +39,7 @@ export class SettingsService {
   ): Observable<UpdateUserDetailsResponse> {
     return this.http
       .put<UpdateUserDetailsResponse>(
-        `${BASE_URL}/users/settings/update/profile`,
+        `${BASE_URL}/users/admin/update/profile`,
         newDetails
       )
       .pipe(catchError((error: HttpErrorResponse) => this.onError(error)));
@@ -45,7 +48,7 @@ export class SettingsService {
   updatePassword(newPassword: string): Observable<UpdateUserPasswordResponse> {
     return this.http
       .put<UpdateUserPasswordResponse>(
-        `${BASE_URL}/users/settings/update/password`,
+        `${BASE_URL}/users/profile/password/update`,
         newPassword
       )
       .pipe(catchError((error: HttpErrorResponse) => this.onError(error)));
@@ -56,14 +59,13 @@ export class SettingsService {
   ): Observable<UpdateUserDetailsResponse> {
     return this.http
       .put<UpdateUserDetailsResponse>(
-        `${BASE_URL}/users/settings/update/work/specialization`,
+        `${BASE_URL}/users/update/work/specialization`,
         userSpecializationForm
       )
       .pipe(catchError((error: HttpErrorResponse) => this.onError(error)));
   }
 
   deleteSkill(skillId: number): Observable<GenericResponse> {
-    console.log(skillId);
     return this.http.delete<GenericResponse>(`${BASE_URL}/skills/delete`, {
       headers: {
         'Content-Type': 'application/json',
@@ -107,15 +109,10 @@ export class SettingsService {
       );
   }
 
-  addUserSkills(
-    skill: string,
-    userId: string
-    // rating: any
-  ): Observable<Skills[]> {
+  addUserSkills(newSkill: string, refId: string): Observable<Skills[]> {
     const requestBody = {
-      name: skill,
-      userId: userId,
-      // rating: rating,
+      name: newSkill,
+      refId,
     };
 
     return this.http
@@ -164,8 +161,7 @@ export class SettingsService {
       return throwError(
         () => new Error('Cannot connect to the server please try again')
       );
-    } else {
-      return throwError(() => new Error(`${error.error.message}`));
     }
+    return throwError(() => new Error(`${error.error.message}`));
   }
 }

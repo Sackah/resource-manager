@@ -5,20 +5,20 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { AuthActions } from '@app/auth/store/authorization/AuthActions';
+import { passwordMatchValidator } from '@app/auth/validators/passwordmismatch';
+import { GlobalInputComponent } from '@app/shared/components/global-input/global-input.component';
+import {
+  UserPasswordState,
+  selectUpdateUserPassword,
+} from '@app/auth/store/authorization/AuthReducers';
 import {
   AccountSetupService,
   SetupProgress,
 } from '../../services/account-setup.service';
-import { passwordMatchValidator } from '../../../../auth/validators/passwordmismatch';
-import { CommonModule } from '@angular/common';
-import { Store } from '@ngrx/store';
-import { AuthActions } from '../../../../auth/store/authorization/AuthActions';
-import {
-  UserPasswordState,
-  selectUpdateUserPassword,
-} from '../../../../auth/store/authorization/AuthReducers';
-import { Subscription } from 'rxjs';
-import { GlobalInputComponent } from '../../../../shared/components/global-input/global-input.component';
 
 @Component({
   selector: 'app-new-password-form',
@@ -32,17 +32,25 @@ import { GlobalInputComponent } from '../../../../shared/components/global-input
 })
 export class NewPasswordFormComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
+
   setupProgress!: SetupProgress;
+
   @Input() userDetails!: {
     accessToken: string;
     email: string;
-    userId: string;
+    refId: string;
   };
-  showPassword: boolean = false;
-  showConfirmPassword: boolean = false;
-  passwordStrength!: 'weak' | 'medium' | 'strong' | '';
+
+  showPassword = false;
+
+  showConfirmPassword = false;
+
   storeData!: UserPasswordState;
+
+  errorMessage = '';
+
   storeData$ = this.store.select(selectUpdateUserPassword);
+
   setNewPasswordForm: FormGroup = new FormGroup(
     {
       password: new FormControl('', [
@@ -78,6 +86,9 @@ export class NewPasswordFormComponent implements OnInit, OnDestroy {
     const storeSubscription = this.storeData$.subscribe({
       next: res => {
         this.storeData = res;
+        if (res.error) {
+          this.errorMessage = res.error.message;
+        }
       },
       error: err => {
         this.storeData.error = err;
@@ -90,18 +101,19 @@ export class NewPasswordFormComponent implements OnInit, OnDestroy {
     return this.showConfirmPassword ? 'text' : 'password';
   }
 
-  getPasswordErrors() {
+  public getPasswordErrors() {
     const control = this.setNewPasswordForm.get('password');
     if (control?.invalid && (control.dirty || control.touched)) {
       if (control.hasError('required')) {
         return "Password can't be empty";
-      } else if (control.hasError('required')) {
+      }
+      if (control.hasError('pattern')) {
         return 'Password must have at least one uppercase, one lowercase and a number';
-      } else if (control.hasError('minlength')) {
+      }
+      if (control.hasError('minlength')) {
         return 'Password must be at least 8 characters';
       }
     }
-
     return '';
   }
 
@@ -126,28 +138,20 @@ export class NewPasswordFormComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  updatePasswordStrength() {
-    const passwordControl = this.setNewPasswordForm.get('password');
-    if (passwordControl?.errors?.['passwordStrength']) {
-      this.passwordStrength = passwordControl.errors['passwordStrength'];
-    } else {
-      this.passwordStrength = 'strong';
-    }
-  }
-
   submitForm() {
     const credentials = this.setNewPasswordForm.value;
-    const { email, userId } = this.userDetails;
+    const { email, refId } = this.userDetails;
 
     if (this.setNewPasswordForm.valid === true) {
       const reqBody = {
         ...credentials,
         email,
-        userId,
+        refId,
       };
 
       this.store.dispatch(AuthActions.updateUserPassword(reqBody));
     } else {
+      this.errorMessage = 'The form is not valid. Please check your input.';
     }
   }
 

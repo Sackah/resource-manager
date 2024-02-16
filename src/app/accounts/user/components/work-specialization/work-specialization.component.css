@@ -3,8 +3,8 @@
   border: 1px solid #9aa8bc;
   padding: 12px 16px;
   color: #728197;
-  /* width: 100%; */
   width: 40%;
+  margin-left: 20px;
 }
 
 .input-settings.error {
@@ -42,14 +42,17 @@ h4 {
   font-size: 1rem;
   font-weight: 400;
   margin-bottom: 6px;
+  margin-left: 20px;
 }
 
 p {
   margin-bottom: 12px;
+  margin-left: 20px;
 }
 
 label {
   margin-bottom: 4px;
+  margin-left: 20px;
 }
 
 p,
@@ -98,7 +101,6 @@ label:not(.visibly-hidden) {
 .message-container {
   position: fixed;
   top: 20%;
-  /* left: 80%; */
   right: -2%;
   transform: translate(-50%, -50%);
   text-align: center;
@@ -123,12 +125,31 @@ label:not(.visibly-hidden) {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
+  background: #f2f5ff;
+}
+
+.delete-btn {
+  width: 15px;
+  height: 15px;
+  top: -10px;
+}
+
+.skill-name {
+  display: flex;
+  gap: 10px;
+}
+
+.rating {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-start;
 }
 
 .skill-card {
   display: flex;
+  flex-direction: column;
   gap: 140px;
-  width: 120px;
+  width: auto;
   height: 49px;
   padding: 8px;
   align-items: center;
@@ -148,8 +169,13 @@ label:not(.visibly-hidden) {
 @media only screen and (max-height: 700px) {
   .separator {
     display: flex;
-    /* padding-bottom: 10px; */
     width: 54%;
     border-bottom: 1px solid #000;
+  }
+  app-star-rating {
+    position: absolute;
+    margin-left: 20%;
+    margin-top: 30px;
+    transform: translateY(-50%);
   }
 }

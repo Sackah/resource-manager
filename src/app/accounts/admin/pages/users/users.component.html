@@ -3,7 +3,9 @@
     <h1>Users</h1>
     <div class="buttons-wrapper">
       <app-button-new (click)="openUserCreationModal()"></app-button-new>
-      <app-usercreation [isOpen]="userCreationModalOpen"></app-usercreation>
+      <app-usercreation
+        [isOpen]="userCreationModalOpen"
+        (userCreated)="updateUsers()"></app-usercreation>
     </div>
   </header>
   <div class="toggles">
@@ -19,6 +21,11 @@
       Inactive
     </h3>
     <h3
+      [class.active]="display === 'pending'"
+      (click)="toggleDisplay('pending')">
+      Pending
+    </h3>
+    <h3
       [class.active]="display === 'archives'"
       (click)="toggleDisplay('archives')">
       Archives
@@ -28,5 +35,8 @@
   @if (display === 'all') { <app-user-list></app-user-list>
 
   } @else if (display === 'archives') {
-  <app-archived-list></app-archived-list> }
+  <app-archived-list></app-archived-list> } @else if (display === 'active') {
+  <app-active-users></app-active-users> } @else if (display === 'inactive')
+  {<app-inactive-users></app-inactive-users> } @else if (display === 'pending')
+  {<app-pending-users></app-pending-users>}
 </div>

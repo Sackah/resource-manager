@@ -1,0 +1,119 @@
+<p class="total-pending-users">
+  <span>{{ totalPendingUsers }}</span>
+</p>
+
+<div class="message-container">
+  <div class="alert-error" *ngIf="errorMessage">
+    <span class="closebtn"></span>
+    {{ errorMessage }}
+  </div>
+
+  <div class="alert-success" *ngIf="successMessage">
+    <span class="closebtn"></span>
+    {{ successMessage }}
+  </div>
+</div>
+
+<ng-container *ngIf="loading; else pendingUsersOrNoUsers">
+  <app-custom-spinner></app-custom-spinner
+></ng-container>
+
+<ng-template #pendingUsersOrNoUsers>
+  <div class="user-list-container">
+    <ng-container *ngIf="users.length > 0; else noUsersInPending">
+      <table class="user-table">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Department</th>
+            <th>Specialization</th>
+            <th>Created At</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users">
+            <td class="grid-item">
+              <div class="checkbox-container">
+                <input
+                  type="checkbox"
+                  class="checkbox-input ms-2 text-sm font-medium text-gray-900 dark:text-gray-300" />
+                {{ user.email }}
+              </div>
+            </td>
+            <td class="grid-item" *ngIf="user.role; else notAvailable">
+              {{ user.role }}
+            </td>
+            <ng-template #notAvailable>
+              <td class="grid-item">N/A</td>
+            </ng-template>
+            <td class="grid-item" *ngIf="user.department; else notAvailable">
+              {{ user.department }}
+            </td>
+            <td
+              class="grid-item"
+              *ngIf="user.specializations && user.specializations.length > 0">
+              <span
+                *ngFor="
+                  let specialization of user.specializations[0] | keyvalue
+                ">
+                {{ specialization.value }}
+              </span>
+            </td>
+            <td
+              class="grid-item"
+              *ngIf="
+                !user.specializations || user.specializations.length === 0
+              "></td>
+
+            <td *ngIf="user.created_at; notAvailable">{{ user.created_at }}</td>
+
+            <td class="grid-item">
+              <div
+                class="dropdown-container"
+                *ngIf="showDropdownForUser === user">
+                <ul class="dropdown-details-container">
+                  <li (click)="sendInvitation(user)">Reinvite</li>
+                  <li>Delete</li>
+                </ul>
+              </div>
+              <div class="border">
+                <div class="actions-btn-container">
+                  <button
+                    class="actions-btn"
+                    (click)="toggleDropdown(user); $event.stopPropagation()">
+                    <div class="actions-dot">
+                      <img src="assets/images/user/dots-v.svg" alt="dots" />
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody></table></ng-container
+    ><ng-template #noUsersInPending>
+      <div class="no-user-container">
+        <div class="no-user">
+          <p class="nuf">
+            No User<br />
+            Added Yet.
+          </p>
+          <p style="font-size: 12px; color: #5e718d">
+            It looks like there are no users in your list. <br />Start managing
+            your pending users by adding a new one.
+          </p>
+        </div>
+        <div class="image-illustration">
+          <img
+            src="assets/images/admin/add-users-illustration.svg"
+            alt="No user add" />
+        </div>
+      </div>
+    </ng-template>
+  </div>
+  <app-pagination
+    [currentPage]="currentPage"
+    [totalPages]="totalPages"
+    (pageChange)="onPageChange($event)"></app-pagination>
+</ng-template>

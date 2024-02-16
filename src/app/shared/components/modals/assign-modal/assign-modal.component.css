@@ -61,6 +61,49 @@ label {
   margin-bottom: 4px;
 }
 
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.date-field {
+  height: 35px;
+  background: #fff;
+  padding: 10px;
+  font-size: 12px;
+  border-radius: 12px;
+  border: 1px solid #9aa8bc;
+  cursor: pointer;
+}
+
+.dropdown-container {
+  position: absolute;
+  background: #fff;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.16);
+  width: 123px;
+  height: 185px;
+  border-radius: 8px 8px 0px 0px;
+  cursor: pointer;
+}
+
+.time-inputs {
+  display: flex;
+  gap: 20px;
+}
+
+select {
+  width: 40%;
+  font-size: 14px;
+  height: 37px;
+  background: #fff;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid #9aa8bc;
+  cursor: pointer;
+  color: #728197;
+  margin-bottom: 20px;
+}
+
 p,
 label:not(.visibly-hidden) {
   color: #728197;
@@ -69,19 +112,7 @@ label:not(.visibly-hidden) {
   display: block;
 }
 
-.project-input {
-  display: block;
-  width: 100%;
-  font-size: 14px;
-  height: 35px;
-  background: #fff;
-  padding: 10px;
-  border-radius: 12px;
-  border: 1px solid #9aa8bc;
-  cursor: pointer;
-}
-
-.global .project-name {
+.project-name {
   color: #728197;
   border-radius: 16px;
   border: 1px solid #9aa8bc;

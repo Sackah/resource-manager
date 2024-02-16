@@ -19,7 +19,7 @@ export type SendOtpResponse = {
   isSubmitting: boolean;
   user: {
     email: string;
-    userId: string;
+    refId: string;
   };
   OTP: number;
 };

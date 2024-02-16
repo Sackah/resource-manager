@@ -9,8 +9,6 @@ export class UserListService {
 
   refreshUsers$ = this.refreshUsersSource.asObservable();
 
-  constructor() {}
-
   refreshUsers() {
     this.refreshUsersSource.next(true);
   }

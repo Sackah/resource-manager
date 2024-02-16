@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { ClientDetails } from '../../../types/types';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { ClientDetails } from '../../../types/types';
 
 @Component({
   selector: 'app-delete-client-modal',
@@ -14,11 +14,12 @@ export class DeleteClientModalComponent {
   @Input() archivedClients: ClientDetails | null = null;
 
   constructor(public activeModal: NgbActiveModal) {}
+
   cancelDelete() {
     this.activeModal.dismiss('cancel');
   }
 
-  confirmDelete() {
+  public confirmDelete() {
     this.activeModal.close('delete');
   }
 }

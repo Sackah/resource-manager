@@ -2,9 +2,10 @@ import { CommonModule } from '@angular/common';
 import {
   Component,
   ViewContainerRef,
-  ComponentRef,
   EventEmitter,
   Output,
+  ViewChild,
+  AfterViewInit,
 } from '@angular/core';
 import { User } from '../../../../shared/types/types';
 import { SideNavComponent } from '../../../../shared/components/side-nav/side-nav.component';
@@ -15,8 +16,9 @@ import { UserListComponent } from '../../components/user-list/user-list.componen
 import { UsercreationComponent } from '../usercreation/usercreation.component';
 import { ManagerUsercreationComponent } from '../../../manager/pages/manager-usercreation/manager-usercreation.component';
 import { ArchivedListComponent } from '../../components/archived-list/archived-list.component';
-import { GeneralAssignModalComponent } from '../../../../shared/components/modals/general-assign-modal/general-assign-modal.component';
-import { GeneralAssignModalService } from '../../../../shared/components/modals/general-assign-modal/general-assign-modal.service';
+import { InactiveUsersComponent } from '../../components/inactive-users/inactive-users.component';
+import { ActiveUsersComponent } from '../../components/active-users/active-users.component';
+import { PendingUsersComponent } from '../../components/pending-users/pending-users.component';
 
 @Component({
   selector: 'app-users',
@@ -31,62 +33,65 @@ import { GeneralAssignModalService } from '../../../../shared/components/modals/
     UsercreationComponent,
     ManagerUsercreationComponent,
     ArchivedListComponent,
-    GeneralAssignModalComponent,
+    InactiveUsersComponent,
+    ActiveUsersComponent,
+    PendingUsersComponent,
   ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',
 })
-export class UsersComponent {
-  userCreationModalOpen = false;
-  selectedUsers: User[] = [];
+export class UsersComponent implements AfterViewInit {
+  public userCreationModalOpen = false;
+
   @Output() selectedUsersEvent = new EventEmitter<User[]>();
 
-  private assignModalRef?: ComponentRef<GeneralAssignModalComponent>;
+  constructor(private viewContainerRef: ViewContainerRef) {}
 
-  constructor(
-    private generalAssignModalService: GeneralAssignModalService,
-    private viewContainerRef: ViewContainerRef
-  ) {}
+  public display: 'all' | 'active' | 'inactive' | 'archives' | 'pending' =
+    'all';
 
-  display: 'all' | 'active' | 'inactive' | 'archives' = 'all';
-  closed: boolean = false;
-  opening: boolean = true;
+  private closed = false;
 
-  toggleDisplay(view: 'all' | 'active' | 'inactive' | 'archives'): void {
+  private opening = true;
+
+  toggleDisplay(
+    view: 'all' | 'active' | 'inactive' | 'archives' | 'pending'
+  ): void {
     this.display = view;
   }
 
-  openUserCreationModal() {
+  public openUserCreationModal() {
     this.userCreationModalOpen = true;
   }
 
-  openGeneralAssignModal() {
-    this.assignModalRef = this.generalAssignModalService.open(
-      this.viewContainerRef,
-      {
-        users: this.selectedUsers,
-      }
-    );
-  }
+  @ViewChild(UserListComponent) UserListComponent?: UserListComponent;
 
-  toggleUserSelection(user: User): void {
-    if (this.isSelected(user)) {
-      this.selectedUsers = this.selectedUsers.filter(u => u !== user);
-    } else {
-      this.selectedUsers.push(user);
+  successMessage: string | null = null;
+
+  ngAfterViewInit(): void {
+    if (this.UserListComponent) {
+      this.UserListComponent.fetchUsers();
     }
-
-    this.selectedUsersEvent.emit(this.selectedUsers);
   }
 
-  isSelected(user: User): boolean {
-    return this.selectedUsers.includes(user);
+  public updateUsers(): void {
+    if (this.UserListComponent) {
+      this.UserListComponent.fetchUsers();
+      this.successMessage = 'User created successfully!';
+
+      this.userCreationModalOpen = false;
+
+      setTimeout(() => {
+        this.successMessage = null;
+      }, 3000);
+    }
   }
+
   get toggleClasses() {
     return {
-      [`currentview`]: true,
-      [`opening`]: this.opening,
-      [`closed`]: this.closed,
+      currentview: true,
+      opening: this.opening,
+      closed: this.closed,
     };
   }
 }

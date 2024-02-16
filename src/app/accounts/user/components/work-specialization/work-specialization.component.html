@@ -3,11 +3,11 @@
 <form (submit)="submitForm($event)" [formGroup]="userSpecializationForm">
   <div class="message-container">
     @if (signalValues.success) {
-    <div class="success-message">
+    <div class="alert-success">
       {{ signalValues.success.message }}
     </div>
     } @if (signalValues.error) {
-    <div class="error-message">
+    <div class="alert-error">
       {{ signalValues.error.message }}
     </div>
     }
@@ -49,22 +49,36 @@
             class="input-settings"
             formControlName="skill"
             placeholder="Enter skill, rate and add" />
-
+          <app-star-rating
+            (ratingchange)="onRatingChange($event)"></app-star-rating>
           <button type="submit">Add</button>
         </div>
       </div>
     </div>
   </div>
-  <div class="separator"></div>
-  <label class="text-added-skill">Added skills </label>
+  <label for="addSkill" class="text-added-skill">Added skills </label>
   <div class="skill-cards-container">
     <div class="skill-card" *ngFor="let skill of user.skills">
-      {{ skill.name }}
-
-      <input type="hidden" name="skills[]" value="{{ skill }}" />
-      <button (click)="removeSkill(skill)">
-        <img src="assets/images/user/x-close.svg" />
-      </button>
+      <div class="skill-info">
+        <span>{{ skill.name }}</span>
+        <button class="delete-btn" (click)="removeSkill(skill)">
+          <img src="assets/images/user/x-close.svg" alt="close " />
+        </button>
+        <span class="rating">
+          <ng-container *ngFor="let star of getStars(skill.rating)">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="12"
+              height="10"
+              viewBox="0 0 12 10"
+              fill="none">
+              <path
+                d="M6.23552 0L8.03509 3.06819L11.5296 3.81966L9.14729 6.46738L9.50746 10L6.23552 8.56819L2.96358 10L3.32376 6.46738L0.941406 3.81966L4.43595 3.06819L6.23552 0Z"
+                fill="#DFB300" />
+            </svg>
+          </ng-container>
+        </span>
+      </div>
     </div>
   </div>
 

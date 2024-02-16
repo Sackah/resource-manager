@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
-import { AccesstokenService } from '../../shared/services/accesstoken.service';
 import { Router, ActivatedRouteSnapshot } from '@angular/router';
+import { AccesstokenService } from '@app/shared/services/accesstoken.service';
 
 export const AuthGuard = () => {
   const tokenService = inject(AccesstokenService);
@@ -8,15 +8,14 @@ export const AuthGuard = () => {
 
   return (route: ActivatedRouteSnapshot) => {
     const token = tokenService.get();
-    const accesstoken = route.params['accesstoken'];
-    const mail = route.params['email'];
-    const userId = route.params['userId'];
+    const { accesstoken } = route.params;
+    const mail = route.params.email;
+    const { refId } = route.params;
 
-    if (token || (accesstoken && mail && userId)) {
+    if (token || (accesstoken && mail && refId)) {
       return true;
-    } else {
-      router.navigateByUrl('/login');
-      return false;
     }
+    router.navigateByUrl('/login');
+    return false;
   };
 };

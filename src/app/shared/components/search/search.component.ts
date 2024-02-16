@@ -10,7 +10,5 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './search.component.css',
 })
 export class SearchComponent {
-  query: string = '';
-
-  performSearch() {}
+  public query: string = '';
 }

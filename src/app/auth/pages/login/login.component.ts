@@ -1,21 +1,21 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { LoginSideIllustrationComponent } from '../../components/login-side-illustration/login-side-illustration.component';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { AuthActions } from '../../store/authorization/AuthActions';
 import {
   ReactiveFormsModule,
   FormGroup,
   FormControl,
   Validators,
 } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { AuthActions } from '@app/auth/store/authorization/AuthActions';
+import { LoginSideIllustrationComponent } from '@app/auth/components/login-side-illustration/login-side-illustration.component';
+import { GlobalInputComponent } from '@app/shared/components/global-input/global-input.component';
 import {
   LoginState,
   selectLogin,
 } from '../../store/authorization/AuthReducers';
-import { Router, RouterLink } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { GlobalInputComponent } from '../../../shared/components/global-input/global-input.component';
 
 @Component({
   selector: 'app-login',
@@ -31,24 +31,23 @@ import { GlobalInputComponent } from '../../../shared/components/global-input/gl
   styleUrls: ['./login.component.css', '../../styles/styles.css'],
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  subcriptions: Subscription[] = [];
-  loginForm!: FormGroup;
-  showPassword: boolean = false;
-  storeData!: LoginState;
-  successMessage: string | null = null;
+  private subcriptions: Subscription[] = [];
+
+  public loginForm: FormGroup = new FormGroup({
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required]),
+  });
+
+  public showPassword = false;
+
+  public storeData!: LoginState;
+
+  public successMessage: string | null = null;
 
   constructor(private store: Store, private router: Router) {}
 
   ngOnInit(): void {
-    this.userLoginForm();
     this.storeSubscription();
-  }
-
-  public userLoginForm() {
-    this.loginForm = new FormGroup({
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [Validators.required]),
-    });
   }
 
   public storeSubscription() {
@@ -64,20 +63,18 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.subcriptions.push(storeSubscription);
   }
 
-  getEmailErrors(): string {
+  public getEmailErrors(): string {
     const control = this.loginForm.get('email');
-    if (control?.invalid && (control.dirty || control.touched)) {
-      if (control.hasError('required')) {
-        return 'This field is required';
-      } else if (control.hasError('email')) {
-        return 'Please enter a valid email address';
-      }
-    }
-
-    return '';
+    return control?.invalid && (control.dirty || control.touched)
+      ? control.hasError('required')
+        ? 'This field is required'
+        : control.hasError('email')
+        ? 'Please enter a valid email address'
+        : ''
+      : '';
   }
 
-  getPasswordErrors() {
+  public getPasswordErrors() {
     const control = this.loginForm.get('password');
     if (control?.invalid && (control.dirty || control.touched)) {
       if (control.hasError('required')) {

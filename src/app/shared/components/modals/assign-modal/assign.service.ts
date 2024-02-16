@@ -49,7 +49,9 @@ export class AssignModalService {
     return modalComponentRef;
   }
 
-  closeModal(modalComponentRef: ComponentRef<AssignModalComponent>) {}
+  closeModal(modalComponentRef: ComponentRef<AssignModalComponent>) {
+    modalComponentRef.destroy();
+  }
 
   submitModal(modalComponentRef: ComponentRef<AssignModalComponent>) {
     modalComponentRef.destroy();

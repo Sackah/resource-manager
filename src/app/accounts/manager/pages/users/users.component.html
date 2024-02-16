@@ -5,22 +5,39 @@
     <div class="buttons-wrapper">
       <app-button-new (click)="openManagerUserCreationModal()"></app-button-new>
       <app-manager-usercreation
-        [isOpen]="managerUserCreationModalOpen"></app-manager-usercreation>
+        [isOpen]="managerUserCreationModalOpen"
+        (userCreated)="updateUsers()"></app-manager-usercreation>
     </div>
   </header>
   <div class="toggles">
-    <h3
-      [class]="display === 'all' ? 'active' : ''"
-      (click)="toggleDisplay('all')">
+    <h3 [class.active]="display === 'all'" (click)="toggleDisplay('all')">
       All
     </h3>
+    <h3 [class.active]="display === 'active'" (click)="toggleDisplay('active')">
+      Active
+    </h3>
     <h3
-      [class]="display !== 'all' ? 'active' : ''"
+      [class.active]="display === 'inactive'"
+      (click)="toggleDisplay('inactive')">
+      Inactive
+    </h3>
+    <h3
+      [class.active]="display === 'pending'"
+      (click)="toggleDisplay('pending')">
+      Pending
+    </h3>
+    <h3
+      [class.active]="display === 'archives'"
       (click)="toggleDisplay('archives')">
       Archives
     </h3>
   </div>
+
   @if (display === 'all') { <app-user-list></app-user-list>
 
-  } @else if (display === 'archives') { <app-archived-list></app-archived-list>}
+  }@else if (display === 'archives') {
+  <app-archived-list></app-archived-list> } @else if (display === 'active') {
+  <app-active-users></app-active-users> } @else if (display === 'inactive')
+  {<app-inactive-users></app-inactive-users> } @else if (display === 'pending')
+  { <app-pending-users></app-pending-users>}
 </div>

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { ProjectDetails } from '../../../types/types';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { ProjectDetails } from '../../../types/types';
 
 @Component({
   selector: 'app-delete-project-modal',
@@ -15,11 +15,11 @@ export class DeleteProjectModalComponent {
 
   constructor(public activeModal: NgbActiveModal) {}
 
-  cancelDelete() {
+  public cancelDelete() {
     this.activeModal.dismiss('cancel');
   }
 
-  confirmDelete() {
+  public confirmDelete() {
     this.activeModal.close('delete');
   }
 }

@@ -1,28 +1,17 @@
-@for (star of stars; track $index) {
-<svg
-  xmlns="http://www.w3.org/2000/svg"
-  width="24"
-  height="24"
-  viewBox="0 0 24 24"
-  (click)="rate($index + 1)"
-  [class]="{ active: $index < rating || $index < hoverIndex }"
-  (mouseover)="hover($index + 1)"
-  (mouseleave)="leave()">
-  <path
-    fill="#fff"
-    stroke="black"
-    stroke-dasharray="64"
-    stroke-dashoffset="64"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    stroke-width="2"
-    d="M12 3L14.35 8.76L20.56 9.22L15.8 13.24L17.29 19.28L12 16L6.71 19.28L8.2 13.24L3.44 9.22L9.65 8.76Z">
-    <animate
-      fill="freeze"
-      attributeName="stroke-dashoffset"
-      dur="0.6s"
-      values="64;0" />
-    <animate fill="freeze" begin="0.6s" dur="0.15s" values="0;0.3" />
-  </path>
-</svg>
-}
+<div class="rating">
+  @for (star of stars; track $index) {
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="50"
+    height="50"
+    viewBox="0 0 48 48"
+    (click)="rate($index + 1)"
+    [class]="{ active: $index < rating || $index < hoverIndex }"
+    (mouseover)="hover($index + 1)"
+    (mouseleave)="leave()">
+    <path
+      d="M5.59099 0L7.39056 3.06819L10.8851 3.81966L8.50276 6.46738L8.86294 10L5.59099 8.56819L2.31905 10L2.67923 6.46738L0.296875 3.81966L3.79142 3.06819L5.59099 0Z"
+      fill="#626262" />
+  </svg>
+  }
+</div>

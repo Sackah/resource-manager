@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { ProjectCreationModalComponent } from '../../../../shared/components/modals/project-creation-modal/project-creation-modal.component';
-import { ProjectTableComponent } from '../../../admin/components/project-table/project-table.component';
-import { ButtonNewComponent } from '../../../user/components/button-new/button-new.component';
-import { ArchivedProjectsComponent } from '../../../admin/components/archived-projects/archived-projects.component';
+import { ArchivedProjectsComponent } from '@app/accounts/admin/components/archived-projects/archived-projects.component';
+import { ButtonNewComponent } from '@app/accounts/user/components/button-new/button-new.component';
+import { ProjectCreationModalComponent } from '@app/shared/components/modals/project-creation-modal/project-creation-modal.component';
+import { ProjectTableComponent } from '@app/accounts/admin/components/project-table/project-table.component';
 
 @Component({
   selector: 'app-project',
@@ -20,9 +20,12 @@ import { ArchivedProjectsComponent } from '../../../admin/components/archived-pr
 })
 export class ProjectComponent {
   projectCreationModalOpen = false;
-  display: 'all' | 'archives' = 'all';
-  closed: boolean = false;
-  opening: boolean = true;
+
+  public display: 'all' | 'archives' = 'all';
+
+  public closed = false;
+
+  public opening = true;
 
   toggleDisplay(view: 'all' | 'archives'): void {
     this.display = view;

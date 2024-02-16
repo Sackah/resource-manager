@@ -6,7 +6,7 @@ import {
   Injector,
   ViewContainerRef,
 } from '@angular/core';
-import { EditUserModalComponent } from './edit-user-modal.component'; // Make sure to adjust the path
+import { EditUserModalComponent } from './edit-user-modal.component';
 import { User } from '../../../types/types';
 
 @Injectable({
@@ -27,7 +27,7 @@ export class EditUserModalService {
     );
     if (options?.user) {
       modalComponentRef.instance.user = options.user;
-      modalComponentRef.instance.setValues(); // Assuming you have a method to set initial values
+      modalComponentRef.instance.setValues();
     }
     modalComponentRef.instance.closeEvent.subscribe(() =>
       this.closeModal(modalComponentRef)
@@ -43,12 +43,11 @@ export class EditUserModalService {
   closeModal(modalComponentRef: ComponentRef<EditUserModalComponent>) {
     setTimeout(() => {
       modalComponentRef.destroy();
-    }, 400);
+    }, 4000);
   }
 
   submitModal(modalComponentRef: ComponentRef<EditUserModalComponent>) {
-    modalComponentRef.instance.submitForm(); // Assuming you have a submitForm method
-    // Add any additional logic you need upon submitting the modal
+    modalComponentRef.instance.submitForm();
     modalComponentRef.destroy();
   }
 }

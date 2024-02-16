@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { LoginSideIllustrationComponent } from '../../../../auth/components/login-side-illustration/login-side-illustration.component';
 import {
   ReactiveFormsModule,
   FormGroup,
@@ -9,13 +8,14 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { Subscription } from 'rxjs';
+import { LoginSideIllustrationComponent } from '@app/auth/components/login-side-illustration/login-side-illustration.component';
+import { UpdatePasswordService } from '@app/auth/services/update-password.service';
 import {
   UserPasswordState,
   selectCurrentUser,
+  selectUpdateUserPassword,
 } from '../../../../auth/store/authorization/AuthReducers';
-import { selectUpdateUserPassword } from '../../../../auth/store/authorization/AuthReducers';
-import { Subscription } from 'rxjs';
-import { UpdatePasswordService } from '../../../../auth/services/update-password.service';
 
 @Component({
   selector: 'app-admin-account-setup',
@@ -28,14 +28,28 @@ import { UpdatePasswordService } from '../../../../auth/services/update-password
   ],
 })
 export class AccountSetupComponent implements OnInit, OnDestroy {
-  subscriptions: Subscription[] = [];
-  resetPasswordForm!: FormGroup;
-  showOldPassword: boolean = false;
-  showNewPassword: boolean = false;
-  passwordStrength!: 'weak' | 'medium' | 'strong' | '';
-  storeData!: UserPasswordState;
-  email!: string;
-  errorMessage!: string;
+  private subscriptions: Subscription[] = [];
+
+  public resetPasswordForm: FormGroup = new FormGroup({
+    old_password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(8),
+    ]),
+    password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(8),
+    ]),
+  });
+
+  public showOldPassword = false;
+
+  public showNewPassword = false;
+
+  private storeData!: UserPasswordState;
+
+  private email!: string;
+
+  public errorMessage!: string;
 
   constructor(
     private router: Router,
@@ -44,21 +58,7 @@ export class AccountSetupComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.resetPassForm();
     this.storeSub();
-  }
-
-  public resetPassForm() {
-    this.resetPasswordForm = new FormGroup({
-      old_password: new FormControl('', [
-        Validators.required,
-        Validators.minLength(8),
-      ]),
-      password: new FormControl('', [
-        Validators.required,
-        Validators.minLength(8),
-      ]),
-    });
   }
 
   public storeSub() {
@@ -79,7 +79,7 @@ export class AccountSetupComponent implements OnInit, OnDestroy {
       },
     });
 
-    this.subscriptions.push(storeSubscription);
+    this.subscriptions.push(storeSubscription, emailSubscription);
   }
 
   get oldPasswordField() {
@@ -90,12 +90,13 @@ export class AccountSetupComponent implements OnInit, OnDestroy {
     return this.showNewPassword ? 'text' : 'password';
   }
 
-  getOldPasswordErrors() {
+  public getOldPasswordErrors() {
     const control = this.resetPasswordForm.get('old_password');
     if (control?.invalid && (control.dirty || control.touched)) {
       if (control.hasError('required')) {
         return "Password can't be empty";
-      } else if (control.hasError('minlength')) {
+      }
+      if (control.hasError('minlength')) {
         return 'Password must be at least 8 characters';
       }
     }
@@ -103,12 +104,13 @@ export class AccountSetupComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  getNewPasswordErrors() {
+  public getNewPasswordErrors() {
     const control = this.resetPasswordForm;
     if (control?.invalid && (control.dirty || control.touched)) {
       if (control.hasError('required')) {
         return "Password can't be empty";
-      } else if (control.hasError('minlength')) {
+      }
+      if (control.hasError('minlength')) {
         return 'Password must be at least 8 characters';
       }
     }
@@ -116,26 +118,9 @@ export class AccountSetupComponent implements OnInit, OnDestroy {
     return '';
   }
 
-  updatePasswordStrength() {
-    const passwordControl = this.resetPasswordForm.get('password');
-    if (passwordControl?.errors?.['passwordStrength']) {
-      this.passwordStrength = passwordControl.errors['passwordStrength'];
-    } else {
-      this.passwordStrength = 'strong';
-    }
-  }
-
-  get cssClasses() {
-    return {
-      weak: this.passwordStrength === 'weak',
-      medium: this.passwordStrength === 'medium',
-      strong: this.passwordStrength === 'strong',
-    };
-  }
-
-  submitForm() {
+  public submitForm() {
     const credentials = this.resetPasswordForm.value;
-    const email = this.email;
+    const { email } = this;
     if (this.resetPasswordForm.valid) {
       const reqBody = {
         ...credentials,

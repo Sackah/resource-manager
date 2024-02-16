@@ -1,14 +1,14 @@
 import { Route } from '@angular/router';
-import { DashboardComponent } from '../admin/pages/dashboard/dashboard.component';
-import { AccountSetupComponent } from '../admin/pages/account-setup/account-setup.component';
-import { UsercreationComponent } from '../admin/pages/usercreation/usercreation.component';
-import { UsersComponent } from '../admin/pages/users/users.component';
-import { MainComponent } from '../admin/main.component';
-import { SettingsComponent } from '../admin/pages/settings/settings.component';
-import { ClientComponent } from '../admin/pages/client/client.component';
-import { ProjectComponent } from '../admin/pages/project/project.component';
-import { ScheduleComponent } from '../admin/pages/schedule/schedule.component';
-import { MessageComponent } from '../admin/pages/message/message.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { AccountSetupComponent } from './pages/account-setup/account-setup.component';
+import { UsercreationComponent } from './pages/usercreation/usercreation.component';
+import { UsersComponent } from './pages/users/users.component';
+import { MainComponent } from './main.component';
+import { SettingsComponent } from './pages/settings/settings.component';
+import { ClientComponent } from './pages/client/client.component';
+import { ProjectComponent } from './pages/project/project.component';
+import { ScheduleComponent } from './pages/schedule/schedule.component';
+import { MessageComponent } from './pages/message/message.component';
 
 export const AdminRoutes: Route[] = [
   {

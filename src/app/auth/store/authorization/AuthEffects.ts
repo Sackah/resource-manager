@@ -1,9 +1,9 @@
 import { inject } from '@angular/core';
 import { createEffect, Actions, ofType } from '@ngrx/effects';
-import { AuthActions } from './AuthActions';
-import { catchError, map, switchMap, of, tap, delay } from 'rxjs';
+import { catchError, map, switchMap, of, tap } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { AuthActions } from './AuthActions';
 import { LoginService } from '../../services/login.service';
 import { AccesstokenService } from '../../../shared/services/accesstoken.service';
 import { UpdateUserDetailsService } from '../../services/update-user-details.service';
@@ -16,11 +16,11 @@ export const loginEffect = createEffect(
     actions$ = inject(Actions),
     loginService = inject(LoginService),
     tokenService = inject(AccesstokenService)
-  ) => {
-    return actions$.pipe(
+  ) =>
+    actions$.pipe(
       ofType(AuthActions.login),
-      switchMap(userDetails => {
-        return loginService.post(userDetails).pipe(
+      switchMap(userDetails =>
+        loginService.post(userDetails).pipe(
           map(response => {
             tokenService.set(response.accessToken);
             return AuthActions.loginSuccess(response);
@@ -37,20 +37,19 @@ export const loginEffect = createEffect(
             }
             return of(AuthActions.loginFailure(error.error));
           })
-        );
-      })
-    );
-  },
+        )
+      )
+    ),
   { functional: true }
 );
 
 export const redirectAfterLogin = createEffect(
-  (action$ = inject(Actions), router = inject(Router)) => {
-    return action$.pipe(
+  (action$ = inject(Actions), router = inject(Router)) =>
+    action$.pipe(
       ofType(AuthActions.loginSuccess),
       tap({
         next: res => {
-          switch (res.user.roles) {
+          switch (res.user.role) {
             case 'Basic User':
               router.navigateByUrl('/user/dashboard');
               break;
@@ -70,8 +69,7 @@ export const redirectAfterLogin = createEffect(
           }
         },
       })
-    );
-  },
+    ),
   { functional: true, dispatch: false }
 );
 
@@ -81,14 +79,12 @@ export const relogInUserEffect = createEffect(
     relogUserService = inject(CurrentUserService),
     router = inject(Router),
     tokenService = inject(AccesstokenService)
-  ) => {
-    return action$.pipe(
+  ) =>
+    action$.pipe(
       ofType(AuthActions.fetchCurrentUser),
-      switchMap(() => {
-        return relogUserService.get().pipe(
-          map(response => {
-            return AuthActions.fetchCurrentUserSuccess(response);
-          }),
+      switchMap(() =>
+        relogUserService.get().pipe(
+          map(response => AuthActions.fetchCurrentUserSuccess(response)),
           catchError((error: HttpErrorResponse) => {
             router.navigateByUrl('/login');
 
@@ -103,10 +99,9 @@ export const relogInUserEffect = createEffect(
             tokenService.clear('lastRoute');
             return of(AuthActions.fetchCurrentUserFailure(error.error));
           })
-        );
-      })
-    );
-  },
+        )
+      )
+    ),
   { functional: true }
 );
 
@@ -115,13 +110,13 @@ export const redirectAfterReLogin = createEffect(
     action$ = inject(Actions),
     router = inject(Router),
     tokenService = inject(AccesstokenService)
-  ) => {
-    return action$.pipe(
+  ) =>
+    action$.pipe(
       ofType(AuthActions.fetchCurrentUserSuccess),
       tap({
         next: res => {
           const lastRoute = tokenService.get('lastRoute') as string;
-          switch (res.user.roles) {
+          switch (res.user.role) {
             case 'Basic User':
               router.navigateByUrl(lastRoute || '/user/dashboard');
               break;
@@ -142,8 +137,7 @@ export const redirectAfterReLogin = createEffect(
           tokenService.clear('lastRoute');
         },
       })
-    );
-  },
+    ),
   { functional: true, dispatch: false }
 );
 
@@ -152,11 +146,11 @@ export const updateUserPassword = createEffect(
     action$ = inject(Actions),
     updatePasswordService = inject(UpdatePasswordService),
     setupService = inject(AccountSetupService)
-  ) => {
-    return action$.pipe(
+  ) =>
+    action$.pipe(
       ofType(AuthActions.updateUserPassword),
-      switchMap(userDetails => {
-        return updatePasswordService.postUser(userDetails).pipe(
+      switchMap(userDetails =>
+        updatePasswordService.postUser(userDetails).pipe(
           map(response => {
             setupService.toggle('details');
             return AuthActions.updateUserPasswordSuccess(response);
@@ -172,10 +166,9 @@ export const updateUserPassword = createEffect(
             }
             return of(AuthActions.updateUserPasswordFailure(error.error));
           })
-        );
-      })
-    );
-  },
+        )
+      )
+    ),
   { functional: true }
 );
 
@@ -184,18 +177,17 @@ export const toggleFormOrRedirect = createEffect(
     action$ = inject(Actions),
     accountSetupService = inject(AccountSetupService),
     router = inject(Router)
-  ) => {
-    return action$.pipe(
+  ) =>
+    action$.pipe(
       ofType(AuthActions.updateUserPasswordSuccess),
       tap(res => {
-        if (res.user.roles === 'Administrator') {
+        if (res.user.role === 'Administrator') {
           router.navigateByUrl('/admin/dashboard');
         } else {
           accountSetupService.toggle('details');
         }
       })
-    );
-  },
+    ),
   { functional: true, dispatch: false }
 );
 
@@ -204,11 +196,11 @@ export const updateUserDetailsEffect = createEffect(
     action$ = inject(Actions),
     updateUserService = inject(UpdateUserDetailsService),
     router = inject(Router)
-  ) => {
-    return action$.pipe(
+  ) =>
+    action$.pipe(
       ofType(AuthActions.updateUserDetails),
-      switchMap(userDetails => {
-        return updateUserService.post(userDetails).pipe(
+      switchMap(userDetails =>
+        updateUserService.post(userDetails).pipe(
           map(response => {
             router.navigateByUrl('/user/dashboard');
             return AuthActions.updateUserDetailsSuccess(response);
@@ -224,9 +216,8 @@ export const updateUserDetailsEffect = createEffect(
             }
             return of(AuthActions.updateUserDetailsFailure(error.error));
           })
-        );
-      })
-    );
-  },
+        )
+      )
+    ),
   { functional: true }
 );

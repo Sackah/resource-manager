@@ -9,7 +9,7 @@ export const AccountRoutes: Routes = [
     component: RedirectComponent,
   },
   {
-    path: 'account-setup/:userId/:accesstoken/:email/:id',
+    path: 'account-setup/:refId/:accesstoken/:email/:id',
     component: AccountSetupComponent,
   },
   {

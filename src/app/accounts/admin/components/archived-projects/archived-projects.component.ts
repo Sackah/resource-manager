@@ -1,25 +1,33 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { DeleteProjectModalComponent } from '@app/shared/components/modals/delete-project-modal/delete-project-modal.component';
 import {
+  ArchivedProjectsResponse,
   GenericResponse,
   ProjectDetails,
 } from '../../../../shared/types/types';
 import { ProjectsService } from '../../services/projects.service';
-import { DeleteProjectModalComponent } from '../../../../shared/components/modals/delete-project-modal/delete-project-modal.component';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-archived-projects',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './archived-projects.component.html',
-  styleUrl: './archived-projects.component.css',
+  styleUrls: [
+    './archived-projects.component.css',
+    '../../../../auth/styles/styles.css',
+  ],
 })
 export class ArchivedProjectsComponent implements OnInit {
   public archivedProjects: ProjectDetails[] = [];
-  public loading: boolean = true;
+
+  public loading = true;
+
   public showDropdownForProject: ProjectDetails | null = null;
+
   public successMessage: string | null = null;
+
   public errorMessage: string | null = null;
 
   constructor(
@@ -38,18 +46,18 @@ export class ArchivedProjectsComponent implements OnInit {
         : archivedProjects;
   }
 
-  private fetchArchivedProjects(): void {
+  fetchArchivedProjects(): void {
     this.loading = true;
     this.projectsService.archivedProjects().subscribe({
-      next: (response: any) => {
+      next: (response: ArchivedProjectsResponse) => {
         const archivedProjects = response?.archives || [];
         if (Array.isArray(archivedProjects)) {
           this.archivedProjects = archivedProjects as ProjectDetails[];
-        } else {
         }
       },
       error: error => {
         error;
+        this.errorMessage = 'Server Error: Could not fetch archived projects.';
       },
       complete: () => {
         this.loading = false;
@@ -68,11 +76,11 @@ export class ArchivedProjectsComponent implements OnInit {
       },
 
       error: () => {
-        (this.errorMessage =
-          'Server Error: Could not restore project, please try again later.'),
-          setTimeout(() => {
-            this.errorMessage = null;
-          }, 3000);
+        this.errorMessage =
+          'Server Error: Could not restore project, please try again later.';
+        setTimeout(() => {
+          this.errorMessage = null;
+        }, 3000);
       },
     });
   }
@@ -103,11 +111,11 @@ export class ArchivedProjectsComponent implements OnInit {
         }, 3000);
       },
       error: () => {
-        (this.errorMessage =
-          'Server Error: Could not delete project, please try again later.'),
-          setTimeout(() => {
-            this.errorMessage = null;
-          }, 3000);
+        this.errorMessage =
+          'Server Error: Could not delete project, please try again later.';
+        setTimeout(() => {
+          this.errorMessage = null;
+        }, 3000);
       },
     });
   }

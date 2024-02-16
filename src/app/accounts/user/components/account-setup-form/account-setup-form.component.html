@@ -7,7 +7,7 @@
     <input
       type="file"
       id="image"
-      name="image"
+      name="profilePicture"
       (change)="onFileChange($event)"
       accept=".jpg,.jpeg,.png" />
   </div>
@@ -54,22 +54,22 @@
 
   <label for="phoneNumber" class="form-label">Phone number</label>
   <input
-    id="'phoneNumber'"
-    type="'tel'"
-    class="global-input-auth {{ getNumberErrors() ? 'error' : '' }}"
-    pattern="[0-9]{10}"
-    maxlength="10"
-    placeholder="051234567"
+    id="phoneNumber"
+    type="tel"
+    class="global-input-auth"
+    pattern="[0-9]{10,12}"
+    maxlength="12"
+    placeholder="Enter phone number"
     formControlName="phoneNumber" />
-  @if(getNumberErrors()){
+  <!-- @if(getNumberErrors()){
   <div class="validation-error-message">
     {{ getNumberErrors() }}
   </div>
-  }
+  } -->
 
   <div class="flex-container">
     <div class="flex-item">
-      <label for="phoneNumber" class="form-label">Location</label>
+      <label for="location" class="form-label">Location</label>
       <input
         id="'location"
         type="text"
@@ -85,15 +85,7 @@
 
     <div class="flex-item">
       <label class="form-label" for="location">Time Zone</label>
-      <select
-        id="timeZone"
-        formControlName="timeZone"
-        class="global-input-auth">
-        <option value="" disabled selected>Select Time Zone</option>
-        <option *ngFor="let timeZone of timeZones" [value]="timeZone">
-          {{ timeZone }}
-        </option>
-      </select>
+      <div class="global-input-auth">{{ timeZoneName }}</div>
     </div>
   </div>
   <button type="submit" class="global-button-auth">GET STARTED</button>

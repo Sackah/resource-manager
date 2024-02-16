@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, Output, EventEmitter } from '@angular/core';
-import { UsercreationComponent } from '../../../admin/pages/usercreation/usercreation.component';
+import { Component } from '@angular/core';
+import { ManagerUsercreationComponent } from '@app/accounts/manager/pages/manager-usercreation/manager-usercreation.component';
+import { UsercreationComponent } from '@app/accounts/admin/pages/usercreation/usercreation.component';
 import { UsercreationModalService } from '../../../admin/services/usercreation-modal.service';
 import { ManagerUsercreationService } from '../../../admin/services/manager-usercreation.service';
-import { ManagerUsercreationComponent } from '../../../manager/pages/manager-usercreation/manager-usercreation.component';
 
 @Component({
   selector: 'app-button-new',
@@ -19,13 +19,10 @@ export class ButtonNewComponent {
   ) {}
 
   openUserCreationModal() {
-    this.usercreationmodalService
-      .openUserCreationModal()
-      .result.finally(() => {});
+    this.usercreationmodalService.openUserCreationModal();
   }
+
   openManagerUserCreationModal() {
-    this.managerusercreationmodalService
-      .openManagerUserCreationModal()
-      .result.finally(() => {});
+    this.managerusercreationmodalService.openManagerUserCreationModal();
   }
 }

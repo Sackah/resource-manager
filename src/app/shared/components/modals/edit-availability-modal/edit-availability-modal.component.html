@@ -1,0 +1,50 @@
+<div class="message-container">
+  <div class="alert-success" *ngIf="successMessage">
+    <span class="closebtn"></span>
+    {{ successMessage }}
+  </div>
+  <div class="alert-error" *ngIf="errorMessage">
+    <span class="closebtn"></span>
+    {{ errorMessage }}
+  </div>
+</div>
+
+<div [class]="modalClasses">
+  <h2>Edit Schedule</h2>
+  <form [formGroup]="editSchedule" (ngSubmit)="submit()">
+    <label>Project </label>
+    <div class="input-fields">
+      {{ selectedProject?.name }}
+    </div>
+    <label>Time/day</label>
+    <div>
+      <select formControlName="workHours" class="input-field">
+        <option value="{{ selectedProject?.workHours }}" selected>
+          {{ selectedProject?.workHours }} Hour
+        </option>
+        <option value="2">2 Hours</option>
+        <option value="3">3 Hours</option>
+        <option value="4">4 Hours</option>
+        <option value="5">5 Hours</option>
+        <option value="6">6 Hours</option>
+        <option value="7">7 Hours</option>
+        <option value="8">8 Hours</option>
+      </select>
+    </div>
+    <div class="buttons-wrapper">
+      <button
+        class="button border border-[#9AA8BC] bg-[#FFFFFF] text-[#022F54] hover:bg-[#e6e6e6]"
+        (click)="close()">
+        Cancel
+      </button>
+      <button
+        type="submit"
+        class="btn-add bg-[#1F26A8] text-[#fff]"
+        [disabled]="">
+        <div *ngIf="isLoading" class="spinner"></div>
+        Save
+      </button>
+    </div>
+  </form>
+</div>
+<div [class]="backdropClasses" (click)="close()"></div>

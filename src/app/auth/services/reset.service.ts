@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BASE_URL } from 'src/environment/config';
 import {
   ResetPasswordRequest,
   ResetPasswordResponse,
   SendOtp,
   SendOtpResponse,
 } from '../types/reset-types';
-import { BASE_URL } from '../../../environment/config';
 
 @Injectable({
   providedIn: 'root',

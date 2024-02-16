@@ -8,10 +8,9 @@ describe('UserGroupComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UserGroupComponent]
-    })
-    .compileComponents();
-    
+      imports: [UserGroupComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(UserGroupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

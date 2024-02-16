@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ProjectDetails } from '../../../types/types';
 import { CommonModule } from '@angular/common';
+import { ProjectDetails } from '../../../types/types';
 
 @Component({
   selector: 'app-project-details-modal',
@@ -14,14 +14,16 @@ export class ProjectDetailsModalComponent {
   @Input() project?: ProjectDetails | null = null;
 
   constructor(public activeModal: NgbActiveModal) {}
+
   hasEmployees(): boolean {
     return !!this.project?.employees && this.project?.employees.length > 0;
   }
+
   closeModal(): void {
     this.activeModal.close();
   }
 
-  generateClientInitials(clientName: string): string {
+  public generateClientInitials(clientName: string): string {
     const words = clientName.split(' ');
 
     const filteredLetters = words
@@ -33,11 +35,10 @@ export class ProjectDetailsModalComponent {
       return name.length > 1
         ? name[0] + name[name.length - 1]
         : name[0].toUpperCase();
-    } else {
-      return filteredLetters
-        .map(word => word[0])
-        .join('')
-        .toUpperCase();
     }
+    return filteredLetters
+      .map(word => word[0])
+      .join('')
+      .toUpperCase();
   }
 }

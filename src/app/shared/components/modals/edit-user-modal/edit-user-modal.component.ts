@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, signal, EventEmitter, Output } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  EventEmitter,
+  Output,
+  OnDestroy,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -7,17 +13,19 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { Subject, Subscription } from 'rxjs';
 import { SettingsService } from '../../../../accounts/user/services/settings.service';
 import {
   User,
-  InitialSig,
   Specializations,
   Skills,
   Departments,
+  NameType,
 } from '../../../types/types';
 import { UserListService } from '../../../../accounts/admin/components/user-list/user-list.service';
 import { UsersService } from '../../../../accounts/admin/services/users.service';
+
 @Component({
   selector: 'app-edit-user',
   standalone: true,
@@ -25,33 +33,44 @@ import { UsersService } from '../../../../accounts/admin/services/users.service'
   templateUrl: './edit-user-modal.component.html',
   styleUrl: './edit-user-modal.component.css',
 })
-export class EditUserModalComponent implements OnInit {
-  user!: User;
-  subscriptions: Subscription[] = [];
-  specializations!: Specializations[];
-  departments!: Departments[];
-  skills: Skills[] = [];
+export class EditUserModalComponent implements OnInit, OnDestroy {
+  public user!: User;
+
+  public subscriptions: Subscription[] = [];
+
+  public specializations!: Specializations[];
+
+  public departments!: Departments[];
+
+  public skills: Skills[] = [];
+
+  public isLoading = false;
+
   public successMessage: string | null = null;
+
   public errorMessage: string | null = null;
-  // settingsSig = signal<InitialSig>({
-  //   success: null,
-  //   error: null,
-  //   pending: false,
-  // });
 
   @Output() closeEvent = new EventEmitter<void>();
+
   @Output() submitEvent = new EventEmitter<void>();
-  opening = false;
-  closed = false;
-  rolesDropdownOpen = false;
-  selectedRoles: string = '';
-  selectedDepartment: string = '';
-  selectedSpecialization: string = '';
-  specializationDropdownOpen = false;
-  departmentDropdownOpen = false;
-  imgUrl = '../../../../../assets/images/user/profile-container.svg';
+
+  private opening = false;
+
+  private closed = false;
+
+  public rolesDropdownOpen = false;
+
+  public selectedRoles = '';
+
+  public selectedDepartment = '';
+
+  public selectedSpecialization = '';
+
+  public specializationDropdownOpen = false;
+
+  public departmentDropdownOpen = false;
+
   userDetails: FormGroup = this.fb.group({
-    profilePicture: [null],
     email: ['', [Validators.required, Validators.email]],
     firstName: [
       '',
@@ -76,11 +95,15 @@ export class EditUserModalComponent implements OnInit {
     private userListService: UserListService
   ) {}
 
+  private unsubscribe$ = new Subject<void>();
+
   ngOnInit(): void {
     this.setValues();
+    this.fetchSpecializations();
+    this.fetchDepartments();
   }
 
-  getSpecializationErrors(): string {
+  public getSpecializationErrors(): string {
     const control = this.userDetails.get('specialization');
     if (control?.invalid && (control.dirty || control.touched)) {
       if (control.hasError('required')) {
@@ -90,7 +113,7 @@ export class EditUserModalComponent implements OnInit {
     return '';
   }
 
-  getDepartmentErrors(): string {
+  public getDepartmentErrors(): string {
     const control = this.userDetails.get('department');
     if (control?.invalid && (control.dirty || control.touched)) {
       if (control.hasError('required')) {
@@ -100,12 +123,13 @@ export class EditUserModalComponent implements OnInit {
     return '';
   }
 
-  getEmailErrors(): string {
+  public getEmailErrors(): string {
     const control = this.userDetails.get('email');
     if (control?.invalid && (control.dirty || control.touched)) {
       if (control.hasError('required')) {
         return 'This field is required';
-      } else if (control.hasError('email')) {
+      }
+      if (control.hasError('email')) {
         return 'Please enter a valid email address';
       }
     }
@@ -113,12 +137,13 @@ export class EditUserModalComponent implements OnInit {
     return '';
   }
 
-  getNameErrors(name: 'firstName' | 'lastName') {
+  public getNameErrors(name: NameType) {
     const control = this.userDetails.get(name);
     if (control?.invalid && (control.dirty || control.touched)) {
       if (control.hasError('required')) {
         return 'This field is required';
-      } else if (control.hasError('pattern')) {
+      }
+      if (control.hasError('pattern')) {
         return 'Name can only contain letters and one space per word';
       }
     }
@@ -126,7 +151,7 @@ export class EditUserModalComponent implements OnInit {
     return '';
   }
 
-  getSkillsError(): string {
+  public getSkillsError(): string {
     const control = this.userDetails.get('skills');
     if (control?.invalid && (control.dirty || control.touched)) {
       if (control.hasError('required')) {
@@ -136,27 +161,37 @@ export class EditUserModalComponent implements OnInit {
     return '';
   }
 
-  specSub = this.settingsService.getSpecializations().subscribe({
-    next: (res: any) => {
-      this.specializations = res;
-    },
-  });
+  fetchSpecializations(): void {
+    this.settingsService
+      .getSpecializations()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: res => {
+          this.specializations = res;
+        },
+      });
+  }
 
-  departmentSub = this.settingsService.getDepartments().subscribe({
-    next: (res: any) => {
-      this.departments = res;
-    },
-  });
+  fetchDepartments(): void {
+    this.settingsService
+      .getDepartments()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe({
+        next: res => {
+          this.departments = res;
+        },
+      });
+  }
 
-  rolesDropdown() {
+  public rolesDropdown() {
     this.rolesDropdownOpen = false;
   }
 
-  toggleRolesDropdown() {
+  public toggleRolesDropdown() {
     this.rolesDropdownOpen = !this.rolesDropdownOpen;
   }
 
-  selectRole(role: string) {
+  public selectRole(role: string) {
     const rolesControl = this.userDetails.get('roles');
     if (rolesControl) {
       rolesControl.setValue(role);
@@ -165,15 +200,15 @@ export class EditUserModalComponent implements OnInit {
     }
   }
 
-  departmentDropdown() {
+  public departmentDropdown() {
     this.departmentDropdownOpen = false;
   }
 
-  toggleDepartmentDropdown() {
+  public toggleDepartmentDropdown() {
     this.departmentDropdownOpen = !this.departmentDropdownOpen;
   }
 
-  selectDepartment(department: string) {
+  public selectDepartment(department: string) {
     const departmentControl = this.userDetails.get('department');
     if (departmentControl) {
       departmentControl.setValue(department);
@@ -195,49 +230,25 @@ export class EditUserModalComponent implements OnInit {
   setValues() {
     if (this.user) {
       this.userDetails.patchValue({
-        userId: this.user.userId ? this.user.userId : '',
+        refId: this.user.refId ? this.user.refId : '',
         email: this.user.email ? this.user.email : '',
         firstName: this.user.firstName ? this.user.firstName : '',
         lastName: this.user.lastName ? this.user.lastName : '',
-        imgUrl: this.user.profilePicture ? this.user.profilePicture : '',
-        // skills:
-        //   this.user.skills.length > 0 && this.user.skills
-        //     ? this.user.skills[0].name
-        //     : [],
+
         department: this.user.department ? this.user.department : '',
         specialization:
           this.user.specializations.length > 0 && this.user.specializations[0]
             ? this.user.specializations[0].name
             : [],
-        roles: this.user.roles ? this.user.roles : '',
+        roles: this.user.role ? this.user.role : '',
         bookable: this.user.bookable ? this.user.bookable : '',
         phoneNumber: this.user.phoneNumber ? this.user.phoneNumber : '',
       });
     }
   }
 
-  // get signalValues() {
-  //   const val = this.settingsSig();
-  //   return val;
-  // }
-
-  onFileChange(event: any) {
-    if (event.target?.files.length > 0) {
-      let reader = new FileReader();
-      const file = event.target.files[0];
-
-      reader.readAsDataURL(event.target.files[0]);
-      reader.onload = (event: any) => {
-        this.imgUrl = event.target.result;
-      };
-
-      this.userDetails.patchValue({
-        profilePicture: file,
-      });
-    }
-  }
-
-  submitForm() {
+  public submitForm() {
+    this.isLoading = true;
     if (!this.user) {
       return;
     }
@@ -253,53 +264,56 @@ export class EditUserModalComponent implements OnInit {
       bookable,
     } = this.userDetails.value;
     const reqBody = {
-      userId: this.user.userId,
+      refId: this.user.refId,
       phoneNumber: this.user.phoneNumber,
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      department: department,
-      specialization: specialization,
-      roles: roles,
-      skills: skills,
-      imgUrl: this.user.profilePicture,
-      bookable: bookable,
+      firstName,
+      lastName,
+      email,
+      department,
+      specialization,
+      roles,
+      skills,
+      bookable,
     };
 
-    if (this.userDetails.valid) {
-      this.usersService.updateDetails(reqBody).subscribe({
-        next: response => {
-          if (response && response.message) {
-            this.closeEvent.emit();
-            this.successMessage = response.message;
-            setTimeout(() => {
-              this.successMessage = null;
-            }, 1000);
-          }
-        },
-        error: () => {
-          (this.errorMessage =
-            'Server Error: Could not edit user, please try again later.'),
-            setTimeout(() => {
-              this.errorMessage = null;
-            }, 1000);
-        },
-      });
-    }
+    this.usersService.updateDetails(reqBody).subscribe({
+      next: response => {
+        if (response && response.message) {
+          this.closeEvent.emit();
+          this.successMessage = response.message;
+          setTimeout(() => {
+            this.successMessage = null;
+          }, 10000);
+        }
+      },
+      error: () => {
+        this.errorMessage =
+          'Server Error: Could not edit user, please try again later.';
+        setTimeout(() => {
+          this.errorMessage = null;
+        }, 10000);
+      },
+    });
   }
+
   get modalClasses() {
     return {
-      [`modal`]: true,
-      [`opening`]: this.opening,
-      [`closed`]: this.closed,
+      modal: true,
+      opening: this.opening,
+      closed: this.closed,
     };
   }
 
   get backdropClasses() {
     return {
-      [`backdrop`]: true,
-      [`opening`]: this.opening,
-      [`closed`]: this.closed,
+      backdrop: true,
+      opening: this.opening,
+      closed: this.closed,
     };
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }

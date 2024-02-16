@@ -8,10 +8,9 @@ describe('EmailFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EmailFormComponent]
-    })
-    .compileComponents();
-    
+      imports: [EmailFormComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(EmailFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -1,12 +1,12 @@
 import { Route } from '@angular/router';
-import { SettingsComponent } from '../manager/pages/settings/settings.component';
-import { DashboardComponent } from '../manager/pages/dashboard/dashboard.component';
-import { MainComponent } from '../manager/main.component';
-import { UsersComponent } from '../manager/pages/users/users.component';
-import { ClientComponent } from '../manager/pages/client/client.component';
-import { MessageComponent } from '../manager/pages/message/message.component';
-import { ProjectComponent } from '../manager/pages/project/project.component';
-import { ScheduleComponent } from '../manager/pages/schedule/schedule.component';
+import { SettingsComponent } from './pages/settings/settings.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { MainComponent } from './main.component';
+import { UsersComponent } from './pages/users/users.component';
+import { ClientComponent } from './pages/client/client.component';
+import { MessageComponent } from './pages/message/message.component';
+import { ProjectComponent } from './pages/project/project.component';
+import { ScheduleComponent } from './pages/schedule/schedule.component';
 
 export const ManagerRoutes: Route[] = [
   {

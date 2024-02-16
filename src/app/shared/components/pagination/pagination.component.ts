@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'pagination',
+  selector: 'app-pagination',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './pagination.component.html',
@@ -10,6 +10,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class PaginationComponent {
   @Input() currentPage: number = 1;
+
   @Input() totalPages: number = 1;
 
   @Output() pageChange: EventEmitter<number> = new EventEmitter<number>();

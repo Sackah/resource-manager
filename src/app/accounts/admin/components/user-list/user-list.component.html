@@ -1,5 +1,3 @@
-<div class="assign-button-container"></div>
-
 <p class="total-users">
   <span>{{ totalUsers }}</span>
 </p>
@@ -16,19 +14,34 @@
   </div>
 </div>
 <ng-container *ngIf="loading; else userList">
-  <div class="spinner-dots">
-    <div class="custom-spinner">
-      <div class="spinner-dot"></div>
-      <div class="spinner-dot"></div>
-      <div class="spinner-dot"></div>
-    </div>
-  </div>
+  <app-custom-spinner></app-custom-spinner>
 </ng-container>
 
 <ng-template #userList>
   <div class="user-list-container">
     <table class="user-table">
       <thead>
+        <tr *ngIf="isAnyUserSelected">
+          <th style="background: #fff; color: #5e718d" colspan="6">
+            <div class="action-card">
+              <button style="margin-right: 30px" (click)="selectAll()">
+                Select all
+              </button>
+              <button style="margin-right: 30px" (click)="deselectAll()">
+                De-select all
+              </button>
+              <button style="margin-right: 30px" (click)="deleteSelected()">
+                Delete
+              </button>
+              <button style="margin-right: 30px" (click)="archiveSelected()">
+                Archive
+              </button>
+              <button style="margin-right: 30px" (click)="restoreSelected()">
+                Restore
+              </button>
+            </div>
+          </th>
+        </tr>
         <tr>
           <th>Name</th>
           <th>Email</th>
@@ -41,18 +54,34 @@
       <tbody>
         <tr *ngFor="let user of users">
           <td class="grid-item">
-            <input
-              type="checkbox"
-              (change)="toggleUserSelection(user)"
-              class="checkbox-input" />
-
-            {{ user.firstName }} {{ user.lastName }}
+            <div class="checkbox-container">
+              <input
+                type="checkbox"
+                (change)="toggleUserSelection(user)"
+                class="checkbox-input ms-2 text-sm font-medium text-gray-900 dark:text-gray-300" />
+              <td class="grid-item" *ngIf="user.firstName"></td>
+              {{ user.firstName }} {{ user.lastName }}
+            </div>
           </td>
-          <td class="grid-item" (click)="openViewModal(user)">
+
+          <td
+            class="grid-item"
+            *ngIf="user.email; else notAvailable"
+            (click)="openViewModal(user)">
             {{ user.email }}
           </td>
-          <td class="grid-item">{{ user.roles }}</td>
-          <td class="grid-item">{{ user.department }}</td>
+          <ng-template #notAvailable
+            ><td class="grid-item">N/A</td></ng-template
+          >
+          <td class="grid-item" *ngIf="user.role; else notAvailable">
+            {{ user.role }}
+          </td>
+          <ng-template #notAvailable
+            ><td class="grid-item">N/A</td></ng-template
+          >
+          <td class="grid-item" *ngIf="user.department; else notAvailable">
+            {{ user.department }}
+          </td>
           <td
             class="grid-item"
             *ngIf="user.specializations && user.specializations.length > 0">
@@ -76,23 +105,24 @@
                 <li (click)="archiveUser(user)">Archive</li>
               </ul>
             </div>
-
-            <div class="actions-btn-container">
-              <button
-                class="actions-btn"
-                (click)="toggleDropdown(user); $event.stopPropagation()">
-                <div class="actions-dot">
-                  <img src="assets/images/user/dots-v.svg" alt="dots" />
-                </div>
-              </button>
+            <div class="border">
+              <div class="actions-btn-container">
+                <button
+                  class="actions-btn"
+                  (click)="toggleDropdown(user); $event.stopPropagation()">
+                  <div class="actions-dot">
+                    <img src="assets/images/user/dots-v.svg" alt="dots" />
+                  </div>
+                </button>
+              </div>
             </div>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
-  <pagination
+  <app-pagination
     [currentPage]="currentPage"
     [totalPages]="totalPages"
-    (pageChange)="onPageChange($event)"></pagination>
+    (pageChange)="onPageChange($event)"></app-pagination>
 </ng-template>

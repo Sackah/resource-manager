@@ -8,10 +8,9 @@ describe('AccountSetupFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AccountSetupFormComponent]
-    })
-    .compileComponents();
-    
+      imports: [AccountSetupFormComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(AccountSetupFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

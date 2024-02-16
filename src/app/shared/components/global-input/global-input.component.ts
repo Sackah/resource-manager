@@ -5,6 +5,7 @@ import {
   AbstractControl,
   FormControl,
 } from '@angular/forms';
+
 @Component({
   selector: 'app-global-input',
   standalone: true,
@@ -14,25 +15,34 @@ import {
 })
 export class GlobalInputComponent implements OnInit {
   @Input() id: string = '';
-  @Input() type: string = '';
-  @Input() value: string = '';
-  @Input() placeholder: string = '';
-  @Input() name: string = '';
-  @Input() globalClass: string = '';
-  @Input() control: FormControl | AbstractControl | any;
-  @Input() label: string = '';
-  @Input() required: boolean = false;
-  @Input() class: string = '';
-  @Input() onClick: () => void = () => {};
-  @Input() errorType: string = 'required';
-  @Input() errorMessage: string = 'Field is required';
-  @Input() showPassword: boolean = false;
 
-  constructor() {}
+  @Input() type: string = '';
+
+  @Input() value: string = '';
+
+  @Input() placeholder: string = '';
+
+  @Input() name: string = '';
+
+  @Input() globalClass: string = '';
+
+  @Input() control: FormControl | AbstractControl | any;
+
+  @Input() label: string = '';
+
+  @Input() required: boolean = false;
+
+  @Input() class: string = '';
+
+  @Input() errorType: string = 'required';
+
+  @Input() errorMessage: string = 'Field is required';
+
+  @Input() showPassword: boolean = false;
 
   ngOnInit(): void {
     if (this.control) {
-      this.control.valueChanges.subscribe((value: string) => {
+      this.control.valueChanges.subscribe(() => {
         this.value;
       });
     }

@@ -5,6 +5,19 @@
 }
 
 svg.active path {
-  fill: #fcd53f;
+  fill: #dfb300;
+}
+
+.rating {
   display: flex;
+  position: absolute;
+  margin-top: -20px;
+}
+
+.rating svg {
+  margin-right: -20px;
+}
+
+.rating svg:last-child {
+  margin-right: 0;
 }

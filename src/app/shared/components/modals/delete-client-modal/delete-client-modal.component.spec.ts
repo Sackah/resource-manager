@@ -8,10 +8,9 @@ describe('DeleteClientModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DeleteClientModalComponent]
-    })
-    .compileComponents();
-    
+      imports: [DeleteClientModalComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(DeleteClientModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

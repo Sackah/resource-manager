@@ -8,10 +8,9 @@ describe('ArchivedClientsListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ArchivedClientsListComponent]
-    })
-    .compileComponents();
-    
+      imports: [ArchivedClientsListComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(ArchivedClientsListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

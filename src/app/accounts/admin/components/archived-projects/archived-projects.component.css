@@ -127,39 +127,6 @@ tbody tr td img {
   cursor: pointer;
 }
 
-.dropdown-container {
-  position: absolute;
-  right: 170px;
-  background: #fff;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.16);
-  display: flex;
-  width: 123px;
-  height: 76px;
-  border-radius: 8px 8px 0px 0px;
-}
-
-ul {
-  list-style: none;
-  width: 123px;
-}
-li {
-  padding: 0.625rem;
-
-  &.dropdown-details-container {
-    cursor: pointer;
-  }
-  .dropdown-subject {
-    margin-bottom: 0.25rem;
-    font-size: 14px;
-    color: #3d4a5c;
-  }
-}
-
-li:hover {
-  background: #4a72ff;
-  color: #fff;
-}
-
 main {
   position: absolute;
   top: 0;
@@ -323,7 +290,6 @@ main.visible > .backdrop {
 
     &.active {
       color: #0f3cd9;
-      /* background: #e8edff; */
       border-bottom: 3px solid #0f3cd9;
     }
   }

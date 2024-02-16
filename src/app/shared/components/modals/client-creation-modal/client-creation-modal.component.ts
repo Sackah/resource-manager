@@ -1,12 +1,8 @@
-import { Component, OnInit, Input, EventEmitter, Output, ChangeDetectorRef } from '@angular/core';
-import {
-  FormGroup,
-
-  ReactiveFormsModule,
-  FormBuilder,
-} from '@angular/forms';
+import { Component, Input, EventEmitter, Output } from '@angular/core';
+import { FormGroup, ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { finalize } from 'rxjs/operators';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ClientCreationModalService } from '../../../../accounts/admin/services/client-creation-modal.service';
 import { ClientDetails } from '../../../types/types';
 import { ProjectCreationModalComponent } from '../project-creation-modal/project-creation-modal.component';
@@ -16,38 +12,40 @@ import { ProjectCreationModalComponent } from '../project-creation-modal/project
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, ProjectCreationModalComponent],
   templateUrl: './client-creation-modal.component.html',
-  styleUrl: './client-creation-modal.component.css'
+  styleUrl: './client-creation-modal.component.css',
 })
-export class ClientCreationModalComponent implements OnInit {
+export class ClientCreationModalComponent {
   @Input() isOpen = true;
-  @Output() clientCreated: EventEmitter<ClientDetails> = new EventEmitter()
 
+  @Output() clientCreated: EventEmitter<ClientDetails> = new EventEmitter();
 
+  @Output() newClientCreated: EventEmitter<void> = new EventEmitter<void>();
 
-  formData: FormGroup;
-  loading = false;
-  success = false;
-  error = false;
-  errorMessage: string = '';
-  successMessage: string = '';
-  nullFormControlMessage: string = '';
-  formInvalidMessage: string = '';
+  formData: FormGroup = this.fb.group({
+    details: [''],
+    name: [''],
+  });
+
+  public loading = false;
+
+  public success = false;
+
+  public error = false;
+
+  public errorMessage = '';
+
+  public successMessage = '';
+
+  public nullFormControlMessage = '';
+
+  formInvalidMessage = '';
 
   constructor(
-
     private clientcreationService: ClientCreationModalService,
 
     private fb: FormBuilder,
-
-
-
-  ) {
-    this.formData = this.fb.group({
-      details: [''],
-      name: [''],
-
-    });
-  }
+    private modalService: NgbModal
+  ) {}
 
   clearErrorMessagesAfterDelay() {
     setTimeout(() => {
@@ -57,7 +55,7 @@ export class ClientCreationModalComponent implements OnInit {
     }, 3000);
   }
 
-  onCreateClient() {
+  public onCreateClient() {
     this.loading = false;
     this.success = false;
     this.error = false;
@@ -76,38 +74,32 @@ export class ClientCreationModalComponent implements OnInit {
           updatedClients => {
             this.success = true;
             this.successMessage = 'Client created successfully!';
+            this.newClientCreated.emit();
             this.clientCreated.emit(updatedClients.client);
             this.formData.reset();
+            this.closeClientcreationModal();
           },
           error => {
             this.error = true;
             if (error.status >= 500) {
               this.errorMessage =
                 'Server Error" Something went wrong on the server.';
+            } else if (error.error && error.error.message) {
+              this.errorMessage = error.error.message;
             } else {
-              if (error.error && error.error.message) {
-                this.errorMessage = error.error.message;
-              } else {
-                this.errorMessage = 'An unexpected error occured.';
-              }
+              this.errorMessage = 'An unexpected error occured.';
             }
             this.clearErrorMessagesAfterDelay();
           }
         );
     } else {
-      this.formInvalidMessage = 'Please complete the form or enter valid inputs';
+      this.formInvalidMessage =
+        'Please complete the form or enter valid inputs';
       this.clearErrorMessagesAfterDelay();
     }
   }
 
-
-
-  closeClientcreationModal() {
+  public closeClientcreationModal() {
     this.isOpen = false;
-
-  }
-
-  ngOnInit(): void {
-
   }
 }

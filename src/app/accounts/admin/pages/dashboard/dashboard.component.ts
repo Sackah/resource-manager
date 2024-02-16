@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { MainComponent } from '../main/main.component';
 import { CommonModule } from '@angular/common';
+import { MainComponent } from '../main/main.component';
 
 @Component({
   selector: 'app-dashboard',

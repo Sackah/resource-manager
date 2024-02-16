@@ -40,16 +40,18 @@ export type AuthErrorResponse = {
   access: string;
 };
 
-export type UpdateUserDetails = {
-  profilePicture?: File;
-  email?: string;
-  firstName?: string;
-  lastName?: string;
-  phoneNumber?: string;
-  qualification?: string;
-  department?: string;
-  skill?: string;
-};
+export type UpdateUserDetails =
+  | {
+      profilePicture?: File;
+      email?: string;
+      firstName?: string;
+      lastName?: string;
+      phoneNumber?: string;
+      qualification?: string;
+      department?: string;
+      skill?: string;
+    }
+  | FormData;
 
 export type ProfileState = {
   isSubmitting: boolean;

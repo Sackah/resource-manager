@@ -9,11 +9,6 @@
             <span class="closebtn"></span>
             {{ errorMessages.serverError }}
           </div>
-
-          <div class="alert-success" *ngIf="successMessage">
-            <span class="closebtn"></span>
-            {{ successMessage }}
-          </div>
         </div>
         <ul
           class="max-w-md space-y-3 text-lg text-gray-500 list-inside dark:text-gray-400">
@@ -59,6 +54,7 @@
         <div
           class="text-red-500 text-xs leading-5 self-stretch py-2 w-full mr-2.5 mt-2 max-md:max-w-full">
           <label for="name" class="text-slate-700">Name</label>
+          <span class="text-red-500">*</span>
         </div>
         <div class="custom-dropdown">
           <input
@@ -72,6 +68,7 @@
         <div
           class="text-red-500 text-xs leading-5 self-stretch py-2 w-full mr-2.5 mt-2 max-md:max-w-full">
           <label for="name" class="text-slate-700">Client</label>
+          <span class="text-red-500">*</span>
         </div>
 
         <div class="custom-dropdown flex">
@@ -124,6 +121,7 @@
         <div
           class="text-red-500 text-xs leading-5 self-stretch py-2 w-full mr-2.5 mt-2 max-md:max-w-full">
           <label for="details" class="text-slate-700">Details</label>
+          <span class="text-red-500">*</span>
         </div>
         <div class="custom-dropdown">
           <textarea
@@ -142,6 +140,7 @@
             <div
               class="text-red-500 text-xs leading-5 self-stretch py-2 w-full">
               <label for="startDate" class="text-slate-700">Start date</label>
+              <span class="text-red-500">*</span>
             </div>
             <div class="dates">
               <input
@@ -158,6 +157,7 @@
             <div
               class="text-red-500 text-xs leading-5 self-stretch py-2 w-full">
               <label for="endDate" class="text-slate-700">End date</label>
+              <span class="text-red-500">*</span>
             </div>
             <div class="dates">
               <input
@@ -173,6 +173,7 @@
 
         <div class="text-red-500 text-xs leading-5 self-stretch pt-6 w-full">
           <label for="ProjectType" class="text-slate-700">Project Status</label>
+          <span class="text-red-500">*</span>
         </div>
         <div class="flex justify-start items-start py-1 w-full">
           <div class="flex items-center me-4">
@@ -208,6 +209,7 @@
         <span class="text-500 text-xs leading-5 self-stretch pt-4 w-full"
           >Billable</span
         >
+        <span class="text-red-500">*</span>
         <div class="flex justify-start items-start w-full">
           <label class="relative inline-flex items-center cursor-pointer">
             <input
@@ -232,7 +234,7 @@
             </button>
             <button
               type="button"
-              class="text-white text-xs font-medium leading-6 whitespace-nowrap justify-center items-stretch bg-indigo-800 aspect-[1.3333333333333333] px-2 py-1 rounded-xl"
+              class="text-white text-xs font-medium leading-6 whitespace-nowrap justify-center items-stretch bg-indigo-800 aspect-[1.3333333333333333] px-3 py-1 rounded-xl"
               [disabled]="loading"
               (click)="onCreateProject()">
               Add

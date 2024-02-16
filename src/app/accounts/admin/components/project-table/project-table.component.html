@@ -37,6 +37,7 @@
         <tr *ngFor="let project of projects">
           <td class="grid-item" (click)="openProjectDetailsModal(project)">
             {{ project.client }}
+            <input type="hidden" value=" {{ project.clientId }}" />
           </td>
           <td class="grid-item" (click)="openProjectDetailsModal(project)">
             {{ project.name }}
@@ -98,8 +99,8 @@
       </tbody>
     </table>
   </div>
-  <pagination
+  <app-pagination
     [currentPage]="currentPage"
     [totalPages]="totalPages"
-    (pageChange)="onPageChange($event)"></pagination>
+    (pageChange)="onPageChange($event)"></app-pagination>
 </ng-template>

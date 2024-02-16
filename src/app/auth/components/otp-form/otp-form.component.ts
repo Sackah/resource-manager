@@ -8,11 +8,8 @@ import {
   ViewChild,
   ViewChildren,
   QueryList,
+  AfterViewInit,
 } from '@angular/core';
-import {
-  InputFields,
-  ResetToggleService,
-} from '../../services/reset-toggle.service';
 import {
   ReactiveFormsModule,
   FormControl,
@@ -22,9 +19,13 @@ import {
 
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { SendOtpResponse } from '../../types/reset-types';
-import { selectResponse } from '../../store/reset-password/ResetReducers';
 import { NgOtpInputModule } from 'ng-otp-input';
+import { SendOtpResponse } from '@app/auth/types/reset-types';
+import { selectResponse } from '@app/auth/store/reset-password/ResetReducers';
+import {
+  InputFields,
+  ResetToggleService,
+} from '../../services/reset-toggle.service';
 
 @Component({
   selector: 'app-otp-form',
@@ -33,16 +34,24 @@ import { NgOtpInputModule } from 'ng-otp-input';
   templateUrl: './otp-form.component.html',
   styleUrls: ['./otp-form.component.css', '../../styles/styles.css'],
 })
-export class OtpFormComponent implements OnDestroy {
-  nextFormField!: InputFields;
+export class OtpFormComponent implements OnDestroy, AfterViewInit {
+  private nextFormField!: InputFields;
+
   resBody!: SendOtpResponse;
+
   @ViewChildren('otpInput') otpInputs!: QueryList<ElementRef>;
+
   @Input() numberOfBoxes = 6;
+
   @Output() otpChange = new EventEmitter<string>();
+
   @ViewChild('otpInput') otpInput!: ElementRef;
-  otpValues: string[] = [];
-  errorMessage: string = '';
-  successMessage: string = '';
+
+  private otpValues: string[] = [];
+
+  public errorMessage: string = '';
+
+  public successMessage: string = '';
 
   otp: FormControl = new FormControl('', [
     Validators.required,
@@ -53,7 +62,6 @@ export class OtpFormComponent implements OnDestroy {
     next: res => {
       this.resBody = res as SendOtpResponse;
     },
-    error: err => {},
   });
 
   constructor(
@@ -71,7 +79,7 @@ export class OtpFormComponent implements OnDestroy {
     input.focus();
   }
 
-  private emitOtp() {
+  public emitOtp() {
     const concatenatedValue = this.otpValues.join('');
     this.otpChange.emit(concatenatedValue);
   }

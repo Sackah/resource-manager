@@ -8,10 +8,9 @@ describe('WorkSpecializationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [WorkSpecializationComponent]
-    })
-    .compileComponents();
-    
+      imports: [WorkSpecializationComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(WorkSpecializationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -6,50 +6,66 @@ import {
   ComponentRef,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { User } from '../../../../shared/types/types';
-import {
-  ProjectDetails,
-  GenericResponse,
-} from '../../../../shared/types/types';
-import { AssignModalService } from '../../../../shared/components/modals/assign-modal/assign.service';
-import { AssignModalComponent } from '../../../../shared/components/modals/assign-modal/assign-modal.component';
-import { ProjectCreationModalService } from '../../services/project-creation-modal.service';
+import { User, ProjectDetails, GenericResponse } from '@app/shared/types/types';
+
 import { CommonModule } from '@angular/common';
-import { ProjectDetailsModalComponent } from '../../../../shared/components/modals/project-details-modal/project-details-modal.component';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { PaginationComponent } from '../../../../shared/components/pagination/pagination.component';
+import { AssignModalService } from '@app/shared/components/modals/assign-modal/assign.service';
+import { AssignModalComponent } from '@app/shared/components/modals/assign-modal/assign-modal.component';
+import { ProjectDetailsModalComponent } from '@app/shared/components/modals/project-details-modal/project-details-modal.component';
+import { PaginationComponent } from '@app/shared/components/pagination/pagination.component';
+import { DeleteProjectModalComponent } from '@app/shared/components/modals/delete-project-modal/delete-project-modal.component';
+import { EditProjectModalComponent } from '@app/shared/components/modals/edit-project-modal/edit-project-modal.component';
+import { ProjectCreationModalService } from '../../services/project-creation-modal.service';
+
 import { ProjectsService } from '../../services/projects.service';
-import { DeleteProjectModalComponent } from '../../../../shared/components/modals/delete-project-modal/delete-project-modal.component';
-import { EditProjectModalComponent } from '../../../../shared/components/modals/edit-project-modal/edit-project-modal.component';
 
 @Component({
   selector: 'app-project-table',
   standalone: true,
-  imports: [CommonModule, AssignModalComponent, PaginationComponent],
+  imports: [
+    CommonModule,
+    AssignModalComponent,
+    PaginationComponent,
+    EditProjectModalComponent,
+  ],
   templateUrl: './project-table.component.html',
   styleUrl: './project-table.component.css',
 })
 export class ProjectTableComponent implements OnInit, OnDestroy {
-  totalPages: number = 0;
-  currentPage: number = 1;
-  itemsPerPage: number = 10;
-  projects: ProjectDetails[] = [];
-  loading: boolean = false;
-  successMessage: string | null = null;
-  errorMessage: string | null = null;
-  totalProjects: number = 0;
-  users: User[] = [];
-  isMenuOpen: boolean = false;
-  showDropdownForProject: ProjectDetails | null = null;
-  showTooltip: boolean = false;
+  public totalPages = 0;
+
+  public currentPage = 1;
+
+  public itemsPerPage = 10;
+
+  public projects: ProjectDetails[] = [];
+
+  public loading = false;
+
+  public successMessage: string | null = null;
+
+  public errorMessage: string | null = null;
+
+  public totalProjects = 0;
+
+  public users: User[] = [];
+
+  public isMenuOpen = false;
+
+  public showDropdownForProject: ProjectDetails | null = null;
+
+  public showTooltip = false;
 
   private dataSubscription: Subscription | undefined;
+
   private assignModalRef?: ComponentRef<AssignModalComponent>;
 
   constructor(
     private projectService: ProjectCreationModalService,
     private viewContainerRef: ViewContainerRef,
     private modalService: NgbModal,
+
     private assignModalService: AssignModalService,
     private projectsService: ProjectsService
   ) {}
@@ -58,7 +74,7 @@ export class ProjectTableComponent implements OnInit, OnDestroy {
     this.fetchProjects();
   }
 
-  openAssignModal(project: ProjectDetails): void {
+  public openAssignModal(project: ProjectDetails): void {
     const modalComponentRef = this.assignModalService.open(
       this.viewContainerRef
     );
@@ -79,9 +95,15 @@ export class ProjectTableComponent implements OnInit, OnDestroy {
       this.dataSubscription.unsubscribe();
     }
   }
+
   public onPageChange(page: number): void {
     this.currentPage = page;
     this.fetchProjects();
+  }
+
+  public updateProjects(): void {
+    this.fetchProjects();
+    this.successMessage = 'Project Edited successfully!';
   }
 
   fetchProjects(): void {
@@ -101,6 +123,7 @@ export class ProjectTableComponent implements OnInit, OnDestroy {
           this.totalProjects = projects.length;
           this.totalPages = Math.ceil(projects.length / this.itemsPerPage);
         } else {
+          projects;
         }
       },
       error => {
@@ -117,12 +140,60 @@ export class ProjectTableComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.project = project;
   }
 
-  openEditProjectModal(project: ProjectDetails): void {
-    const modalRef = this.modalService.open(EditProjectModalComponent);
+  public openDeleteProjectModal(project: ProjectDetails) {
+    const modalRef = this.modalService.open(DeleteProjectModalComponent);
     modalRef.componentInstance.project = project;
+
+    modalRef.result.then(result => {
+      if (result === 'delete') {
+        this.deleteProject(project);
+      }
+    });
   }
 
-  archiveProject(projects: ProjectDetails): void {
+  public deleteProject(project: ProjectDetails): void {
+    const { projectId } = project;
+    if (!projectId) {
+      return;
+    }
+
+    this.projectService.deleteProject(projectId).subscribe({
+      next: () => {
+        this.successMessage = 'Project deleted successfully.';
+        this.errorMessage = null;
+        this.fetchProjects();
+        setTimeout(() => {
+          this.successMessage = null;
+        }, 3000);
+      },
+      error: error => {
+        this.errorMessage = 'Error deleting project.';
+        this.successMessage = null;
+        error;
+        setTimeout(() => {
+          this.errorMessage = null;
+        }, 3000);
+      },
+    });
+  }
+
+  private handleProjectEdited(): void {
+    this.successMessage = 'Project edited successfully.';
+    setTimeout(() => {
+      this.successMessage = null;
+    }, 3000);
+    this.fetchProjects();
+  }
+
+  public openEditProjectModal(project: ProjectDetails): void {
+    const modalRef = this.modalService.open(EditProjectModalComponent);
+    modalRef.componentInstance.project = project;
+    modalRef.componentInstance.projectEdited.subscribe(() => {
+      this.handleProjectEdited();
+    });
+  }
+
+  public archiveProject(projects: ProjectDetails): void {
     this.projectsService.archiveProject(projects.projectId).subscribe({
       next: (response: GenericResponse) => {
         this.successMessage = response.message;
@@ -132,12 +203,18 @@ export class ProjectTableComponent implements OnInit, OnDestroy {
         }, 3000);
       },
 
-      error: () => {
-        (this.errorMessage =
-          'Server Error: Could not archive project, please try again later.'),
-          setTimeout(() => {
-            this.errorMessage = null;
-          }, 3000);
+      error: error => {
+        if (error.status >= 500) {
+          this.errorMessage =
+            'Server Error: Something went wrong on the server.';
+        } else if (error.error && error.error.message) {
+          this.errorMessage = error.error.message;
+        } else {
+          this.errorMessage = 'An unexpected error occured';
+        }
+        setTimeout(() => {
+          this.errorMessage = null;
+        }, 3000);
       },
     });
   }

@@ -8,15 +8,15 @@ import {
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { ResetActions } from '../../store/reset-password/ResetActions';
 import { combineLatest, Subscription } from 'rxjs';
+import { ResetActions } from '@app/auth/store/reset-password/ResetActions';
+import { GlobalInputComponent } from '@app/shared/components/global-input/global-input.component';
 import { ResetState, SendOtpError } from '../../types/reset-types';
 import {
   selectIsSubmitting,
   selectError,
   selectResponse,
 } from '../../store/reset-password/ResetReducers';
-import { GlobalInputComponent } from '../../../shared/components/global-input/global-input.component';
 
 @Component({
   selector: 'app-email-form',
@@ -31,15 +31,21 @@ import { GlobalInputComponent } from '../../../shared/components/global-input/gl
   styleUrls: ['./email-form.component.css', '../../styles/styles.css'],
 })
 export class EmailFormComponent implements OnInit, OnDestroy {
-  subscriptions: Subscription[] = [];
-  emailForm!: FormGroup;
-  successMessage: string | null = null;
-  storeData: Pick<ResetState, 'error' | 'isSubmitting' | 'response'> = {
+  private subscriptions: Subscription[] = [];
+
+  public emailForm: FormGroup = new FormGroup({
+    email: new FormControl('', [Validators.required, Validators.email]),
+  });
+
+  public successMessage: string | null = null;
+
+  public storeData: Pick<ResetState, 'error' | 'isSubmitting' | 'response'> = {
     error: null,
     isSubmitting: false,
     response: null,
   };
-  storeData$ = combineLatest({
+
+  private storeData$ = combineLatest({
     isSubmitting: this.store.select(selectIsSubmitting),
     error: this.store.select(selectError),
     response: this.store.select(selectResponse),
@@ -48,14 +54,7 @@ export class EmailFormComponent implements OnInit, OnDestroy {
   constructor(private store: Store) {}
 
   ngOnInit(): void {
-    this.emailFormValidation();
     this.storeSubscription();
-  }
-
-  public emailFormValidation() {
-    this.emailForm = new FormGroup({
-      email: new FormControl('', [Validators.required, Validators.email]),
-    });
   }
 
   public storeSubscription() {
@@ -83,7 +82,8 @@ export class EmailFormComponent implements OnInit, OnDestroy {
     if (control?.invalid && (control.dirty || control.touched)) {
       if (control.hasError('required')) {
         return 'This field is required';
-      } else if (control.hasError('email')) {
+      }
+      if (control.hasError('email')) {
         return 'Please enter a valid email address';
       }
     }

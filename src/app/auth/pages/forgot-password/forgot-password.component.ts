@@ -1,15 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { LoginSideIllustrationComponent } from '../../components/login-side-illustration/login-side-illustration.component';
 import { CommonModule } from '@angular/common';
-import { EmailFormComponent } from '../../components/email-form/email-form.component';
 import { RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { OtpFormComponent } from '@app/auth/components/otp-form/otp-form.component';
+import { ResetPasswordFormComponent } from '@app/auth/components/reset-password-form/reset-password-form.component';
+import { LoginSideIllustrationComponent } from '@app/auth/components/login-side-illustration/login-side-illustration.component';
+import { EmailFormComponent } from '../../components/email-form/email-form.component';
 import {
   InputFields,
   ResetToggleService,
-} from '../../../auth/services/reset-toggle.service';
-import { OtpFormComponent } from '../../components/otp-form/otp-form.component';
-import { ResetPasswordFormComponent } from '../../components/reset-password-form/reset-password-form.component';
-import { Subscription } from 'rxjs';
+} from '../../services/reset-toggle.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -27,7 +27,9 @@ import { Subscription } from 'rxjs';
 })
 export class ForgotPasswordComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
+
   formField: InputFields = 'email';
+
   successMessage: string | null = null;
 
   constructor(private resetToggleService: ResetToggleService) {}
@@ -45,6 +47,7 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(toggSubscription);
   }
+
   ngOnDestroy(): void {
     this.subscriptions.forEach(sub => sub.unsubscribe());
   }

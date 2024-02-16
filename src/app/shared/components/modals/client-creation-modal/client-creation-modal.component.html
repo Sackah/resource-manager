@@ -1,6 +1,5 @@
 <div class="modal-overlay" *ngIf="isOpen">
   <div
-    *ngIf="isOpen"
     class="items-center form-size flex flex-col justify-center px-16 py-10 max-md:px-5">
     <div class="messages-container mt-1 flex items-center">
       <div class="message-container">
@@ -8,13 +7,9 @@
           <span class="closebtn"></span>
           {{ errorMessage }}
         </div>
-      
-        <div class="alert-success" *ngIf="successMessage">
-          <span class="closebtn"></span>
-          {{ successMessage }}
-        </div>
       </div>
-      <ul  class="max-w-md space-y-3 text-lg text-gray-500 list-inside dark:text-gray-400">
+      <ul
+        class="max-w-md space-y-3 text-lg text-gray-500 list-inside dark:text-gray-400">
         <li *ngIf="loading" class="flex items-center">
           <div role="status">
             <svg
@@ -37,7 +32,6 @@
       </ul>
     </div>
 
-
     <form [formGroup]="formData">
       <div
         class="justify-center items-center shadow-lg bg-white flex max-w-full flex-col p-6 rounded-xl max-md:my-8 max-md:px-1">
@@ -58,7 +52,7 @@
         <div
           class="text-red-500 text-xs leading-5 self-stretch py-2 w-full mr-2.5 mt-2 max-md:max-w-full">
           <label for="name" class="text-slate-700">Name</label>
-
+          <span class="text-red-500">*</span>
         </div>
         <div class="custom-dropdown">
           <input
@@ -84,9 +78,8 @@
             name="details"
             placeholder="Enter a description of the client"
             class="text-slate-500 text-base leading-6 grow shrink basis-auto w-full py-1 focus:border-white">
-         </textarea>
+          </textarea>
         </div>
-
 
         <div class="justify-end items-stretch flex gap-4 mt-1 py-1 self-end">
           <div class="justify-end items-stretch flex gap-4 mt-1 self-end">
@@ -100,7 +93,6 @@
               type="button"
               class="text-white text-xs font-medium leading-6 whitespace-nowrap justify-center items-stretch bg-indigo-800 aspect-[1.3333333333333333] px-2 py-1 rounded-xl"
               [disabled]="loading"
-              [disabled]="success"
               (click)="onCreateClient()">
               Add
             </button>

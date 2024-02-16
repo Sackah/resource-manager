@@ -7,16 +7,17 @@ import {
   FormControl,
   Validators,
 } from '@angular/forms';
-import { SettingsService } from '../../../user/services/settings.service';
-import { validPhoneNumber } from '../../../../auth/validators/invalidphonenumber';
-import { selectCurrentUser } from '../../../../auth/store/authorization/AuthReducers';
 import { Store } from '@ngrx/store';
+import { SettingsService } from '@app/accounts/user/services/settings.service';
+import { validPhoneNumber } from '@app/auth/validators/invalidphonenumber';
+import { selectCurrentUser } from '@app/auth/store/authorization/AuthReducers';
 import {
   CurrentUser,
   Departments,
   InitialSig,
   Specializations,
-} from '../../../../shared/types/types';
+  NameType,
+} from '@app/shared/types/types';
 
 @Component({
   selector: 'app-admin-profile',
@@ -27,17 +28,21 @@ import {
 })
 export class AdminProfileComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
+
   public imgUrl = '../../../../../assets/images/user/profile-container-2.svg';
-  private settingsSig = signal<InitialSig>({
+
+  public settingsSig = signal<InitialSig>({
     success: null,
     error: null,
     pending: false,
   });
+
   specializations!: Specializations[];
+
   departments!: Departments[];
 
   public userDetails: FormGroup = new FormGroup({
-    userId: new FormControl('', [Validators.required]),
+    refId: new FormControl('', [Validators.required]),
     profilePicture: new FormControl(null),
     email: new FormControl('', [Validators.required, Validators.email]),
     firstName: new FormControl('', [
@@ -71,51 +76,51 @@ export class AdminProfileComponent implements OnInit, OnDestroy {
 
   getEmailErrors(): string {
     const control = this.userDetails.get('email');
-    if (control?.invalid && (control.dirty || control.touched)) {
-      if (control.hasError('required')) {
-        return 'This field is required';
-      } else if (control.hasError('email')) {
-        return 'Please enter a valid email address';
-      }
-    }
-
-    return '';
+    return control?.invalid && (control.dirty || control.touched)
+      ? control.hasError('required')
+        ? 'This field is required'
+        : control.hasError('email')
+        ? 'Please enter a valid email address'
+        : ''
+      : '';
   }
 
-  getNameErrors(name: 'firstName' | 'lastName') {
+  getNameErrors(name: NameType) {
     const control = this.userDetails.get(name);
-    if (control?.invalid && (control.dirty || control.touched)) {
-      if (control.hasError('required')) {
-        return 'This field is required';
-      } else if (control.hasError('pattern')) {
-        return 'Name can only contain letters and one space per word';
-      }
-    }
-
-    return '';
+    return control?.invalid && (control.dirty || control.touched)
+      ? control.hasError('required')
+        ? 'This field is required'
+        : control.hasError('pattern')
+        ? 'Name can only contain letters and one space per word'
+        : ''
+      : '';
   }
 
   getNumberErrors() {
     const control = this.userDetails.get('phoneNumber');
-    if (control?.invalid && (control.dirty || control.touched)) {
-      if (control.hasError('required')) {
-        return 'This field is required';
-      } else if (control.hasError('invalidPhoneNumber')) {
-        return 'Number should be exactly 10 digits without country code';
-      }
-    }
-
-    return '';
+    return control?.invalid && (control.dirty || control.touched)
+      ? control.hasError('required')
+        ? 'This field is required'
+        : control.hasError('invalidPhoneNumber')
+        ? 'The number field should be a valid phone number'
+        : ''
+      : '';
   }
 
-  onFileChange(event: any) {
-    if (event.target?.files.length > 0) {
-      let reader = new FileReader();
-      const file = event.target.files[0];
+  onFileChange(event: Event) {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) {
+      const reader = new FileReader();
 
-      reader.readAsDataURL(event.target.files[0]);
-      reader.onload = (event: any) => {
-        this.imgUrl = event.target.result;
+      reader.readAsDataURL(target.files[0]);
+      reader.onload = (loadEvent: ProgressEvent<FileReader>) => {
+        if (loadEvent.target?.result) {
+          this.imgUrl = loadEvent.target.result as string;
+          this.userDetails.patchValue({
+            profilePicture: loadEvent.target.result,
+          });
+          this.imgUrl = loadEvent.target.result as string;
+        }
       };
     }
   }
@@ -123,7 +128,7 @@ export class AdminProfileComponent implements OnInit, OnDestroy {
   setValues(user: CurrentUser) {
     if (user) {
       this.userDetails.patchValue({
-        userId: user.userId,
+        refId: user.refId,
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
@@ -134,8 +139,7 @@ export class AdminProfileComponent implements OnInit, OnDestroy {
   }
 
   get signalValues() {
-    const val = this.settingsSig();
-    return val;
+    return this.settingsSig();
   }
 
   submitForm(event: Event) {
@@ -146,12 +150,15 @@ export class AdminProfileComponent implements OnInit, OnDestroy {
       pending: true,
     });
 
-    const { firstName, lastName, phoneNumber, userId } = this.userDetails.value;
+    const { firstName, lastName, phoneNumber, refId, profilePicture, email } =
+      this.userDetails.value;
     const reqBody = {
-      userId: userId,
-      firstName: firstName,
-      lastName: lastName,
-      phoneNumber: phoneNumber,
+      refId,
+      firstName,
+      lastName,
+      phoneNumber,
+      profilePicture,
+      email,
     };
 
     if (this.userDetails.valid) {
