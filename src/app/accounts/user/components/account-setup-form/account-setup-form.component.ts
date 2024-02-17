@@ -150,9 +150,7 @@ export class AccountSetupFormComponent implements OnInit, OnDestroy {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
       this.selectedFile = target.files[0];
-      this.userDetails.patchValue({
-        profilePicture: this.selectedFile,
-      });
+      this.formData.append('profilePicture', this.selectedFile);
 
       const reader = new FileReader();
       reader.readAsDataURL(this.selectedFile);
@@ -170,7 +168,16 @@ export class AccountSetupFormComponent implements OnInit, OnDestroy {
     userDetails.email = this.email;
     userDetails.timeZone = this.timeZoneName;
 
-    this.store.dispatch(AuthActions.updateUserDetails(userDetails));
+    Object.keys(userDetails).forEach(key => {
+      if (key !== 'profilePicture') {
+        this.formData.append(key, userDetails[key]);
+      }
+    });
+    for (const pair of this.formData.entries()) {
+      console.log(pair[0] + ', ' + pair[1]);
+    }
+
+    this.store.dispatch(AuthActions.updateUserDetails(this.formData));
   }
 
   ngOnDestroy(): void {
