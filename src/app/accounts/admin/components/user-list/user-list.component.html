@@ -1,3 +1,5 @@
+<div class="assign-button-container"></div>
+
 <p class="total-users">
   <span>{{ totalUsers }}</span>
 </p>
@@ -14,7 +16,13 @@
   </div>
 </div>
 <ng-container *ngIf="loading; else userList">
-  <app-custom-spinner></app-custom-spinner>
+  <div class="spinner-dots">
+    <div class="custom-spinner">
+      <div class="spinner-dot"></div>
+      <div class="spinner-dot"></div>
+      <div class="spinner-dot"></div>
+    </div>
+  </div>
 </ng-container>
 
 <ng-template #userList>
@@ -71,17 +79,15 @@
             {{ user.email }}
           </td>
           <ng-template #notAvailable
-            ><td class="grid-item">N/A</td></ng-template
+            ><td class="grid-item">Not available</td></ng-template
           >
           <td class="grid-item" *ngIf="user.role; else notAvailable">
             {{ user.role }}
           </td>
-          <ng-template #notAvailable
-            ><td class="grid-item">N/A</td></ng-template
+          <ng-template #notAvailable2
+            ><td class="grid-item">Not available</td></ng-template
           >
-          <td class="grid-item" *ngIf="user.department; else notAvailable">
-            {{ user.department }}
-          </td>
+          <td class="grid-item">{{ user.department }}</td>
           <td
             class="grid-item"
             *ngIf="user.specializations && user.specializations.length > 0">

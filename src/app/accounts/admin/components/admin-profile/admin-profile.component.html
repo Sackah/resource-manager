@@ -3,11 +3,11 @@
 <form (submit)="submitForm($event)" [formGroup]="userDetails">
   <div class="message-container">
     @if (signalValues.success) {
-    <div class="success-message">
+    <div class="alert-success">
       {{ signalValues.success.message }}
     </div>
     } @if (signalValues.error) {
-    <div class="error-message">
+    <div class="alert-error">
       {{ signalValues.error.message }}
     </div>
     }

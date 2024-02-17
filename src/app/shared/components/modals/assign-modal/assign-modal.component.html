@@ -1,10 +1,8 @@
 <div class="message-container">
   <div class="alert-success" *ngIf="successMessage">
-    <span class="closebtn" (click)="closeSuccessMessage()"></span>
     {{ successMessage }}
   </div>
   <div class="alert-error" *ngIf="errorMessage">
-    <span class="closebtn" (click)="closeErrorMessage()"></span>
     {{ errorMessage }}
   </div>
 </div>

@@ -162,7 +162,7 @@ export class AdminProfileComponent implements OnInit, OnDestroy {
     };
 
     if (this.userDetails.valid) {
-      this.settingsService.updateDetails(reqBody).subscribe({
+      this.settingsService.updateAdminDetails(reqBody).subscribe({
         next: response => {
           if (response && response.message) {
             this.settingsSig.set({

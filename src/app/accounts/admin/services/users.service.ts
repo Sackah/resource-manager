@@ -75,28 +75,6 @@ export class UsersService {
     });
   }
 
-  reInviteUser(email: string): Observable<GenericResponse> {
-    return this.http.post<GenericResponse>(
-      `${BASE_URL}/users/reinvite`,
-      { email },
-      {
-        headers: this.headers,
-      }
-    );
-  }
-
-  getInactiveUsers(): Observable<UsersResponse> {
-    return this.http.get<UsersResponse>(`${BASE_URL}/users/inactive`, {
-      headers: this.headers,
-    });
-  }
-
-  getActiveUsers(): Observable<UsersResponse> {
-    return this.http.get<UsersResponse>(`${BASE_URL}/users/active`, {
-      headers: this.headers,
-    });
-  }
-
   archivedUsers(): Observable<ArchivedUsersResponse> {
     return this.http.get<ArchivedUsersResponse>(
       `${BASE_URL}/users/archives/fetch`,

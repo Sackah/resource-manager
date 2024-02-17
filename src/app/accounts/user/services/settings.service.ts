@@ -5,7 +5,7 @@ import {
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, map, throwError } from 'rxjs';
-import { BASE_URL } from '../../../../environment/config';
+import { BASE_URL } from 'src/environment/config';
 import {
   UpdateUserDetailsResponse,
   UpdateUserPasswordResponse,
@@ -35,6 +35,17 @@ export class SettingsService {
   }
 
   updateDetails(
+    newDetails: UpdateUserDetails
+  ): Observable<UpdateUserDetailsResponse> {
+    return this.http
+      .put<UpdateUserDetailsResponse>(
+        `${BASE_URL}/users/profile/update`,
+        newDetails
+      )
+      .pipe(catchError((error: HttpErrorResponse) => this.onError(error)));
+  }
+
+  updateAdminDetails(
     newDetails: UpdateUserDetails
   ): Observable<UpdateUserDetailsResponse> {
     return this.http

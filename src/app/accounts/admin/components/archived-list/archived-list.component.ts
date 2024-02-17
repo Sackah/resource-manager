@@ -9,12 +9,11 @@ import {
   User,
   ArchivedUsersResponse,
 } from '../../../../shared/types/types';
-import { CustomSpinnerComponent } from '@app/shared/components/custom-spinner/custom-spinner.component';
 
 @Component({
   selector: 'app-archived-list',
   standalone: true,
-  imports: [CommonModule, PaginationComponent, CustomSpinnerComponent],
+  imports: [CommonModule, PaginationComponent],
   templateUrl: './archived-list.component.html',
   styleUrls: [
     './archived-list.component.css',

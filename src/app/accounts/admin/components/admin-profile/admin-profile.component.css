@@ -142,22 +142,6 @@ label:not(.visibly-hidden) {
 
 .message-container {
   position: fixed;
-  top: 20%;
-  /* left: 80%; */
-  right: -2%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-}
-
-.success-message,
-.error-message {
-  color: white;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-.message-container {
-  position: fixed;
   top: 0;
   left: 50%;
   transform: translateX(-50%);

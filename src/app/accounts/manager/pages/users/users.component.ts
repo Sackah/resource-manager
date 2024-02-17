@@ -1,8 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
-import { ActiveUsersComponent } from '@app/accounts/admin/components/active-users/active-users.component';
-import { InactiveUsersComponent } from '@app/accounts/admin/components/inactive-users/inactive-users.component';
-import { PendingUsersComponent } from '@app/accounts/admin/components/pending-users/pending-users.component';
 import { UserListComponent } from '../../../admin/components/user-list/user-list.component';
 import { ButtonAssignComponent } from '../../../user/components/button-assign/button-assign.component';
 import { ButtonNewComponent } from '../../../user/components/button-new/button-new.component';
@@ -20,9 +17,6 @@ import { ArchivedListComponent } from '../../../admin/components/archived-list/a
     ButtonNewComponent,
     ManagerUsercreationComponent,
     ArchivedListComponent,
-    ActiveUsersComponent,
-    InactiveUsersComponent,
-    PendingUsersComponent,
   ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',

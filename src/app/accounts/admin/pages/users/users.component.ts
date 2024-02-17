@@ -16,9 +16,6 @@ import { UserListComponent } from '../../components/user-list/user-list.componen
 import { UsercreationComponent } from '../usercreation/usercreation.component';
 import { ManagerUsercreationComponent } from '../../../manager/pages/manager-usercreation/manager-usercreation.component';
 import { ArchivedListComponent } from '../../components/archived-list/archived-list.component';
-import { InactiveUsersComponent } from '../../components/inactive-users/inactive-users.component';
-import { ActiveUsersComponent } from '../../components/active-users/active-users.component';
-import { PendingUsersComponent } from '../../components/pending-users/pending-users.component';
 
 @Component({
   selector: 'app-users',
@@ -33,9 +30,6 @@ import { PendingUsersComponent } from '../../components/pending-users/pending-us
     UsercreationComponent,
     ManagerUsercreationComponent,
     ArchivedListComponent,
-    InactiveUsersComponent,
-    ActiveUsersComponent,
-    PendingUsersComponent,
   ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.css',

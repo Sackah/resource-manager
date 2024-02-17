@@ -14,7 +14,13 @@
 </div>
 
 <ng-container *ngIf="loading; else userListOrNoUsers">
-  <app-custom-spinner></app-custom-spinner>
+  <div class="spinner-dots">
+    <div class="custom-spinner">
+      <div class="spinner-dot"></div>
+      <div class="spinner-dot"></div>
+      <div class="spinner-dot"></div>
+    </div>
+  </div>
 </ng-container>
 <ng-template #userListOrNoUsers>
   <div class="user-list-container">

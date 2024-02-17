@@ -6,7 +6,6 @@ import {
   ComponentRef,
   EventEmitter,
   Output,
-  Input,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -23,7 +22,6 @@ import { UpdateUserDetails } from '@app/auth/types/auth-types';
 import { EditUserModalService } from '@app/shared/components/modals/edit-user-modal/edit-user.service';
 import { UsersService } from '../../services/users.service';
 import { UserListService } from './user-list.service';
-import { CustomSpinnerComponent } from '@app/shared/components/custom-spinner/custom-spinner.component';
 
 @Component({
   selector: 'app-user-list',
@@ -34,7 +32,6 @@ import { CustomSpinnerComponent } from '@app/shared/components/custom-spinner/cu
     PaginationComponent,
     AssignModalComponent,
     ButtonAssignComponent,
-    CustomSpinnerComponent,
   ],
   templateUrl: './user-list.component.html',
   styleUrls: [

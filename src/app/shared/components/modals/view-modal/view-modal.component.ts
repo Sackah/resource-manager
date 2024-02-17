@@ -6,13 +6,14 @@ import {
   EventEmitter,
   Input,
   OnInit,
+  OnDestroy,
   Output,
 } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { UsersService } from '@app/accounts/admin/services/users.service';
 import { User } from '../../../types/types';
 import { EditAvailabilityModalComponent } from '../edit-availability-modal/edit-availability-modal.component';
 import { EditAvailabilityService } from '../edit-availability-modal/edit-availability.service';
-import { AvailabilityService } from '../edit-availability-modal/availability.service';
 
 @Component({
   selector: 'app-view-modal',
@@ -21,18 +22,22 @@ import { AvailabilityService } from '../edit-availability-modal/availability.ser
   templateUrl: './view-modal.component.html',
   styleUrl: './view-modal.component.css',
 })
-export class ViewModalComponent implements OnInit {
+export class ViewModalComponent implements OnInit, OnDestroy {
   @Input() user!: User;
 
-  display: 'general' | 'normal-avaliability' = 'general';
+  public display: 'general' | 'normal-avaliability' = 'general';
 
-  closed = false;
+  private closed = false;
 
-  opening = true;
+  private opening = true;
 
-  successMessage: string | null = null;
+  public successMessage: string | null = null;
 
-  errorMessage: string | null = null;
+  public errorMessage: string | null = null;
+
+  public availabilitySubscription: Subscription | undefined;
+
+  currentAvailability: number | null = null;
 
   @Output() closeEvent = new EventEmitter<void>();
 
@@ -43,7 +48,6 @@ export class ViewModalComponent implements OnInit {
   constructor(
     private usersService: UsersService,
     private viewContainerRef: ViewContainerRef,
-    private availabilityService: AvailabilityService,
     private editAvailablityService: EditAvailabilityService
   ) {}
 
@@ -62,6 +66,11 @@ export class ViewModalComponent implements OnInit {
     }, 100);
   }
 
+  ngOnDestroy() {
+    if (this.availabilitySubscription) {
+      this.availabilitySubscription.unsubscribe();
+    }
+  }
   public openEditAvailabilityModal(
     user: User,
     selectedProject: { name: string; workHours: number; scheduleId: number }
